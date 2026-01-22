@@ -14,6 +14,6 @@ public class OptionController : MonoBehaviour
     
     public void OnClick()
     {
-        DialogManager.instance.OptionSelected(idx);
+        DialogController.instance.OptionSelected(idx);
     }
 }

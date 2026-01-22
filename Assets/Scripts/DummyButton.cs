@@ -3,13 +3,18 @@ using UnityEngine;
 
 public class DummyButton : MonoBehaviour
 {
-    public void OnButtonClick()
+    public void CreateOptions()
     {
         int cnt = 3;
-        string[] msg = new string[cnt];
-        msg[0] = "1st option";
-        msg[1] = "2nd option";
-        msg[2] = "3rd option";
-        DialogManager.instance.MakeOptions(cnt, msg);
+        string[] msgs = new string[cnt];
+        msgs[0] = "1st option";
+        msgs[1] = "2nd option";
+        msgs[2] = "3rd option";
+        DialogController.instance.MakeOptions(msgs);
+    }
+
+    public void ContinueDialogs()
+    {
+        DialogController.instance.ContinueDialog();
     }
 }
