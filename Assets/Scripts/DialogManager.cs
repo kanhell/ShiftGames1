@@ -13,8 +13,8 @@ public class DialogManager : MonoBehaviour
     Dictionary<string, string[]> dialogs = new Dictionary<string, string[]>();
     Dictionary<string, string[]> options = new Dictionary<string, string[]>();
     Dictionary<string, string[]> keys = new Dictionary<string, string[]>();
-    string dialogKey = "dummy script";  // dummy
-    int dialogIndex = -1;  // dummy
+    public string dialogKey;  // dummy
+    public int dialogIndex;
     string endKey = "대화종료";
 
     void Awake()  // 싱글톤
@@ -29,6 +29,15 @@ public class DialogManager : MonoBehaviour
 
     void Start()  // dummy
     {
+
+        // 종료
+        dialogs.Add(
+            endKey,
+            new string[]
+            {
+                endKey
+            }
+        );
 
         // 최초 대화
         dialogs.Add(
@@ -81,7 +90,7 @@ public class DialogManager : MonoBehaviour
             "dummy script_option_1",
             new string[]
             {
-                "밤이 되면 숲에서 이상한 소리가 들린다고들 해.",
+                "dummy script_option_1_1",
                 endKey
             }
         );
@@ -150,15 +159,15 @@ public class DialogManager : MonoBehaviour
     {
         dialogIndex += 1;
         string msg = dialogs[dialogKey][dialogIndex];
-        if (msg == endKey)
-            // 대화종료
-            // 함수 종료
-        DialogController.instance.ChangeDialog(msg);
-        if (dialogIndex == dialogs[dialogKey].Length-1)
-            DialogController.instance.MakeOptions(options[dialogKey]);
+        if (msg == endKey)  // 대화 종료
+            DialogController.instance.DialogStop();
+        else
+        {
+            DialogController.instance.ChangeDialog(msg);
+            if (dialogIndex == dialogs[dialogKey].Length - 1)
+                DialogController.instance.MakeOptions(options[dialogKey]);
+        }
     }
 
-    // TODO : repository for dialogs and options
     // TODO : maybe gonna have functions for adjust states of player or something
-    // TODO : save dialog progression
 }

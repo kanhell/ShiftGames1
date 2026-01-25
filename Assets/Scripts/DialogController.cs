@@ -9,6 +9,7 @@ public class DialogController : MonoBehaviour
 
     // 
     public TextMeshProUGUI text_dialog;
+    bool isDialog = false;
 
     // options
     public GameObject optionPrefab;
@@ -31,6 +32,12 @@ public class DialogController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Update()
+    {
+        // continueDialog
+        if (isDialog && (Input.GetAxisRaw("Horizontal") == 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0)))
+            ContinueDialog();
+    }
 
     public void ChangeDialog(string msg)  // 대화 진행할 때, 메시지 내용 바꾸는 용도
     {
@@ -72,6 +79,23 @@ public class DialogController : MonoBehaviour
         DialogManager.instance.OptionSelected(idx);
     }
 
+    public void DialogStart(string dialogKey)
+    {
+        isDialog = true;
+        DialogManager.instance.dialogKey = dialogKey;
+        DialogManager.instance.dialogIndex = -1;
+        ContinueDialog();
+    }
+
+    public void DialogStop()
+    {
+        ChangeDialog("종료");
+        isDialog = false;
+    }
+
+
+
+    // 글씨만 ""로 바꾸는게 아니라 실제
     // TODO 함수 : 대화가 종료된다면 dialog disappear
-    // TODO 함수 : 대화가 처음 시작할 떄 dialog appear
+    // TODO 함수 : 대화가 시작될 때의 상황을 dialogKey로 바꿔주기
 }
