@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class DialogController : MonoBehaviour
@@ -10,6 +11,9 @@ public class DialogController : MonoBehaviour
     // 
     public TextMeshProUGUI text_dialog;
     bool isDialog = false;
+    public Image img_OptionsBackground;
+    Color32 optionsBackground = new Color32(255, 248, 220, 255);
+    Color32 invisible = new Color32(0,0,0,0);
 
     // options
     public GameObject optionPrefab;
@@ -32,6 +36,11 @@ public class DialogController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        DialogStart(GameManager.instance.dialogKey);
+    }
+
     void Update()
     {
         // continueDialog
@@ -46,6 +55,7 @@ public class DialogController : MonoBehaviour
 
     public void MakeOptions(string[] msgs)  // 선택지 필요시 UI적으로 표시
     {
+        img_OptionsBackground.color = optionsBackground;
         int cnt = msgs.Length;
         isOptions = true;
         Transform canvas = GameObject.Find("Canvas").transform;
@@ -73,6 +83,7 @@ public class DialogController : MonoBehaviour
     public void OptionSelected(int idx)  // 선택지 선택시 호출됨
     {
         isOptions = false;
+        img_OptionsBackground.color = invisible;
         // options 삭제
         for (int i = 0; i < arr_options.Length; i++)
             Destroy(arr_options[i]);
@@ -89,7 +100,7 @@ public class DialogController : MonoBehaviour
 
     public void DialogStop()
     {
-        ChangeDialog("종료");
+        ChangeDialog("종료");  // 아니면 Scene을 원래 화면으로 전환
         isDialog = false;
     }
 

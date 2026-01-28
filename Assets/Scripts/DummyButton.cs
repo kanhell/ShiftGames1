@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DummyButton : MonoBehaviour
 {
@@ -8,8 +9,11 @@ public class DummyButton : MonoBehaviour
         DialogController.instance.ContinueDialog();
     }
 
-    public void DialogStart()
+    public void ToDialogScene()
     {
-        DialogController.instance.DialogStart("dummy script");
+        Debug.Log("clicked");
+        GameManager.instance.setVaribles_DialogScene("dummy script");
+        SceneManager.LoadScene("DialogScene");
     }
+
 }
