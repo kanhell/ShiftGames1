@@ -648,6 +648,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   dialogKey: 
+  npcKey: 
+  macgregor_frontshot: {fileID: 21300000, guid: 9c15b90dd8b5fa74eb9294a743c849e0, type: 3}
 --- !u!4 &2032414314
 Transform:
   m_ObjectHideFlags: 0

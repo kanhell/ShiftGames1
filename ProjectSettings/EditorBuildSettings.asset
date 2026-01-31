@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DummyScene.unity
     guid: 0deeb4daae576e9459c5fc723d1e6217
+  - enabled: 1
+    path: Assets/Scenes/DialogScene.unity
+    guid: de7b512355de6d04fb6f3baf21ff69ac
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

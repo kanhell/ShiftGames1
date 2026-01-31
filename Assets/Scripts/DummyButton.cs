@@ -12,7 +12,7 @@ public class DummyButton : MonoBehaviour
     public void ToDialogScene()
     {
         Debug.Log("clicked");
-        GameManager.instance.setVaribles_DialogScene("dummy script");
+        GameManager.instance.setVaribles_DialogScene("dummy script", "macgregor");
         SceneManager.LoadScene("DialogScene");
     }
 

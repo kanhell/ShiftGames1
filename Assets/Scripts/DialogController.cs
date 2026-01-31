@@ -8,12 +8,15 @@ public class DialogController : MonoBehaviour
     // ΩÃ±€≈Ê
     public static DialogController instance;
 
-    // 
+    // text
     public TextMeshProUGUI text_dialog;
     bool isDialog = false;
     public Image img_OptionsBackground;
     Color32 optionsBackground = new Color32(255, 248, 220, 255);
     Color32 invisible = new Color32(0,0,0,0);
+
+    // image
+    public GameObject npc;
 
     // options
     public GameObject optionPrefab;
@@ -38,6 +41,7 @@ public class DialogController : MonoBehaviour
 
     private void Start()
     {
+        npc.transform.GetComponent<Image>().sprite = GameManager.instance.images[GameManager.instance.npcKey].frontshot;
         DialogStart(GameManager.instance.dialogKey);
     }
 
