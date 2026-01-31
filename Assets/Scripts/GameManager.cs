@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,12 +8,15 @@ public class GameManager : MonoBehaviour
     // ΩÃ±€≈Ê
     public static GameManager instance;
 
+    // 
+    public string preDialog_Scene = "";
+
     // to DialogScene
     public string dialogKey = "";
     public string npcKey = "";
 
     // npc images
-   public  Dictionary<string, npc> images = new Dictionary<string, npc>();
+    public  Dictionary<string, npc> images = new Dictionary<string, npc>();
     public Sprite macgregor_frontshot;
 
 

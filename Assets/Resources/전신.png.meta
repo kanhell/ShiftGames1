@@ -1,61 +1,61 @@
 fileFormatVersion: 2
-guid: 9c15b90dd8b5fa74eb9294a743c849e0
+guid: eacf631d813d5f34db7ab8cd94dbc5ac
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4593650103025801107
-    second: 3d-character-cute-kid-on-transparent-background-png_0
+      213: 2706719314024533862
+    second: 3d-character-cute-kid-on-transparent-background-png 1_0
   - first:
-      213: 6847030930305786086
-    second: 3d-character-cute-kid-on-transparent-background-png_1
+      213: -4519166313075695345
+    second: 3d-character-cute-kid-on-transparent-background-png 1_1
   - first:
-      213: 7045218302077221267
-    second: 3d-character-cute-kid-on-transparent-background-png_2
+      213: -273508879827623341
+    second: 3d-character-cute-kid-on-transparent-background-png 1_2
   - first:
-      213: 4788427809572629576
-    second: 3d-character-cute-kid-on-transparent-background-png_3
+      213: 8724425640901519152
+    second: 3d-character-cute-kid-on-transparent-background-png 1_3
   - first:
-      213: -8901270740413695476
-    second: 3d-character-cute-kid-on-transparent-background-png_4
+      213: 4077135959405603541
+    second: 3d-character-cute-kid-on-transparent-background-png 1_4
   - first:
-      213: -2819790098253066937
-    second: 3d-character-cute-kid-on-transparent-background-png_5
+      213: -4082037819563827965
+    second: 3d-character-cute-kid-on-transparent-background-png 1_5
   - first:
-      213: 4362940274505633851
-    second: 3d-character-cute-kid-on-transparent-background-png_6
+      213: -3867637083041740352
+    second: 3d-character-cute-kid-on-transparent-background-png 1_6
   - first:
-      213: 5439272500470620742
-    second: 3d-character-cute-kid-on-transparent-background-png_7
+      213: -6793190491658426661
+    second: 3d-character-cute-kid-on-transparent-background-png 1_7
   - first:
-      213: 393270953070917416
-    second: 3d-character-cute-kid-on-transparent-background-png_8
+      213: -6715087361416602877
+    second: 3d-character-cute-kid-on-transparent-background-png 1_8
   - first:
-      213: -7630383742351285472
-    second: 3d-character-cute-kid-on-transparent-background-png_9
+      213: -2338027453580087429
+    second: 3d-character-cute-kid-on-transparent-background-png 1_9
   - first:
-      213: 7839264808493289907
-    second: 3d-character-cute-kid-on-transparent-background-png_10
+      213: 9004954783629174042
+    second: 3d-character-cute-kid-on-transparent-background-png 1_10
   - first:
-      213: -7210683652749954247
-    second: 3d-character-cute-kid-on-transparent-background-png_11
+      213: -4047122996270211329
+    second: 3d-character-cute-kid-on-transparent-background-png 1_11
   - first:
-      213: -2487189588872963662
-    second: 3d-character-cute-kid-on-transparent-background-png_12
+      213: -600665764258209620
+    second: 3d-character-cute-kid-on-transparent-background-png 1_12
   - first:
-      213: -8149106642715621538
-    second: 3d-character-cute-kid-on-transparent-background-png_13
+      213: 6465336039208422724
+    second: 3d-character-cute-kid-on-transparent-background-png 1_13
   - first:
-      213: -6502530419546588299
-    second: 3d-character-cute-kid-on-transparent-background-png_14
+      213: -5731557720668320456
+    second: 3d-character-cute-kid-on-transparent-background-png 1_14
   - first:
-      213: 9078610582317876938
-    second: 3d-character-cute-kid-on-transparent-background-png_15
+      213: 5309227701837060635
+    second: 3d-character-cute-kid-on-transparent-background-png 1_15
   - first:
-      213: -5627993243227840505
-    second: 3d-character-cute-kid-on-transparent-background-png_16
+      213: 5527978258955023408
+    second: 3d-character-cute-kid-on-transparent-background-png 1_16
   - first:
-      213: 5412501705046534372
-    second: 3d-character-cute-kid-on-transparent-background-png_17
+      213: 183385964420286695
+    second: 3d-character-cute-kid-on-transparent-background-png 1_17
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,8 +103,8 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 200, y: 300, z: 200, w: 40}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -151,7 +151,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_0
+      name: 3d-character-cute-kid-on-transparent-background-png 1_0
       rect:
         serializedVersion: 2
         x: 156
@@ -159,21 +159,21 @@ TextureImporter:
         width: 35
         height: 40
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d68e5bac1931040c0800000000000000
-      internalID: -4593650103025801107
+      spriteID: 66f0f1310e2309520800000000000000
+      internalID: 2706719314024533862
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_1
+      name: 3d-character-cute-kid-on-transparent-background-png 1_1
       rect:
         serializedVersion: 2
         x: 209
@@ -181,21 +181,21 @@ TextureImporter:
         width: 276
         height: 681
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6e02dfe9a5a850f50800000000000000
-      internalID: 6847030930305786086
+      spriteID: f01263c8e22b841c0800000000000000
+      internalID: -4519166313075695345
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_2
+      name: 3d-character-cute-kid-on-transparent-background-png 1_2
       rect:
         serializedVersion: 2
         x: 157
@@ -203,21 +203,21 @@ TextureImporter:
         width: 34
         height: 22
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 399b464f7b4a5c160800000000000000
-      internalID: 7045218302077221267
+      spriteID: 352a5f67f1d443cf0800000000000000
+      internalID: -273508879827623341
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_3
+      name: 3d-character-cute-kid-on-transparent-background-png 1_3
       rect:
         serializedVersion: 2
         x: 172
@@ -225,21 +225,21 @@ TextureImporter:
         width: 21
         height: 13
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 84cad2ef8b9e37240800000000000000
-      internalID: 4788427809572629576
+      spriteID: 037ae3b75e2631970800000000000000
+      internalID: 8724425640901519152
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_4
+      name: 3d-character-cute-kid-on-transparent-background-png 1_4
       rect:
         serializedVersion: 2
         x: 177
@@ -247,21 +247,21 @@ TextureImporter:
         width: 6
         height: 6
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c0a301c2c65587480800000000000000
-      internalID: -8901270740413695476
+      spriteID: 5daa751bd85e49830800000000000000
+      internalID: 4077135959405603541
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_5
+      name: 3d-character-cute-kid-on-transparent-background-png 1_5
       rect:
         serializedVersion: 2
         x: 156
@@ -269,21 +269,21 @@ TextureImporter:
         width: 15
         height: 18
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 74d467478d71ed8d0800000000000000
-      internalID: -2819790098253066937
+      spriteID: 30d103d0b30b957c0800000000000000
+      internalID: -4082037819563827965
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_6
+      name: 3d-character-cute-kid-on-transparent-background-png 1_6
       rect:
         serializedVersion: 2
         x: 173
@@ -291,21 +291,21 @@ TextureImporter:
         width: 11
         height: 20
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b30572650174c8c30800000000000000
-      internalID: 4362940274505633851
+      spriteID: 0c94b298094635ac0800000000000000
+      internalID: -3867637083041740352
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_7
+      name: 3d-character-cute-kid-on-transparent-background-png 1_7
       rect:
         serializedVersion: 2
         x: 187
@@ -313,21 +313,21 @@ TextureImporter:
         width: 17
         height: 19
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6422a1b458d2c7b40800000000000000
-      internalID: 5439272500470620742
+      spriteID: bd6632d5d3db9b1a0800000000000000
+      internalID: -6793190491658426661
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_8
+      name: 3d-character-cute-kid-on-transparent-background-png 1_8
       rect:
         serializedVersion: 2
         x: 158
@@ -335,21 +335,21 @@ TextureImporter:
         width: 9
         height: 9
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 827754229dd257500800000000000000
-      internalID: 393270953070917416
+      spriteID: 30b5c037f973fc2a0800000000000000
+      internalID: -6715087361416602877
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_9
+      name: 3d-character-cute-kid-on-transparent-background-png 1_9
       rect:
         serializedVersion: 2
         x: 162
@@ -357,21 +357,21 @@ TextureImporter:
         width: 9
         height: 9
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0236c31f96e6b1690800000000000000
-      internalID: -7630383742351285472
+      spriteID: b7f6f3a1b68ad8fd0800000000000000
+      internalID: -2338027453580087429
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_10
+      name: 3d-character-cute-kid-on-transparent-background-png 1_10
       rect:
         serializedVersion: 2
         x: 168
@@ -379,21 +379,21 @@ TextureImporter:
         width: 7
         height: 9
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3b196722fc9aacc60800000000000000
-      internalID: 7839264808493289907
+      spriteID: a15eba85aa608fc70800000000000000
+      internalID: 9004954783629174042
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_11
+      name: 3d-character-cute-kid-on-transparent-background-png 1_11
       rect:
         serializedVersion: 2
         x: 172
@@ -401,21 +401,21 @@ TextureImporter:
         width: 15
         height: 15
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9337f12fb618eeb90800000000000000
-      internalID: -7210683652749954247
+      spriteID: ffedff4d31bb5d7c0800000000000000
+      internalID: -4047122996270211329
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_12
+      name: 3d-character-cute-kid-on-transparent-background-png 1_12
       rect:
         serializedVersion: 2
         x: 177
@@ -423,21 +423,21 @@ TextureImporter:
         width: 9
         height: 15
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b95d222f3abb7dd0800000000000000
-      internalID: -2487189588872963662
+      spriteID: ca0a6ac7ba10aa7f0800000000000000
+      internalID: -600665764258209620
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_13
+      name: 3d-character-cute-kid-on-transparent-background-png 1_13
       rect:
         serializedVersion: 2
         x: 487
@@ -445,21 +445,21 @@ TextureImporter:
         width: 45
         height: 33
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e57c82c2fae88ee80800000000000000
-      internalID: -8149106642715621538
+      spriteID: 44d8c827fdc79b950800000000000000
+      internalID: 6465336039208422724
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_14
+      name: 3d-character-cute-kid-on-transparent-background-png 1_14
       rect:
         serializedVersion: 2
         x: 161
@@ -467,21 +467,21 @@ TextureImporter:
         width: 13
         height: 9
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 57bf0c9090f52c5a0800000000000000
-      internalID: -6502530419546588299
+      spriteID: 83dcae1ce9a6570b0800000000000000
+      internalID: -5731557720668320456
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_15
+      name: 3d-character-cute-kid-on-transparent-background-png 1_15
       rect:
         serializedVersion: 2
         x: 156
@@ -489,21 +489,21 @@ TextureImporter:
         width: 23
         height: 17
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac6c82d5934bdfd70800000000000000
-      internalID: 9078610582317876938
+      spriteID: b1a59af177a2ea940800000000000000
+      internalID: 5309227701837060635
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_16
+      name: 3d-character-cute-kid-on-transparent-background-png 1_16
       rect:
         serializedVersion: 2
         x: 176
@@ -511,21 +511,21 @@ TextureImporter:
         width: 16
         height: 20
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7002b13b6f955e1b0800000000000000
-      internalID: -5627993243227840505
+      spriteID: 034b81320f257bc40800000000000000
+      internalID: 5527978258955023408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3d-character-cute-kid-on-transparent-background-png_17
+      name: 3d-character-cute-kid-on-transparent-background-png 1_17
       rect:
         serializedVersion: 2
         x: 282
@@ -533,15 +533,15 @@ TextureImporter:
         width: 10
         height: 6
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4e8ae73cf911d1b40800000000000000
-      internalID: 5412501705046534372
+      spriteID: 7e8401220948b8200800000000000000
+      internalID: 183385964420286695
       vertices: []
       indices: 
       edges: []
@@ -551,7 +551,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -560,24 +560,24 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      3d-character-cute-kid-on-transparent-background-png_0: -4593650103025801107
-      3d-character-cute-kid-on-transparent-background-png_1: 6847030930305786086
-      3d-character-cute-kid-on-transparent-background-png_10: 7839264808493289907
-      3d-character-cute-kid-on-transparent-background-png_11: -7210683652749954247
-      3d-character-cute-kid-on-transparent-background-png_12: -2487189588872963662
-      3d-character-cute-kid-on-transparent-background-png_13: -8149106642715621538
-      3d-character-cute-kid-on-transparent-background-png_14: -6502530419546588299
-      3d-character-cute-kid-on-transparent-background-png_15: 9078610582317876938
-      3d-character-cute-kid-on-transparent-background-png_16: -5627993243227840505
-      3d-character-cute-kid-on-transparent-background-png_17: 5412501705046534372
-      3d-character-cute-kid-on-transparent-background-png_2: 7045218302077221267
-      3d-character-cute-kid-on-transparent-background-png_3: 4788427809572629576
-      3d-character-cute-kid-on-transparent-background-png_4: -8901270740413695476
-      3d-character-cute-kid-on-transparent-background-png_5: -2819790098253066937
-      3d-character-cute-kid-on-transparent-background-png_6: 4362940274505633851
-      3d-character-cute-kid-on-transparent-background-png_7: 5439272500470620742
-      3d-character-cute-kid-on-transparent-background-png_8: 393270953070917416
-      3d-character-cute-kid-on-transparent-background-png_9: -7630383742351285472
+      3d-character-cute-kid-on-transparent-background-png 1_0: 2706719314024533862
+      3d-character-cute-kid-on-transparent-background-png 1_1: -4519166313075695345
+      3d-character-cute-kid-on-transparent-background-png 1_10: 9004954783629174042
+      3d-character-cute-kid-on-transparent-background-png 1_11: -4047122996270211329
+      3d-character-cute-kid-on-transparent-background-png 1_12: -600665764258209620
+      3d-character-cute-kid-on-transparent-background-png 1_13: 6465336039208422724
+      3d-character-cute-kid-on-transparent-background-png 1_14: -5731557720668320456
+      3d-character-cute-kid-on-transparent-background-png 1_15: 5309227701837060635
+      3d-character-cute-kid-on-transparent-background-png 1_16: 5527978258955023408
+      3d-character-cute-kid-on-transparent-background-png 1_17: 183385964420286695
+      3d-character-cute-kid-on-transparent-background-png 1_2: -273508879827623341
+      3d-character-cute-kid-on-transparent-background-png 1_3: 8724425640901519152
+      3d-character-cute-kid-on-transparent-background-png 1_4: 4077135959405603541
+      3d-character-cute-kid-on-transparent-background-png 1_5: -4082037819563827965
+      3d-character-cute-kid-on-transparent-background-png 1_6: -3867637083041740352
+      3d-character-cute-kid-on-transparent-background-png 1_7: -6793190491658426661
+      3d-character-cute-kid-on-transparent-background-png 1_8: -6715087361416602877
+      3d-character-cute-kid-on-transparent-background-png 1_9: -2338027453580087429
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

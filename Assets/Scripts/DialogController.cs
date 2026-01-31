@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
@@ -104,7 +105,9 @@ public class DialogController : MonoBehaviour
 
     public void DialogStop()
     {
-        ChangeDialog("종료");  // 아니면 Scene을 원래 화면으로 전환
+        SceneManager.LoadScene(GameManager.instance.preDialog_Scene);
+        Destroy(DialogManager.instance.gameObject);
+        Destroy(DialogController.instance.gameObject);
         isDialog = false;
     }
 

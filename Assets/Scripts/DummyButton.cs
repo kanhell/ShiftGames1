@@ -11,8 +11,8 @@ public class DummyButton : MonoBehaviour
 
     public void ToDialogScene()
     {
-        Debug.Log("clicked");
         GameManager.instance.setVaribles_DialogScene("dummy script", "macgregor");
+        GameManager.instance.preDialog_Scene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene("DialogScene");
     }
 
