@@ -11,6 +11,10 @@ public class GameManager : MonoBehaviour
     // 
     public string preDialog_Scene = "";
 
+    // Scene ¿Ãµø
+    public string[] scenes = { "DummyLeftScene", "DummyScrollableScene", "DummyRightScene"};
+    public int sceneIdx = 1;
+
     // to DialogScene
     public string dialogKey = "";
     public string npcKey = "";
