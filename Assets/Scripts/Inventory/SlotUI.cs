@@ -110,13 +110,24 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     {
         if (item == null) return false;
         
+        // 퀵슬롯은 소비 아이템만 수용
+        if (gameObject.name.Contains("Quick"))
+        {
+            bool canAccept = item.itemType == ItemType.Consumable;
+            Debug.Log($"[{gameObject.name}] 퀵슬롯 - 아이템 타입: {item.itemType}, 수용 가능: {canAccept}");
+            return canAccept;
+        }
+        
         if (slotType == SlotType.Inventory)
         {
+            Debug.Log($"[{gameObject.name}] 인벤토리 슬롯 - 모든 아이템 수용 가능");
             return true; // 인벤토리는 모든 아이템 수용
         }
         else // SlotType.Equipment
         {
-            return item.itemType == allowedItemType;
+            bool canAccept = item.itemType == allowedItemType;
+            Debug.Log($"[{gameObject.name}] 장비 슬롯 - 필요 타입: {allowedItemType}, 아이템 타입: {item.itemType}, 수용 가능: {canAccept}");
+            return canAccept;
         }
     }
     
@@ -190,16 +201,30 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             iconImage.color = iconColor;
         }
         
+        Debug.Log("드래그 종료 - 슬롯 찾는 중...");
+        
         // 드롭 대상 찾기
         SlotUI targetSlot = GetSlotUnderMouse(eventData);
         
-        if (targetSlot != null && targetSlot != this)
+        if (targetSlot != null)
         {
+            Debug.Log($"대상 슬롯 찾음: {targetSlot.name}");
             // 아이템 이동/교환
             InventoryManager.Instance.TryMoveOrSwapDrag(this, targetSlot);
         }
-        
-        Debug.Log("드래그 종료");
+        else
+        {
+            Debug.LogWarning("드롭 대상 슬롯을 찾을 수 없습니다!");
+            
+            // Raycast 결과 전체 출력 (디버깅용)
+            var results = new System.Collections.Generic.List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            Debug.Log($"Raycast 결과 개수: {results.Count}");
+            foreach (var result in results)
+            {
+                Debug.Log($"  - {result.gameObject.name} (depth: {result.depth})");
+            }
+        }
     }
     
     /// <summary>
@@ -212,9 +237,19 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         
         foreach (var result in results)
         {
+            // 직접 SlotUI 컴포넌트가 있는지 확인
             SlotUI slot = result.gameObject.GetComponent<SlotUI>();
             if (slot != null)
             {
+                Debug.Log($"슬롯 찾음 (직접): {result.gameObject.name}");
+                return slot;
+            }
+            
+            // 부모에서 SlotUI 찾기 (슬롯의 자식 오브젝트를 클릭한 경우)
+            slot = result.gameObject.GetComponentInParent<SlotUI>();
+            if (slot != null)
+            {
+                Debug.Log($"슬롯 찾음 (부모): {slot.gameObject.name}");
                 return slot;
             }
         }

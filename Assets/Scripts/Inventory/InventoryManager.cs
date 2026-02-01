@@ -278,6 +278,10 @@ public class InventoryManager : MonoBehaviour
     {
         if (from == null || to == null || from == to) return;
         
+        Debug.Log($"=== 드래그 이동 시도 ===");
+        Debug.Log($"From: {from.name} ({from.slotType}) - {(from.currentItem != null ? from.currentItem.itemName : "빈 슬롯")}");
+        Debug.Log($"To: {to.name} ({to.slotType}) - {(to.currentItem != null ? to.currentItem.itemName : "빈 슬롯")}");
+        
         // 대상 슬롯이 아이템을 받을 수 있는지 확인
         if (!to.CanAcceptItem(from.currentItem))
         {
@@ -310,14 +314,25 @@ public class InventoryManager : MonoBehaviour
             }
         }
         
-        // 교환
+        // 교환 (빈 슬롯이든 아이템이 있든)
         ItemData tempItem = to.currentItem;
         int tempQuantity = to.quantity;
         
         to.SetItem(from.currentItem, from.quantity);
         from.SetItem(tempItem, tempQuantity);
         
-        Debug.Log($"아이템 이동/교환 완료");
+        // 명시적으로 UI 업데이트
+        to.UpdateUI();
+        from.UpdateUI();
+        
+        if (tempItem != null)
+        {
+            Debug.Log($"아이템 교체 완료: {to.currentItem.itemName} ↔ {tempItem.itemName}");
+        }
+        else
+        {
+            Debug.Log($"아이템 이동 완료: {to.currentItem.itemName}");
+        }
     }
     
     /// <summary>
@@ -405,6 +420,13 @@ public class InventoryManager : MonoBehaviour
         if (inventorySlot == null || inventorySlot.currentItem == null)
         {
             Debug.LogWarning("inventorySlot이 null입니다!");
+            return;
+        }
+        
+        // 소비 아이템만 퀵슬롯에 장착 가능
+        if (inventorySlot.currentItem.itemType != ItemType.Consumable)
+        {
+            Debug.LogWarning($"{inventorySlot.currentItem.itemName}은(는) 소비 아이템이 아닙니다!");
             return;
         }
         
