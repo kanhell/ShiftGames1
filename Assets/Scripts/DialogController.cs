@@ -42,8 +42,8 @@ public class DialogController : MonoBehaviour
 
     private void Start()
     {
-        npc.transform.GetComponent<Image>().sprite = GameManager.instance.images[GameManager.instance.npcKey].frontshot;
-        DialogStart(GameManager.instance.dialogKey);
+        npc.transform.GetComponent<Image>().sprite = GameManager.instance.images[GameManager.instance.toDialog.npcKey].frontshot;
+        DialogStart(GameManager.instance.toDialog.dialogKey);
     }
 
     void Update()
@@ -105,10 +105,9 @@ public class DialogController : MonoBehaviour
 
     public void DialogStop()
     {
-        SceneManager.LoadScene(GameManager.instance.preDialog_Scene);
+        SceneManager.LoadScene(GameManager.instance.toDialog.preDialog_Scene);
         Destroy(DialogManager.instance.gameObject);
         Destroy(DialogController.instance.gameObject);
-        isDialog = false;
     }
 
 

@@ -8,21 +8,19 @@ public class GameManager : MonoBehaviour
     // ΩÃ±€≈Ê
     public static GameManager instance;
 
-    // 
-    public string preDialog_Scene = "";
-
     // Scene ¿Ãµø
     public string[] scenes = { "DummyLeftScene", "DummyScrollableScene", "DummyRightScene"};
     public int sceneIdx = 1;
 
-    // to DialogScene
-    public string dialogKey = "";
-    public string npcKey = "";
-
     // npc images
-    public  Dictionary<string, npc> images = new Dictionary<string, npc>();
+    public Dictionary<string, npc> images = new Dictionary<string, npc>();
     public Sprite macgregor_frontshot;
 
+    // scene info
+    public float limitMax, limitMin;
+
+    // toDialog
+    public toDialogInfo toDialog = new toDialogInfo();
 
 
     void Awake()  // ΩÃ±€≈Ê
@@ -41,10 +39,12 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void setVaribles_DialogScene(string dialogKey, string npcKey)
+    public void setVaribles_DialogScene(string dialogKey, string npcKey, string preDialog_Scene, float x)
     {
-        this.dialogKey = dialogKey;
-        this.npcKey = npcKey;
+        this.toDialog.npcKey = npcKey;
+        this.toDialog.dialogKey = dialogKey;
+        this.toDialog.preDialog_Scene = preDialog_Scene;
+        this.toDialog.x = x;
     }
 
     public class npc
@@ -55,5 +55,13 @@ public class GameManager : MonoBehaviour
         {
             this.frontshot = frontshot;
         }
+    }
+
+    public class toDialogInfo
+    {
+        public string dialogKey = "";
+        public string npcKey = "";
+        public string preDialog_Scene = "";
+        public float x = 15;  // TODO : √÷√ º≥¡§ ∫Ø∞Ê
     }
 }

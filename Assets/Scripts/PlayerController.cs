@@ -17,9 +17,6 @@ public class PlayerController : MonoBehaviour
     public GameObject f;
     public GameObject noMoreMap;
 
-    // Scene 속성
-    public float limitMax, limitMin;
-
     void Update()
     {
         // 이동
@@ -27,14 +24,14 @@ public class PlayerController : MonoBehaviour
         transform.Translate(new Vector3(x, 0, 0));
 
         // 화면 끝 -> Scene 전환
-        if (transform.position.x > limitMax)
+        if (transform.position.x > GameManager.instance.limitMax)
         {
             if (GameManager.instance.sceneIdx == GameManager.instance.scenes.Length)
                 noMoreMap.SetActive(true);
-            else SceneManager.LoadScene(GameManager.instance.scenes[++GameManager.instance.sceneIdx]);  // 새로운 limitMax,limitMin 가져오기
+            else SceneManager.LoadScene(GameManager.instance.scenes[++GameManager.instance.sceneIdx]);
 
         }
-        else if (transform.position.x < limitMin)
+        else if (transform.position.x < GameManager.instance.limitMin)
         {
             if (GameManager.instance.sceneIdx == 0)
                 noMoreMap.SetActive(true);
@@ -57,8 +54,13 @@ public class PlayerController : MonoBehaviour
 
     public void ToDialogScene(string name)
     {
-        GameManager.instance.setVaribles_DialogScene("dummy script", name);
-        GameManager.instance.preDialog_Scene = SceneManager.GetActiveScene().name;
+        GameManager.instance.setVaribles_DialogScene(
+            dialogKey: "dummy script",
+            npcKey: name,
+            preDialog_Scene: SceneManager.GetActiveScene().name,
+            x: transform.position.x
+            );
         SceneManager.LoadScene("DialogScene");
     }
+
 }

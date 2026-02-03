@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject player;
+    GameObject player;
 
     public float speed;
 
@@ -12,15 +12,23 @@ public class CameraController : MonoBehaviour
 
     public float width;
 
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
     private void Update()
     {
-        PlayerController controller = player.GetComponent<PlayerController>();
         obj_x = player.transform.position.x;
         x = transform.position.x;
 
-        if (obj_x < x-dis && x-width > controller.limitMin)  // 왼쪽으로 이동
+        if (obj_x < x-dis && x-width > GameManager.instance.limitMin)  // 왼쪽으로 이동
             transform.Translate(new Vector3(-speed * Time.deltaTime, 0, 0));
-        if (obj_x > x+dis && x+width < controller.limitMax)  // 오른쪽으로 이동
+        if (obj_x > x+dis && x+width < GameManager.instance.limitMax)  // 오른쪽으로 이동
             transform.Translate(new Vector3(speed * Time.deltaTime, 0, 0));
+    }
+
+    public void setInitialPos(float x)
+    {
+        transform.position = new Vector3(x, 0, -10);
     }
 }
