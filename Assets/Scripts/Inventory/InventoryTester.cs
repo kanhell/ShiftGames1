@@ -10,14 +10,18 @@ public class InventoryTester : MonoBehaviour
     
     private void Start()
     {
+        // InventoryManager 확인
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("InventoryManager가 씬에 없습니다! GameManager 오브젝트를 확인하세요.");
+        }
+        
         // 검증
-        /*
-            if (testItems == null || testItems.Length == 0)
-            {
-                Debug.LogError("testItems 배열이 비어있습니다! Inspector에서 아이템을 할당하세요.");
-                return;
-            }
-        */
+        if (testItems == null || testItems.Length == 0)
+        {
+            Debug.LogError("testItems 배열이 비어있습니다! Inspector에서 아이템을 할당하세요.");
+            return;
+        }
         
         for (int i = 0; i < testItems.Length; i++)
         {
@@ -38,8 +42,10 @@ public class InventoryTester : MonoBehaviour
     
     private void Update()
     {
-        // I 키: 인벤토리에 아이템 추가
-        if (Input.GetKeyDown(KeyCode.I))
+        // I 키는 UIManager에서 처리하므로 제거
+        
+        // U 키: 재료 아이템 추가 (순환)
+        if (Input.GetKeyDown(KeyCode.U))
         {
             if (InventoryManager.Instance == null)
             {

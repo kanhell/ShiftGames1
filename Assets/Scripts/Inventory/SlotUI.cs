@@ -27,6 +27,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     private Canvas canvas;
     private Transform originalParent;
     private int originalSiblingIndex;
+    private bool canDrag = false; // 드래그 가능 여부
     
     private void Start()
     {
@@ -110,7 +111,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     {
         if (item == null) return false;
         
-        // 퀵슬롯은 소비 아이템만 수용
+        // 요리 재료 슬롯 체크
+        if (slotType == SlotType.Cooking)
+        {
+            bool canAccept = item.itemType == ItemType.Ingredient;
+            Debug.Log($"[{gameObject.name}] 요리 슬롯 - 아이템 타입: {item.itemType}, 수용 가능: {canAccept}");
+            return canAccept;
+        }
+        
+        // 퀵슬롯은 소비 아이템만 수용 (최대 5개)
         if (gameObject.name.Contains("Quick"))
         {
             bool canAccept = item.itemType == ItemType.Consumable;
@@ -140,7 +149,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (currentItem == null) return;
+        if (currentItem == null)
+        {
+            canDrag = false;
+            return;
+        }
+        
+        // ✅ 요리 중 드래그 제한 제거 - 모든 슬롯에서 드래그 가능
+        canDrag = true;
+        Debug.Log($"드래그 시작: {currentItem.itemName}");
         
         // 드래그할 아이콘 생성
         draggedIcon = new GameObject("DraggedIcon");
@@ -167,8 +184,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             iconColor.a = 0.3f;
             iconImage.color = iconColor;
         }
-        
-        Debug.Log($"드래그 시작: {currentItem.itemName}");
     }
     
     /// <summary>
@@ -176,7 +191,8 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
-        if (draggedIcon != null)
+        // 드래그 가능하고 드래그 아이콘이 있을 때만 이동
+        if (canDrag && draggedIcon != null)
         {
             draggedIcon.transform.position = eventData.position;
         }
@@ -191,6 +207,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         if (draggedIcon != null)
         {
             Destroy(draggedIcon);
+            draggedIcon = null;
         }
         
         // 원본 아이콘 복원
@@ -199,6 +216,13 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             Color iconColor = iconImage.color;
             iconColor.a = 1f;
             iconImage.color = iconColor;
+        }
+        
+        // 드래그 불가 상태였으면 종료
+        if (!canDrag)
+        {
+            canDrag = false;
+            return;
         }
         
         Debug.Log("드래그 종료 - 슬롯 찾는 중...");
@@ -225,6 +249,9 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 Debug.Log($"  - {result.gameObject.name} (depth: {result.depth})");
             }
         }
+        
+        // 드래그 플래그 리셋
+        canDrag = false;
     }
     
     /// <summary>
@@ -265,7 +292,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            // 우클릭: 컨텍스트 메뉴 열기
+            // ✅ 우클릭: 컨텍스트 메뉴 열기 (제한 없음)
             if (currentItem != null && ContextMenu.Instance != null)
             {
                 ContextMenu.Instance.OpenMenu(this, eventData.position);
@@ -280,5 +307,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
 public enum SlotType
 {
     Inventory,  // 인벤토리 슬롯
-    Equipment   // 장비 슬롯
+    Equipment,  // 장비 슬롯
+    Cooking     // 요리 재료 슬롯
 }

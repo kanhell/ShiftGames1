@@ -439,28 +439,78 @@ public class InventoryManager : MonoBehaviour
         // 퀵슬롯에 이미 아이템이 있으면 교체
         if (quickSlot.currentItem != null)
         {
-            // 교체
+            // 같은 아이템이면 합치기 (최대 5개)
+            if (quickSlot.currentItem == inventorySlot.currentItem)
+            {
+                int maxQuickSlot = 5;
+                int spaceLeft = maxQuickSlot - quickSlot.quantity;
+                
+                if (spaceLeft > 0)
+                {
+                    int addAmount = Mathf.Min(inventorySlot.quantity, spaceLeft);
+                    quickSlot.quantity += addAmount;
+                    inventorySlot.quantity -= addAmount;
+                    
+                    if (inventorySlot.quantity <= 0)
+                    {
+                        inventorySlot.ClearSlot();
+                    }
+                    else
+                    {
+                        inventorySlot.UpdateUI();
+                    }
+                    
+                    quickSlot.UpdateUI();
+                    Debug.Log($"퀵슬롯에 추가: {addAmount}개 (총 {quickSlot.quantity}개)");
+                }
+                else
+                {
+                    Debug.LogWarning("퀵슬롯이 가득 찼습니다! (최대 5개)");
+                }
+                return;
+            }
+            
+            // 다른 아이템이면 교체
             ItemData tempItem = quickSlot.currentItem;
             int tempQuantity = quickSlot.quantity;
             
-            quickSlot.SetItem(inventorySlot.currentItem, inventorySlot.quantity);
-            inventorySlot.SetItem(tempItem, tempQuantity);
+            // 최대 5개까지만
+            int swapAmount = Mathf.Min(inventorySlot.quantity, 5);
+            quickSlot.SetItem(inventorySlot.currentItem, swapAmount);
+            
+            inventorySlot.quantity -= swapAmount;
+            if (inventorySlot.quantity <= 0)
+            {
+                inventorySlot.SetItem(tempItem, tempQuantity);
+            }
+            else
+            {
+                inventorySlot.UpdateUI();
+                // 교체된 아이템을 인벤토리에 추가
+                AddItem(tempItem, tempQuantity);
+            }
             
             quickSlot.UpdateUI();
-            inventorySlot.UpdateUI();
-            
             Debug.Log($"퀵슬롯 교체: {quickSlot.currentItem.itemName}");
         }
         else
         {
-            // 빈 슬롯에 장착
-            quickSlot.SetItem(inventorySlot.currentItem, inventorySlot.quantity);
-            inventorySlot.ClearSlot();
+            // 빈 슬롯에 장착 (최대 5개)
+            int moveAmount = Mathf.Min(inventorySlot.quantity, 5);
+            quickSlot.SetItem(inventorySlot.currentItem, moveAmount);
+            inventorySlot.quantity -= moveAmount;
+            
+            if (inventorySlot.quantity <= 0)
+            {
+                inventorySlot.ClearSlot();
+            }
+            else
+            {
+                inventorySlot.UpdateUI();
+            }
             
             quickSlot.UpdateUI();
-            inventorySlot.UpdateUI();
-            
-            Debug.Log($"퀵슬롯 장착: {quickSlot.currentItem.itemName}");
+            Debug.Log($"퀵슬롯 장착: {quickSlot.currentItem.itemName} x{moveAmount}");
         }
     }
     

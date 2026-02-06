@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5fec11bb5d3bcb42b14107df1a52221, type: 3}
-  m_Name: HP_Potion
+  m_Name: Tomato
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uCCB4\uB825 \uD3EC\uC158"
+  itemName: "\uD1A0\uB9C8\uD1A0"
   itemIcon: {fileID: 0}
-  itemType: 0
+  itemType: 7
   stackSize: 99
-  description: "HP\uB97C 50 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  description: 

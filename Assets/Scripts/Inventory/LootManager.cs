@@ -1,36 +1,56 @@
 // Assets/Scripts/Inventory/LootManager.cs
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 전리품 시스템 관리 (인벤토리 이동 애니메이션 포함)
+/// 전리품 시스템 관리 (완전 독립)
 /// </summary>
 public class LootManager : MonoBehaviour
 {
-    public static LootManager Instance;
+    public static LootManager Instance { get; private set; }
     
+    #region Serialized Fields
     [Header("UI References")]
-    public GameObject lootPanel;
-    public Transform lootGrid;
-    public RectTransform inventoryPanel; // 인벤토리 패널
+    [SerializeField] private GameObject lootPanel;
+    [SerializeField] private Transform lootGrid;
     
-    [Header("Slot Prefab")]
-    public GameObject slotPrefab;
+    [Header("Slot Settings")]
+    [SerializeField] private GameObject slotPrefab;
+    [SerializeField] private int maxLootSlots = 12;
     
-    [Header("Loot Data")]
+    [Header("Debug")]
+    [SerializeField] private bool showDebugLogs = false;
+    #endregion
+    
+    #region Public Fields
     public List<SlotUI> lootSlots = new List<SlotUI>();
-    public int maxLootSlots = 12;
+    #endregion
     
-    [Header("Animation Settings")]
-    public float animationDuration = 0.3f; // 애니메이션 시간
-    
+    #region Private Fields
     private bool isLootOpen = false;
-    private Vector2 inventoryOriginalPos; // 인벤토리 원래 위치
-    private Vector2 inventoryShiftedPos = new Vector2(-400f, 0f); // 왼쪽으로 이동한 위치
+    #endregion
     
+    #region Unity Lifecycle
     private void Awake()
+    {
+        InitializeSingleton();
+    }
+    
+    private void Start()
+    {
+        InitializeLootSlots();
+        CloseLootPanel();
+    }
+    
+    private void Update()
+    {
+        HandleInput();
+    }
+    #endregion
+    
+    #region Initialization
+    private void InitializeSingleton()
     {
         if (Instance == null)
         {
@@ -42,31 +62,18 @@ public class LootManager : MonoBehaviour
         }
     }
     
-    private void Start()
-    {
-        InitializeLootSlots();
-        lootPanel.SetActive(false);
-        
-        // 인벤토리 원래 위치 저장
-        if (inventoryPanel != null)
-        {
-            inventoryOriginalPos = inventoryPanel.anchoredPosition;
-        }
-    }
-    
-    private void Update()
-    {
-        // P 키로 전리품 창 토글
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            ToggleLootPanel();
-        }
-    }
-    
-    /// <summary>
-    /// 전리품 슬롯 초기화
-    /// </summary>
     private void InitializeLootSlots()
+    {
+        // 기존 슬롯 수집
+        CollectExistingSlots();
+        
+        // 부족한 슬롯 생성
+        CreateAdditionalSlots();
+        
+        LogDebug($"전리품 슬롯 {lootSlots.Count}개 초기화 완료");
+    }
+    
+    private void CollectExistingSlots()
     {
         foreach (Transform child in lootGrid)
         {
@@ -77,18 +84,35 @@ public class LootManager : MonoBehaviour
                 lootSlots.Add(slot);
             }
         }
-        
+    }
+    
+    private void CreateAdditionalSlots()
+    {
         while (lootSlots.Count < maxLootSlots)
         {
             GameObject newSlot = Instantiate(slotPrefab, lootGrid);
             SlotUI slotUI = newSlot.GetComponent<SlotUI>();
-            slotUI.slotType = SlotType.Inventory;
-            lootSlots.Add(slotUI);
+            
+            if (slotUI != null)
+            {
+                slotUI.slotType = SlotType.Inventory;
+                lootSlots.Add(slotUI);
+            }
         }
-        
-        Debug.Log($"전리품 슬롯 {lootSlots.Count}개 초기화 완료");
     }
+    #endregion
     
+    #region Input Handling
+    private void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ToggleLootPanel();
+        }
+    }
+    #endregion
+    
+    #region Public Methods
     /// <summary>
     /// 전리품 창 열기/닫기
     /// </summary>
@@ -105,59 +129,29 @@ public class LootManager : MonoBehaviour
     }
     
     /// <summary>
-    /// 전리품 창 열기 (인벤토리 이동 애니메이션)
+    /// 전리품 창 열기
     /// </summary>
     public void OpenLootPanel()
     {
+        if (!ValidateLootPanel()) return;
+        
         isLootOpen = true;
         lootPanel.SetActive(true);
         
-        // 인벤토리를 왼쪽으로 이동
-        StartCoroutine(MoveInventoryPanel(inventoryShiftedPos));
-        
-        Debug.Log("전리품 창 열림");
+        LogDebug("전리품 창 열림");
     }
     
     /// <summary>
-    /// 전리품 창 닫기 (인벤토리 복원 애니메이션)
+    /// 전리품 창 닫기
     /// </summary>
     public void CloseLootPanel()
     {
+        if (!ValidateLootPanel()) return;
+        
         isLootOpen = false;
+        lootPanel.SetActive(false);
         
-        // 인벤토리를 원래 위치로 복원
-        StartCoroutine(MoveInventoryPanel(inventoryOriginalPos, () => 
-        {
-            lootPanel.SetActive(false);
-        }));
-        
-        Debug.Log("전리품 창 닫힘");
-    }
-    
-    /// <summary>
-    /// 인벤토리 패널 이동 애니메이션
-    /// </summary>
-    private IEnumerator MoveInventoryPanel(Vector2 targetPos, System.Action onComplete = null)
-    {
-        if (inventoryPanel == null) yield break;
-        
-        Vector2 startPos = inventoryPanel.anchoredPosition;
-        float elapsed = 0f;
-        
-        while (elapsed < animationDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / animationDuration;
-            
-            // 부드러운 이동 (Ease Out)
-            t = 1f - Mathf.Pow(1f - t, 3f);
-            
-            inventoryPanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-        
-        inventoryPanel.anchoredPosition = targetPos;
-        onComplete?.Invoke();
+        LogDebug("전리품 창 닫힘");
     }
     
     /// <summary>
@@ -171,33 +165,13 @@ public class LootManager : MonoBehaviour
             return;
         }
         
-        foreach (SlotUI slot in lootSlots)
-        {
-            if (slot.currentItem == item && slot.quantity < item.stackSize)
-            {
-                int space = item.stackSize - slot.quantity;
-                int addAmount = Mathf.Min(space, amount);
-                
-                slot.quantity += addAmount;
-                slot.UpdateUI();
-                
-                amount -= addAmount;
-                if (amount <= 0) return;
-            }
-        }
+        // 기존 슬롯에 스택 가능하면 추가
+        amount = TryStackToExistingSlots(item, amount);
         
-        foreach (SlotUI slot in lootSlots)
-        {
-            if (slot.currentItem == null)
-            {
-                int addAmount = Mathf.Min(item.stackSize, amount);
-                slot.SetItem(item, addAmount);
-                
-                amount -= addAmount;
-                if (amount <= 0) return;
-            }
-        }
+        // 남은 수량을 빈 슬롯에 추가
+        amount = TryAddToEmptySlots(item, amount);
         
+        // 공간 부족 경고
         if (amount > 0)
         {
             Debug.LogWarning($"{item.itemName} {amount}개를 추가할 전리품 공간이 부족합니다!");
@@ -234,4 +208,62 @@ public class LootManager : MonoBehaviour
         
         Debug.Log("전리품을 모두 비웠습니다.");
     }
+    #endregion
+    
+    #region Private Methods
+    private bool ValidateLootPanel()
+    {
+        if (lootPanel == null)
+        {
+            Debug.LogError("lootPanel이 null입니다!");
+            return false;
+        }
+        return true;
+    }
+    
+    private int TryStackToExistingSlots(ItemData item, int amount)
+    {
+        foreach (SlotUI slot in lootSlots)
+        {
+            if (slot.currentItem == item && slot.quantity < item.stackSize)
+            {
+                int space = item.stackSize - slot.quantity;
+                int addAmount = Mathf.Min(space, amount);
+                
+                slot.quantity += addAmount;
+                slot.UpdateUI();
+                
+                amount -= addAmount;
+                if (amount <= 0) break;
+            }
+        }
+        
+        return amount;
+    }
+    
+    private int TryAddToEmptySlots(ItemData item, int amount)
+    {
+        foreach (SlotUI slot in lootSlots)
+        {
+            if (slot.currentItem == null)
+            {
+                int addAmount = Mathf.Min(item.stackSize, amount);
+                slot.SetItem(item, addAmount);
+                
+                amount -= addAmount;
+                if (amount <= 0) break;
+            }
+        }
+        
+        return amount;
+    }
+    
+    private void LogDebug(string message)
+    {
+        if (showDebugLogs)
+        {
+            Debug.Log($"[LootManager] {message}");
+        }
+    }
+    #endregion
 }
