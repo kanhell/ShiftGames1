@@ -272,67 +272,37 @@ public class InventoryManager : MonoBehaviour
     // ─────────────────────────────────────────────
     
     /// <summary>
-    /// 드래그로 슬롯 간 아이템 이동/교환
+    /// ✅ 드래그 앤 드롭으로 아이템 이동 또는 교환
     /// </summary>
-    public void TryMoveOrSwapDrag(SlotUI from, SlotUI to)
+    public void TryMoveOrSwapDrag(SlotUI fromSlot, SlotUI toSlot)
     {
-        if (from == null || to == null || from == to) return;
-        
-        Debug.Log($"=== 드래그 이동 시도 ===");
-        Debug.Log($"From: {from.name} ({from.slotType}) - {(from.currentItem != null ? from.currentItem.itemName : "빈 슬롯")}");
-        Debug.Log($"To: {to.name} ({to.slotType}) - {(to.currentItem != null ? to.currentItem.itemName : "빈 슬롯")}");
-        
-        // 대상 슬롯이 아이템을 받을 수 있는지 확인
-        if (!to.CanAcceptItem(from.currentItem))
+        // 자기 자신에게 드롭한 경우 무시
+        if (fromSlot == toSlot)
         {
-            Debug.LogWarning($"{to.name}에 {from.currentItem.itemName}을(를) 장착할 수 없습니다!");
+            Debug.Log("같은 슬롯에 드롭 - 무시");
             return;
         }
         
-        // 같은 아이템이고 스택 가능하면 합치기
-        if (to.currentItem == from.currentItem && to.currentItem.stackSize > 1)
+        Debug.Log($"=== 드래그 이동 시도 ===");
+        Debug.Log($"From: {fromSlot.name} - {(fromSlot.currentItem != null ? fromSlot.currentItem.itemName : "빈 슬롯")}");
+        Debug.Log($"To: {toSlot.name} - {(toSlot.currentItem != null ? toSlot.currentItem.itemName : "빈 슬롯")}");
+        
+        // ✅ 1. 둘 다 아이템이 있는 경우 → 교환
+        if (fromSlot.currentItem != null && toSlot.currentItem != null)
         {
-            int spaceInTarget = to.currentItem.stackSize - to.quantity;
-            if (spaceInTarget > 0)
-            {
-                int transferAmount = Mathf.Min(from.quantity, spaceInTarget);
-                to.quantity += transferAmount;
-                from.quantity -= transferAmount;
-                
-                if (from.quantity <= 0)
-                {
-                    from.ClearSlot();
-                }
-                else
-                {
-                    from.UpdateUI();
-                }
-                
-                to.UpdateUI();
-                Debug.Log($"아이템 합치기 완료: {transferAmount}개");
-                return;
-            }
+            SwapItems(fromSlot, toSlot);
+            return;
         }
         
-        // 교환 (빈 슬롯이든 아이템이 있든)
-        ItemData tempItem = to.currentItem;
-        int tempQuantity = to.quantity;
-        
-        to.SetItem(from.currentItem, from.quantity);
-        from.SetItem(tempItem, tempQuantity);
-        
-        // 명시적으로 UI 업데이트
-        to.UpdateUI();
-        from.UpdateUI();
-        
-        if (tempItem != null)
+        // ✅ 2. 대상 슬롯이 비어있는 경우 → 이동
+        if (toSlot.currentItem == null)
         {
-            Debug.Log($"아이템 교체 완료: {to.currentItem.itemName} ↔ {tempItem.itemName}");
+            MoveItem(fromSlot, toSlot);
+            return;
         }
-        else
-        {
-            Debug.Log($"아이템 이동 완료: {to.currentItem.itemName}");
-        }
+        
+        // ✅ 3. 출발 슬롯이 비어있는 경우 (이론상 발생 안 함)
+        Debug.LogWarning("출발 슬롯이 비어있습니다!");
     }
     
     /// <summary>
@@ -382,34 +352,8 @@ public class InventoryManager : MonoBehaviour
             return;
         }
         
-        // 장비 슬롯에 이미 아이템이 있으면 교체
-        if (equipSlot.currentItem != null)
-        {
-            // 교체: 인벤토리 아이템 → 장비 슬롯, 장비 슬롯 → 인벤토리
-            ItemData tempItem = equipSlot.currentItem;
-            int tempQuantity = equipSlot.quantity;
-            
-            equipSlot.SetItem(inventorySlot.currentItem, inventorySlot.quantity);
-            inventorySlot.SetItem(tempItem, tempQuantity);
-            
-            // 명시적으로 UI 업데이트
-            equipSlot.UpdateUI();
-            inventorySlot.UpdateUI();
-            
-            Debug.Log($"장비 교체: {equipSlot.currentItem.itemName} ↔ {inventorySlot.currentItem.itemName}");
-        }
-        else
-        {
-            // 빈 슬롯에 장착
-            equipSlot.SetItem(inventorySlot.currentItem, inventorySlot.quantity);
-            inventorySlot.ClearSlot();
-            
-            // 명시적으로 UI 업데이트
-            equipSlot.UpdateUI();
-            inventorySlot.UpdateUI();
-            
-            Debug.Log($"장비 장착: {equipSlot.currentItem.itemName}");
-        }
+        // 드래그 앤 드롭 로직 재사용
+        TryMoveOrSwapDrag(inventorySlot, equipSlot);
     }
     
     /// <summary>
@@ -519,42 +463,135 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     private SlotUI GetEquipmentSlotByType(ItemType type)
     {
-        Debug.Log($"=== 장비 슬롯 찾기 ===");
-        Debug.Log($"찾는 타입: {type}");
-        
-        SlotUI result = null;
-        
         switch (type)
         {
-            case ItemType.Weapon: 
-                result = weaponSlot;
-                Debug.Log($"Weapon 슬롯: {(weaponSlot != null ? weaponSlot.name : "NULL")}");
-                break;
-            case ItemType.Helmet: 
-                result = helmetSlot;
-                Debug.Log($"Helmet 슬롯: {(helmetSlot != null ? helmetSlot.name : "NULL")}");
-                break;
-            case ItemType.Armor: 
-                result = armorSlot;
-                Debug.Log($"Armor 슬롯: {(armorSlot != null ? armorSlot.name : "NULL")}");
-                break;
-            case ItemType.Shoes: 
-                result = shoesSlot;
-                Debug.Log($"Shoes 슬롯: {(shoesSlot != null ? shoesSlot.name : "NULL")}");
-                break;
-            case ItemType.Bag: 
-                result = bagSlot;
-                Debug.Log($"Bag 슬롯: {(bagSlot != null ? bagSlot.name : "NULL")}");
-                break;
-            case ItemType.Quiver: 
-                result = quiverSlot;
-                Debug.Log($"Quiver 슬롯: {(quiverSlot != null ? quiverSlot.name : "NULL")}");
-                break;
-            default: 
-                Debug.LogWarning($"알 수 없는 타입: {type}");
-                break;
+            case ItemType.Weapon: return weaponSlot;
+            case ItemType.Helmet: return helmetSlot;
+            case ItemType.Armor: return armorSlot;
+            case ItemType.Shoes: return shoesSlot;
+            case ItemType.Bag: return bagSlot;
+            case ItemType.Quiver: return quiverSlot;
+            default: return null;
+        }
+    }
+    
+    // ─────────────────────────────────────────────
+    // ✅ 아이템 교환 기능
+    // ─────────────────────────────────────────────
+    
+    /// <summary>
+    /// ✅ 두 슬롯의 아이템 교환
+    /// </summary>
+    private void SwapItems(SlotUI slotA, SlotUI slotB)
+    {
+        Debug.Log($"아이템 교환 시도: {slotA.currentItem.itemName} ↔ {slotB.currentItem.itemName}");
+        
+        // ✅ 교환 가능 여부 확인
+        bool canSwap = CanSwapItems(slotA, slotB);
+        
+        if (!canSwap)
+        {
+            Debug.LogWarning("이 슬롯에는 해당 아이템을 놓을 수 없습니다!");
+            return;
         }
         
-        return result;
+        // 임시 저장
+        ItemData tempItem = slotA.currentItem;
+        int tempQuantity = slotA.quantity;
+        
+        // A → B 데이터 복사
+        slotA.SetItem(slotB.currentItem, slotB.quantity);
+        
+        // 임시 → B
+        slotB.SetItem(tempItem, tempQuantity);
+        
+        // UI 업데이트
+        slotA.UpdateUI();
+        slotB.UpdateUI();
+        
+        Debug.Log("교환 완료!");
+    }
+    
+    /// <summary>
+    /// ✅ 아이템을 다른 슬롯으로 이동
+    /// </summary>
+    private void MoveItem(SlotUI fromSlot, SlotUI toSlot)
+    {
+        Debug.Log($"아이템 이동 시도: {fromSlot.currentItem.itemName} → {toSlot.name}");
+        
+        // ✅ 이동 가능 여부 확인
+        if (!toSlot.CanAcceptItem(fromSlot.currentItem))
+        {
+            Debug.LogWarning($"{toSlot.name}에는 {fromSlot.currentItem.itemName}을(를) 놓을 수 없습니다!");
+            return;
+        }
+        
+        // ✅ 같은 아이템이면 스택
+        if (toSlot.currentItem == fromSlot.currentItem)
+        {
+            // 스택 가능한지 확인
+            int maxStack = fromSlot.currentItem.stackSize;
+            int availableSpace = maxStack - toSlot.quantity;
+            
+            if (availableSpace > 0)
+            {
+                int amountToMove = Mathf.Min(fromSlot.quantity, availableSpace);
+                
+                toSlot.quantity += amountToMove;
+                fromSlot.quantity -= amountToMove;
+                
+                if (fromSlot.quantity <= 0)
+                {
+                    fromSlot.ClearSlot();
+                }
+                else
+                {
+                    fromSlot.UpdateUI();
+                }
+                
+                toSlot.UpdateUI();
+                
+                Debug.Log($"스택 완료: {amountToMove}개 이동");
+                return;
+            }
+            else
+            {
+                Debug.LogWarning("스택이 가득 찼습니다!");
+                return;
+            }
+        }
+        
+        // ✅ 다른 아이템이면 이동
+        toSlot.SetItem(fromSlot.currentItem, fromSlot.quantity);
+        fromSlot.ClearSlot();
+        
+        toSlot.UpdateUI();
+        fromSlot.UpdateUI();
+        
+        Debug.Log("이동 완료!");
+    }
+    
+    /// <summary>
+    /// ✅ 두 슬롯의 아이템 교환이 가능한지 확인
+    /// </summary>
+    private bool CanSwapItems(SlotUI slotA, SlotUI slotB)
+    {
+        // A의 아이템이 B 슬롯에 들어갈 수 있는지
+        bool aToB = slotB.CanAcceptItem(slotA.currentItem);
+        
+        // B의 아이템이 A 슬롯에 들어갈 수 있는지
+        bool bToA = slotA.CanAcceptItem(slotB.currentItem);
+        
+        if (!aToB)
+        {
+            Debug.LogWarning($"{slotB.name}은(는) {slotA.currentItem.itemName}을(를) 받을 수 없습니다!");
+        }
+        
+        if (!bToA)
+        {
+            Debug.LogWarning($"{slotA.name}은(는) {slotB.currentItem.itemName}을(를) 받을 수 없습니다!");
+        }
+        
+        return aToB && bToA;
     }
 }
