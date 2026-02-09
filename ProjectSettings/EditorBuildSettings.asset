@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/DummyScrollableScene.unity
     guid: 0deeb4daae576e9459c5fc723d1e6217
   - enabled: 1
-    path: Assets/Scenes/DialogScene.unity
+    path: Assets/Scenes/DIalogScene.unity
     guid: de7b512355de6d04fb6f3baf21ff69ac
   - enabled: 1
     path: Assets/Scenes/DummyRightScene.unity
@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DummyLeftScene.unity
     guid: df4d4ece9887f5546be68d34f15332af
+  - enabled: 1
+    path: Assets/Scenes/Structures/shop.unity
+    guid: b68b22f344f0ebf44ac673f7d7a3abae
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

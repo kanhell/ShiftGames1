@@ -107,8 +107,7 @@ public class DialogController : MonoBehaviour
 
     public void DialogStop()
     {
-        SceneManager.LoadScene(GameManager.instance.toDialog.preDialog_Scene);
-        Destroy(DialogManager.instance.gameObject);
+        SceneManager.LoadScene(GameManager.instance.toScene.preScene);
         Destroy(DialogController.instance.gameObject);
     }
 

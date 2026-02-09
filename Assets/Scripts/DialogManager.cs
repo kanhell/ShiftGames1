@@ -1,4 +1,5 @@
 using NUnit.Framework.Constraints;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -146,6 +147,16 @@ public class DialogManager : MonoBehaviour
             }
         );
 
+        // shopkeeper
+        dialogs.Add(
+            "shopkeeper",
+            new string[]
+            {
+                "어서오세요 oo상점입니다. 무엇을 도와드릴까요",
+                endKey
+            }
+        );
+
     }
 
     public void OptionSelected(int idx)
@@ -166,6 +177,21 @@ public class DialogManager : MonoBehaviour
             DialogController.instance.ChangeDialog(msg);
             if (dialogIndex == dialogs[dialogKey].Length - 1)
                 DialogController.instance.MakeOptions(options[dialogKey]);
+        }
+    }
+
+    public string GetDialogKey(string name)
+    {
+        switch (name)
+        {
+            case "macgregor":
+                return "dummy script";
+            case "shopkeeper":
+                return "shopkeeper";
+            default:
+                Debug.Log("[name error] no dialogKey for npc name");
+                return "name error";
+
         }
     }
 

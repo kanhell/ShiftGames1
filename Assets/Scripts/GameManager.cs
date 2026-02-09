@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     // Scene 이동
-    public string[] scenes = { "DummyLeftScene", "DummyScrollableScene", "DummyRightScene"};
+    public string[] scenes = { "DummyLeftScene", "DummyScrollableScene", "DummyRightScene", "DummyRightScene 1", "DummyRightScene 2" };
     public int sceneIdx = 1;
 
     // npc images
@@ -21,9 +21,10 @@ public class GameManager : MonoBehaviour
     public Sprite macgregor_background;
 
     // scene info
-    public float limitMax, limitMin;
+    public float limitMin, limitMax;
 
-    // toDialog
+    // Scene Change
+    public toSceneInfo toScene = new toSceneInfo();
     public toDialogInfo toDialog = new toDialogInfo();
 
 
@@ -40,17 +41,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         images["macgregor"] = new npc(macgregor_frontshot, macgregor_background);
-        images["shop"] = new npc(shopkeeper_frontshot, shop_background);
+        images["shopkeeper"] = new npc(shopkeeper_frontshot, shop_background);
     }
 
-
-    public void setVaribles_DialogScene(string dialogKey, string npcKey, string preDialog_Scene, float x)
-    {
-        this.toDialog.npcKey = npcKey;
-        this.toDialog.dialogKey = dialogKey;
-        this.toDialog.preDialog_Scene = preDialog_Scene;
-        this.toDialog.x = x;
-    }
 
     public class npc
     {
@@ -64,12 +57,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public class toSceneInfo
+    {
+        public string preScene = "";
+        public float x = 15;  // TODO : 최초설정 변경
+    }
     public class toDialogInfo
     {
         public string dialogKey = "";
         public string npcKey = "";
-        public string preDialog_Scene = "";
-        public float x = 15;  // TODO : 최초설정 변경
         public string background;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BackgroundInfo : MonoBehaviour
 {
-    public float limitMax, limitMin;
+    public float limitMin, limitMax;
     public GameObject player;
     public GameObject camera;
     CameraController camera_controller;
@@ -11,7 +11,7 @@ public class BackgroundInfo : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player");
-        player.transform.position = new Vector2(GameManager.instance.toDialog.x, -2);
+        player.transform.position = new Vector2(GameManager.instance.toScene.x, -2);
         GameManager.instance.limitMin = limitMin;
         GameManager.instance.limitMax = limitMax;
 

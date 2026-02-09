@@ -4,13 +4,13 @@ public class CameraController : MonoBehaviour
 {
     GameObject player;
 
-    public float speed;
+    public float speed = 8;
 
     float obj_x;
     float x;
-    public float dis;
+    public float dis = 3.5f;
 
-    public float width;
+    public float width = 8;
 
     private void Start()
     {

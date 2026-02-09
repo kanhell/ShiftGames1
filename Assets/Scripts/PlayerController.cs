@@ -31,16 +31,20 @@ public class PlayerController : MonoBehaviour
         // 화면 끝 -> Scene 전환
         if (transform.position.x > GameManager.instance.limitMax)
         {
+            // 일반 Scene일 때
             if (GameManager.instance.sceneIdx == GameManager.instance.scenes.Length)
                 noMoreMap.SetActive(true);
             else SceneManager.LoadScene(GameManager.instance.scenes[++GameManager.instance.sceneIdx]);
+            // TODO : inside Scene일 때
 
         }
         else if (transform.position.x < GameManager.instance.limitMin)
         {
+            // 일반 Scene일 때 
             if (GameManager.instance.sceneIdx == 0)
                 noMoreMap.SetActive(true);
             else SceneManager.LoadScene(GameManager.instance.scenes[--GameManager.instance.sceneIdx]);
+            // TODO : inside Scene일 때
         }
         else noMoreMap.SetActive(false);
 
@@ -60,19 +64,28 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (NPCcolliders.Length > 0) ToDialogScene(NPCcolliders[0].name);
-            if (structureColliders.Length > 0) ToDialogScene(structureColliders[0].name);
+            if (structureColliders.Length > 0) ToInsideScene(structureColliders[0].name);
         }
     }
 
     public void ToDialogScene(string name)
     {
-        GameManager.instance.setVaribles_DialogScene(
-            dialogKey: "dummy script",
-            npcKey: name,
-            preDialog_Scene: SceneManager.GetActiveScene().name,
-            x: transform.position.x
-            );
+        GameManager.instance.toScene.preScene = SceneManager.GetActiveScene().name;
+        GameManager.instance.toScene.x = transform.position.x;
+
+        GameManager.instance.toDialog.npcKey = name;
+        string dialogKey = DialogManager.instance.GetDialogKey(name);
+        GameManager.instance.toDialog.dialogKey = dialogKey;
+
         SceneManager.LoadScene("DialogScene");
+    }
+
+    public void ToInsideScene(string name)
+    {
+        GameManager.instance.toScene.preScene = SceneManager.GetActiveScene().name;
+        GameManager.instance.toScene.x = transform.position.x;
+
+        SceneManager.LoadScene(name);
     }
 
 }
