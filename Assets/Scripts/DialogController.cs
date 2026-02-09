@@ -18,6 +18,7 @@ public class DialogController : MonoBehaviour
 
     // image
     public GameObject npc;
+    public GameObject background;
 
     // options
     public GameObject optionPrefab;
@@ -43,6 +44,7 @@ public class DialogController : MonoBehaviour
     private void Start()
     {
         npc.transform.GetComponent<Image>().sprite = GameManager.instance.images[GameManager.instance.toDialog.npcKey].frontshot;
+        background.transform.GetComponent<Image>().sprite = GameManager.instance.images[GameManager.instance.toDialog.npcKey].background;
         DialogStart(GameManager.instance.toDialog.dialogKey);
     }
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +13,12 @@ public class GameManager : MonoBehaviour
 
     // npc images
     public Dictionary<string, npc> images = new Dictionary<string, npc>();
+    // frontshot
     public Sprite macgregor_frontshot;
+    public Sprite shopkeeper_frontshot;
+    // bakcground
+    public Sprite shop_background;
+    public Sprite macgregor_background;
 
     // scene info
     public float limitMax, limitMin;
@@ -35,7 +39,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        images["macgregor"] = new npc(macgregor_frontshot);
+        images["macgregor"] = new npc(macgregor_frontshot, macgregor_background);
+        images["shop"] = new npc(shopkeeper_frontshot, shop_background);
     }
 
 
@@ -50,10 +55,12 @@ public class GameManager : MonoBehaviour
     public class npc
     {
         public Sprite frontshot;
+        public Sprite background;
         
-        public npc(Sprite frontshot)
+        public npc(Sprite frontshot, Sprite background)
         {
             this.frontshot = frontshot;
+            this.background = background;
         }
     }
 
@@ -63,5 +70,6 @@ public class GameManager : MonoBehaviour
         public string npcKey = "";
         public string preDialog_Scene = "";
         public float x = 15;  // TODO : 최초설정 변경
+        public string background;
     }
 }

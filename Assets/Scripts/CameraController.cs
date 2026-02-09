@@ -22,9 +22,9 @@ public class CameraController : MonoBehaviour
         x = transform.position.x;
 
         if (obj_x < x-dis && x-width > GameManager.instance.limitMin)  // 왼쪽으로 이동
-            transform.Translate(new Vector3(-speed * Time.deltaTime, 0, 0));
+            transform.Translate(new Vector2(-speed * Time.deltaTime, 0));
         if (obj_x > x+dis && x+width < GameManager.instance.limitMax)  // 오른쪽으로 이동
-            transform.Translate(new Vector3(speed * Time.deltaTime, 0, 0));
+            transform.Translate(new Vector2(speed * Time.deltaTime, 0));
     }
 
     public void setInitialPos(float x)

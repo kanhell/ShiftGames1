@@ -11,7 +11,7 @@ public class BackgroundInfo : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player");
-        player.transform.position = new Vector3(GameManager.instance.toDialog.x, -2, -1);
+        player.transform.position = new Vector2(GameManager.instance.toDialog.x, -2);
         GameManager.instance.limitMin = limitMin;
         GameManager.instance.limitMax = limitMax;
 
