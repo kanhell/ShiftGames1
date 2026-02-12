@@ -8,6 +8,7 @@ using System.Collections.Generic;
 /// <summary>
 /// UI 패널을 드래그 가능하게 만드는 컴포넌트
 /// 슬롯이나 버튼 위에서는 드래그 불가
+/// 드래그 시 PanelStackManager에 알림
 /// </summary>
 [RequireComponent(typeof(RectTransform))]
 public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -32,6 +33,7 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private bool isDragging = false;
     private Vector2 lastMousePosition;
     private PanelZOrderManager zOrderManager;
+    private ManagedPanel managedPanel;
     #endregion
     
     #region Unity Lifecycle
@@ -55,6 +57,7 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
         
         zOrderManager = GetComponent<PanelZOrderManager>();
+        managedPanel = GetComponent<ManagedPanel>();
     }
     #endregion
     
@@ -108,9 +111,19 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     #region Helper Methods
     private void BringToFront()
     {
+        // ManagedPanel이 있으면 그쪽에서 처리
+        if (managedPanel != null)
+        {
+            managedPanel.BringToFront();
+            LogDebug("최상위로 이동 (ManagedPanel 사용)");
+            return;
+        }
+        
+        // PanelZOrderManager가 있으면 그쪽에서 처리
         if (zOrderManager != null)
         {
             zOrderManager.BringToFront();
+            LogDebug("최상위로 이동 (PanelZOrderManager 사용)");
         }
         else
         {

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// 전체 UI 관리 (인벤토리, 장비, 요리 등)
+/// ESC 키로 최상위 패널부터 닫기 지원
 /// </summary>
 public class UIManager : MonoBehaviour
 {
@@ -71,6 +72,12 @@ public class UIManager : MonoBehaviour
     
     private void Update()
     {
+        // ESC 키: 최상위 패널 닫기
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            HandleEscapeKey();
+        }
+        
         // I 키: 인벤토리만 토글
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -91,6 +98,26 @@ public class UIManager : MonoBehaviour
     }
     
     /// <summary>
+    /// ESC 키 처리 - 최상위 패널 닫기
+    /// </summary>
+    private void HandleEscapeKey()
+    {
+        if (PanelStackManager.Instance != null)
+        {
+            bool closed = PanelStackManager.Instance.CloseTopPanel();
+            
+            if (closed)
+            {
+                Debug.Log("ESC: 최상위 패널 닫음");
+            }
+            else
+            {
+                Debug.Log("ESC: 닫을 패널이 없습니다");
+            }
+        }
+    }
+    
+    /// <summary>
     /// 인벤토리만 열기/닫기
     /// </summary>
     public void ToggleInventoryOnly()
@@ -105,6 +132,38 @@ public class UIManager : MonoBehaviour
     }
     
     /// <summary>
+    /// 인벤토리만 열기 (외부 호출용)
+    /// </summary>
+    public void OpenInventoryOnly()
+    {
+        if (!isInventoryOpen)
+        {
+            isInventoryOpen = true;
+            if (inventoryPanel != null)
+            {
+                inventoryPanel.SetActive(true);
+                Debug.Log("[UIManager] 인벤토리 열림");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 인벤토리만 닫기 (외부 호출용)
+    /// </summary>
+    public void CloseInventoryOnly()
+    {
+        if (isInventoryOpen)
+        {
+            isInventoryOpen = false;
+            if (inventoryPanel != null)
+            {
+                inventoryPanel.SetActive(false);
+                Debug.Log("[UIManager] 인벤토리 닫힘");
+            }
+        }
+    }
+    
+    /// <summary>
     /// 장비창만 열기/닫기
     /// </summary>
     public void ToggleEquipmentOnly()
@@ -115,6 +174,38 @@ public class UIManager : MonoBehaviour
         {
             equipmentPanel.SetActive(isEquipmentOpen);
             Debug.Log($"[UIManager] 장비창 → {(isEquipmentOpen ? "열림" : "닫힘")}");
+        }
+    }
+    
+    /// <summary>
+    /// 장비창만 열기 (외부 호출용)
+    /// </summary>
+    public void OpenEquipmentOnly()
+    {
+        if (!isEquipmentOpen)
+        {
+            isEquipmentOpen = true;
+            if (equipmentPanel != null)
+            {
+                equipmentPanel.SetActive(true);
+                Debug.Log("[UIManager] 장비창 열림");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 장비창만 닫기 (외부 호출용)
+    /// </summary>
+    public void CloseEquipmentOnly()
+    {
+        if (isEquipmentOpen)
+        {
+            isEquipmentOpen = false;
+            if (equipmentPanel != null)
+            {
+                equipmentPanel.SetActive(false);
+                Debug.Log("[UIManager] 장비창 닫힘");
+            }
         }
     }
     

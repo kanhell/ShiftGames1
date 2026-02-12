@@ -756,6 +756,7 @@ GameObject:
   - component: {fileID: 129919057}
   - component: {fileID: 129919059}
   - component: {fileID: 129919060}
+  - component: {fileID: 129919061}
   m_Layer: 5
   m_Name: 'EquipmentPanel '
   m_TagString: Untagged
@@ -850,6 +851,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79e148d34b0ba1438bd6440aa5203e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PanelZOrderManager
+  showDebugLogs: 0
+--- !u!114 &129919061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129919055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe05e0138e1d957458457258b89f3b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManagedPanel
+  panelName: Equipment
+  panelType: 2
   showDebugLogs: 0
 --- !u!1 &129938010
 GameObject:
@@ -1001,6 +1017,7 @@ GameObject:
   - component: {fileID: 153580355}
   - component: {fileID: 153580357}
   - component: {fileID: 153580358}
+  - component: {fileID: 153580359}
   m_Layer: 5
   m_Name: LootPanel
   m_TagString: Untagged
@@ -1095,6 +1112,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79e148d34b0ba1438bd6440aa5203e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PanelZOrderManager
+  showDebugLogs: 0
+--- !u!114 &153580359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153580353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe05e0138e1d957458457258b89f3b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManagedPanel
+  panelName: Loot
+  panelType: 4
   showDebugLogs: 0
 --- !u!1 &198516173
 GameObject:
@@ -4253,6 +4285,7 @@ GameObject:
   - component: {fileID: 664991833}
   - component: {fileID: 664991836}
   - component: {fileID: 664991835}
+  - component: {fileID: 664991837}
   m_Layer: 5
   m_Name: CookingPanel
   m_TagString: Untagged
@@ -4350,6 +4383,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggablePanel
   dragRectTransform: {fileID: 0}
   canvas: {fileID: 0}
+  showDebugLogs: 0
+--- !u!114 &664991837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664991831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe05e0138e1d957458457258b89f3b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManagedPanel
+  panelName: Cooking
+  panelType: 3
   showDebugLogs: 0
 --- !u!1 &665411588
 GameObject:
@@ -5669,6 +5717,7 @@ GameObject:
   - component: {fileID: 887725826}
   - component: {fileID: 887725828}
   - component: {fileID: 887725829}
+  - component: {fileID: 887725830}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -5764,6 +5813,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79e148d34b0ba1438bd6440aa5203e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PanelZOrderManager
+  showDebugLogs: 0
+--- !u!114 &887725830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887725824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe05e0138e1d957458457258b89f3b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManagedPanel
+  panelName: Inventory
+  panelType: 1
   showDebugLogs: 0
 --- !u!1 &928470167
 GameObject:
@@ -7310,12 +7374,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121519739}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 555.4217, y: 42.28588, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2094857299}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1121549876
 GameObject:
@@ -8324,6 +8388,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1245031711}
   m_CullTransparentMesh: 1
+--- !u!1 &1252845818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1252845819}
+  - component: {fileID: 1252845820}
+  m_Layer: 0
+  m_Name: PanelStackManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1252845819
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252845818}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2094857299}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1252845820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252845818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 398bc6db738211c458f0970bd45e430e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PanelStackManager
+  showDebugLogs: 0
 --- !u!1 &1255351782
 GameObject:
   m_ObjectHideFlags: 0
@@ -12580,7 +12689,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1121519741}
+  - {fileID: 1252845819}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2094857300
@@ -13107,4 +13218,3 @@ SceneRoots:
   - {fileID: 707327230}
   - {fileID: 622960996}
   - {fileID: 2094857299}
-  - {fileID: 1121519741}
