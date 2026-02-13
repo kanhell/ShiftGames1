@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 /// <summary>
-/// 개별 슬롯 UI 관리 (드래그 앤 드롭 지원)
+/// 개별 슬롯 UI 관리 (드래그 앤 드롭 + 더블클릭 지원)
 /// </summary>
 public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -22,12 +22,20 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     public SlotType slotType = SlotType.Inventory;
     public ItemType allowedItemType = ItemType.Weapon; // Equipment 슬롯일 때만 사용
     
+    [Header("Double Click Settings")]
+    [Tooltip("더블클릭으로 인정할 시간 간격 (초)")]
+    [SerializeField] private float doubleClickTime = 0.3f;
+    
     // 드래그 관련
     private GameObject draggedIcon;
     private Canvas canvas;
     private Transform originalParent;
     private int originalSiblingIndex;
     private bool canDrag = false; // 드래그 가능 여부
+    
+    // 더블클릭 관련
+    private float lastClickTime = 0f;
+    private int clickCount = 0;
     
     private void Start()
     {
@@ -285,18 +293,283 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     // ─────────────────────────────────────────────
-    // 마우스 클릭 이벤트 (우클릭용)
+    // 마우스 클릭 이벤트 (우클릭 + 더블클릭)
     // ─────────────────────────────────────────────
     
     public void OnPointerClick(PointerEventData eventData)
     {
+        // 우클릭: 컨텍스트 메뉴
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            // ✅ 우클릭: 컨텍스트 메뉴 열기 (제한 없음)
             if (currentItem != null && ContextMenu.Instance != null)
             {
                 ContextMenu.Instance.OpenMenu(this, eventData.position);
             }
+            return;
+        }
+        
+        // 좌클릭: 더블클릭 체크
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            HandleLeftClick();
+        }
+    }
+    
+    // ─────────────────────────────────────────────
+    // 더블클릭 처리
+    // ─────────────────────────────────────────────
+    
+    /// <summary>
+    /// 좌클릭 처리 (더블클릭 감지 포함)
+    /// </summary>
+    private void HandleLeftClick()
+    {
+        if (currentItem == null) return;
+        
+        float timeSinceLastClick = Time.time - lastClickTime;
+        
+        if (timeSinceLastClick <= doubleClickTime)
+        {
+            clickCount++;
+            
+            if (clickCount >= 2)
+            {
+                // 더블클릭 감지!
+                OnDoubleClickDetected();
+                clickCount = 0;
+            }
+        }
+        else
+        {
+            clickCount = 1;
+        }
+        
+        lastClickTime = Time.time;
+    }
+    
+    /// <summary>
+    /// 더블클릭 감지 시 실행
+    /// </summary>
+    private void OnDoubleClickDetected()
+    {
+        Debug.Log($"더블클릭: {currentItem.itemName} (슬롯 타입: {slotType})");
+        
+        // 1. 인벤토리 슬롯
+        if (slotType == SlotType.Inventory)
+        {
+            HandleInventoryDoubleClick();
+        }
+        // 2. 장비 슬롯
+        else if (slotType == SlotType.Equipment)
+        {
+            HandleEquipmentDoubleClick();
+        }
+        // 3. 요리 재료 슬롯
+        else if (slotType == SlotType.Cooking)
+        {
+            HandleCookingSlotDoubleClick();
+        }
+    }
+    
+    /// <summary>
+    /// 인벤토리 슬롯 더블클릭 처리
+    /// </summary>
+    private void HandleInventoryDoubleClick()
+    {
+        // 전리품 슬롯인지 확인
+        if (IsLootSlot())
+        {
+            TransferLootToInventory();
+            return;
+        }
+        
+        // 장비 아이템 → 자동 장착
+        if (IsEquipmentItem(currentItem))
+        {
+            EquipItemAuto();
+            return;
+        }
+        
+        // 재료 아이템 + 요리창 열려있음 → 요리창에 추가
+        if (currentItem.itemType == ItemType.Ingredient && IsCookingPanelOpen())
+        {
+            AddToCookingPanel();
+            return;
+        }
+        
+        // 그 외: 아무 동작 안 함
+        Debug.Log($"{currentItem.itemName}은(는) 더블클릭 동작이 없습니다.");
+    }
+    
+    /// <summary>
+    /// 장비 슬롯 더블클릭 처리
+    /// </summary>
+    private void HandleEquipmentDoubleClick()
+    {
+        // 장비 슬롯 → 인벤토리로 되돌리기
+        UnequipToInventory();
+    }
+    
+    /// <summary>
+    /// 요리 슬롯 더블클릭 처리
+    /// </summary>
+    private void HandleCookingSlotDoubleClick()
+    {
+        // 요리 슬롯 → 인벤토리로 되돌리기
+        ReturnToInventory();
+    }
+    
+    /// <summary>
+    /// 전리품 슬롯인지 확인
+    /// </summary>
+    private bool IsLootSlot()
+    {
+        if (LootManager.Instance != null && LootManager.Instance.lootSlots != null)
+        {
+            return LootManager.Instance.lootSlots.Contains(this);
+        }
+        return false;
+    }
+    
+    /// <summary>
+    /// 전리품을 인벤토리로 옮기기
+    /// </summary>
+    private void TransferLootToInventory()
+    {
+        if (LootManager.Instance == null)
+        {
+            Debug.LogError("LootManager.Instance가 null입니다!");
+            return;
+        }
+        
+        LootManager.Instance.TransferLootToInventory(this, 0); // 0 = 전부
+        Debug.Log($"전리품 → 인벤토리: {currentItem.itemName}");
+    }
+    
+    /// <summary>
+    /// 장비 아이템인지 확인
+    /// </summary>
+    private bool IsEquipmentItem(ItemData item)
+    {
+        return item.itemType == ItemType.Weapon ||
+               item.itemType == ItemType.Helmet ||
+               item.itemType == ItemType.Armor ||
+               item.itemType == ItemType.Shoes ||
+               item.itemType == ItemType.Bag ||
+               item.itemType == ItemType.Quiver;
+    }
+    
+    /// <summary>
+    /// 장비 자동 장착
+    /// </summary>
+    private void EquipItemAuto()
+    {
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("InventoryManager.Instance가 null입니다!");
+            return;
+        }
+        
+        InventoryManager.Instance.EquipItem(this);
+        Debug.Log($"자동 장착: {currentItem.itemName}");
+    }
+    
+    /// <summary>
+    /// 장비 해제하고 인벤토리로
+    /// </summary>
+    private void UnequipToInventory()
+    {
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("InventoryManager.Instance가 null입니다!");
+            return;
+        }
+        
+        // 빈 인벤토리 슬롯 찾기
+        SlotUI emptySlot = InventoryManager.Instance.FindEmptyInventorySlot();
+        
+        if (emptySlot != null)
+        {
+            // 아이템 이동
+            ItemData item = currentItem;
+            int qty = quantity;
+            
+            emptySlot.SetItem(item, qty);
+            emptySlot.UpdateUI();
+            
+            ClearSlot();
+            
+            Debug.Log($"장비 해제 → 인벤토리: {item.itemName}");
+        }
+        else
+        {
+            Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
+        }
+    }
+    
+    /// <summary>
+    /// 요리창이 열려있는지 확인
+    /// </summary>
+    private bool IsCookingPanelOpen()
+    {
+        if (CookingManager.Instance == null) return false;
+        return CookingManager.Instance.IsCookingOpen();
+    }
+    
+    /// <summary>
+    /// 요리창에 재료 추가
+    /// </summary>
+    private void AddToCookingPanel()
+    {
+        if (CookingManager.Instance == null)
+        {
+            Debug.LogError("CookingManager.Instance가 null입니다!");
+            return;
+        }
+        
+        // 재료 추가 시도
+        bool success = CookingManager.Instance.TryAddIngredient(currentItem, this);
+        
+        if (success)
+        {
+            Debug.Log($"요리창에 추가: {currentItem.itemName}");
+        }
+        else
+        {
+            Debug.LogWarning("요리 슬롯이 가득 찼습니다!");
+        }
+    }
+    
+    /// <summary>
+    /// 요리 슬롯에서 인벤토리로 되돌리기
+    /// </summary>
+    private void ReturnToInventory()
+    {
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("InventoryManager.Instance가 null입니다!");
+            return;
+        }
+        
+        // 빈 인벤토리 슬롯 찾기
+        SlotUI emptySlot = InventoryManager.Instance.FindEmptyInventorySlot();
+        
+        if (emptySlot != null)
+        {
+            // 아이템 이동
+            ItemData item = currentItem;
+            int qty = quantity;
+            
+            emptySlot.SetItem(item, qty);
+            emptySlot.UpdateUI();
+            
+            ClearSlot();
+            
+            Debug.Log($"인벤토리로 되돌림: {item.itemName} x{qty}");
+        }
+        else
+        {
+            Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
         }
     }
 }

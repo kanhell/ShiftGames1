@@ -21,6 +21,7 @@ public class ContextMenu : MonoBehaviour
     [SerializeField] private GameObject ingredientMenuPanel;
     [SerializeField] private GameObject cookingIngredientMenuPanel;
     [SerializeField] private GameObject cookingSlotMenuPanel;
+    [SerializeField] private GameObject lootMenuPanel;
     
     [Header("확인 팝업")]
     [SerializeField] private GameObject confirmPanel;
@@ -57,6 +58,10 @@ public class ContextMenu : MonoBehaviour
     [Header("요리 슬롯 메뉴 버튼")]
     [SerializeField] private Button removeFromCookingButton;
     [SerializeField] private Button discardButton7;
+    
+    [Header("전리품 메뉴 버튼")]
+    [SerializeField] private Button transferToInventoryButton;
+    [SerializeField] private Button discardLootButton;
     #endregion
     
     #region Private Fields
@@ -70,6 +75,7 @@ public class ContextMenu : MonoBehaviour
     private RectTransform ingredientMenuRect;
     private RectTransform cookingIngredientMenuRect;
     private RectTransform cookingSlotMenuRect;
+    private RectTransform lootMenuRect;
     #endregion
     
     #region Unity Lifecycle
@@ -114,6 +120,7 @@ public class ContextMenu : MonoBehaviour
         ingredientMenuRect = GetRectTransformSafe(ingredientMenuPanel);
         cookingIngredientMenuRect = GetRectTransformSafe(cookingIngredientMenuPanel);
         cookingSlotMenuRect = GetRectTransformSafe(cookingSlotMenuPanel);
+        lootMenuRect = GetRectTransformSafe(lootMenuPanel);
     }
     
     private RectTransform GetRectTransformSafe(GameObject obj)
@@ -152,6 +159,10 @@ public class ContextMenu : MonoBehaviour
         RegisterButtonSafe(removeFromCookingButton, OnRemoveFromCookingButtonClicked);
         RegisterButtonSafe(discardButton7, () => ShowConfirmDialog("정말 버리시겠습니까?"));
         
+        // 전리품 메뉴
+        RegisterButtonSafe(transferToInventoryButton, OnTransferToInventoryButtonClicked);
+        RegisterButtonSafe(discardLootButton, () => ShowConfirmDialog("정말 버리시겠습니까?"));
+        
         // 확인 팝업
         RegisterButtonSafe(confirmYesButton, OnConfirmYes);
         RegisterButtonSafe(confirmNoButton, OnConfirmNo);
@@ -174,6 +185,7 @@ public class ContextMenu : MonoBehaviour
         SetActiveSafe(ingredientMenuPanel, false);
         SetActiveSafe(cookingIngredientMenuPanel, false);
         SetActiveSafe(cookingSlotMenuPanel, false);
+        SetActiveSafe(lootMenuPanel, false);
         SetActiveSafe(confirmPanel, false);
     }
     
@@ -206,25 +218,46 @@ public class ContextMenu : MonoBehaviour
     
     private MenuType DetermineMenuType(SlotUI slot)
     {
+        // ✅ 0. 전리품 슬롯 체크 (최우선)
+        if (IsLootSlot(slot))
+        {
+            return MenuType.Loot;
+        }
+        
+        // 1. 요리 슬롯
         if (slot.slotType == SlotType.Cooking)
             return MenuType.CookingSlot;
         
+        // 2. 재료 아이템
         if (slot.currentItem.itemType == ItemType.Ingredient)
         {
             bool isCookingOpen = CookingManager.Instance != null && CookingManager.Instance.IsCookingOpen();
             return isCookingOpen ? MenuType.CookingIngredient : MenuType.Ingredient;
         }
         
+        // 3. 퀵슬롯 소비 아이템
         if (IsQuickSlotConsumable(slot))
             return MenuType.QuickSlot;
         
+        // 4. 장비 슬롯
         if (slot.slotType == SlotType.Equipment)
             return MenuType.Unequipment;
         
+        // 5. 인벤토리 소비 아이템
         if (slot.slotType == SlotType.Inventory && slot.currentItem.itemType == ItemType.Consumable)
             return MenuType.Consumable;
         
+        // 6. 기본: 장비 메뉴
         return MenuType.Equipment;
+    }
+    
+    private bool IsLootSlot(SlotUI slot)
+    {
+        if (LootManager.Instance != null && LootManager.Instance.lootSlots != null)
+        {
+            return LootManager.Instance.lootSlots.Contains(slot);
+        }
+        return false;
     }
     
     private bool IsQuickSlotConsumable(SlotUI slot)
@@ -241,6 +274,11 @@ public class ContextMenu : MonoBehaviour
         
         switch (menuType)
         {
+            case MenuType.Loot:
+                menuPanel = lootMenuPanel;
+                menuRect = lootMenuRect;
+                break;
+                
             case MenuType.CookingSlot:
                 menuPanel = cookingSlotMenuPanel;
                 menuRect = cookingSlotMenuRect;
@@ -307,6 +345,7 @@ public class ContextMenu : MonoBehaviour
         SetActiveSafe(ingredientMenuPanel, false);
         SetActiveSafe(cookingIngredientMenuPanel, false);
         SetActiveSafe(cookingSlotMenuPanel, false);
+        SetActiveSafe(lootMenuPanel, false);
     }
     
     private void AdjustMenuPosition(RectTransform rectTransform)
@@ -373,18 +412,6 @@ public class ContextMenu : MonoBehaviour
         }
     }
     
-    private bool IsLootSlot(SlotUI slot)
-    {
-        if (slot == null) return false;
-        
-        if (LootManager.Instance != null && LootManager.Instance.lootSlots != null)
-        {
-            return LootManager.Instance.lootSlots.Contains(slot);
-        }
-        
-        return false;
-    }
-    
     private bool IsAnyMenuActive()
     {
         return equipmentMenuPanel.activeSelf ||
@@ -393,7 +420,8 @@ public class ContextMenu : MonoBehaviour
                (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
                (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
                (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
-               (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf);
+               (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
+               (lootMenuPanel != null && lootMenuPanel.activeSelf);
     }
     
     private bool IsMouseOverAnyMenu()
@@ -406,7 +434,8 @@ public class ContextMenu : MonoBehaviour
                IsMouseOverMenu(quickSlotMenuPanel, quickSlotMenuRect, mousePos) ||
                IsMouseOverMenu(ingredientMenuPanel, ingredientMenuRect, mousePos) ||
                IsMouseOverMenu(cookingIngredientMenuPanel, cookingIngredientMenuRect, mousePos) ||
-               IsMouseOverMenu(cookingSlotMenuPanel, cookingSlotMenuRect, mousePos);
+               IsMouseOverMenu(cookingSlotMenuPanel, cookingSlotMenuRect, mousePos) ||
+               IsMouseOverMenu(lootMenuPanel, lootMenuRect, mousePos);
     }
     
     private bool IsMouseOverMenu(GameObject panel, RectTransform rect, Vector2 mousePos)
@@ -468,22 +497,16 @@ public class ContextMenu : MonoBehaviour
         CloseMenu();
     }
     
-    /// <summary>
-    /// ✅ 요리 재료 넣기 - 아이템 정보를 먼저 저장하고 처리
-    /// </summary>
     private void OnAddToCookingButtonClicked()
     {
-        // ✅ 1. 유효성 검사
         if (targetSlot == null || targetSlot.currentItem == null)
         {
             CloseMenu();
             return;
         }
         
-        // ✅ 2. 아이템 정보를 미리 저장 (나중에 targetSlot.currentItem이 null이 될 수 있음)
         ItemData ingredient = targetSlot.currentItem;
         
-        // ✅ 3. 재료 아이템 체크
         if (ingredient.itemType != ItemType.Ingredient)
         {
             Debug.LogWarning("재료 아이템이 아닙니다!");
@@ -491,7 +514,6 @@ public class ContextMenu : MonoBehaviour
             return;
         }
         
-        // ✅ 4. CookingManager 체크
         if (CookingManager.Instance == null)
         {
             Debug.LogError("CookingManager.Instance가 null입니다!");
@@ -499,10 +521,8 @@ public class ContextMenu : MonoBehaviour
             return;
         }
         
-        // ✅ 5. 재료 추가 시도 (이 과정에서 targetSlot.currentItem이 null이 될 수 있음)
         bool success = CookingManager.Instance.TryAddIngredient(ingredient, targetSlot);
         
-        // ✅ 6. 결과 로그 (저장한 변수 사용)
         if (success)
         {
             Debug.Log($"재료 추가 성공: {ingredient.itemName}");
@@ -512,7 +532,6 @@ public class ContextMenu : MonoBehaviour
             Debug.LogWarning("재료 슬롯이 가득 찼습니다!");
         }
         
-        // ✅ 7. 메뉴 닫기
         CloseMenu();
     }
     
@@ -532,6 +551,28 @@ public class ContextMenu : MonoBehaviour
             Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
         }
         
+        CloseMenu();
+    }
+    
+    private void OnTransferToInventoryButtonClicked()
+    {
+        if (!IsValidTargetSlot()) return;
+        
+        if (LootManager.Instance == null)
+        {
+            Debug.LogError("LootManager.Instance가 null입니다!");
+            CloseMenu();
+            return;
+        }
+        
+        if (!LootManager.Instance.IsLootSlot(targetSlot))
+        {
+            Debug.LogWarning("전리품 슬롯이 아닙니다!");
+            CloseMenu();
+            return;
+        }
+        
+        LootManager.Instance.TransferLootToInventory(targetSlot, 0);
         CloseMenu();
     }
     
@@ -627,7 +668,8 @@ public class ContextMenu : MonoBehaviour
         QuickSlot,
         Ingredient,
         CookingIngredient,
-        CookingSlot
+        CookingSlot,
+        Loot
     }
     #endregion
 }

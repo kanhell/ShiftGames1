@@ -1,4 +1,4 @@
-// Assets/Scripts/Inventory/LootManager.cs
+// Assets/Scripts/Loot/LootManager.cs
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -183,17 +183,96 @@ public class LootManager : MonoBehaviour
     /// </summary>
     public void TakeAllLoot()
     {
+        int successCount = 0;
+        int failCount = 0;
+        
         foreach (SlotUI slot in lootSlots)
         {
             if (slot.currentItem != null && slot.quantity > 0)
             {
-                InventoryManager.Instance.AddItem(slot.currentItem, slot.quantity);
-                slot.ClearSlot();
+                bool success = InventoryManager.Instance.AddItem(slot.currentItem, slot.quantity);
+                
+                if (success)
+                {
+                    successCount++;
+                    slot.ClearSlot();
+                }
+                else
+                {
+                    failCount++;
+                }
             }
         }
         
-        Debug.Log("모든 전리품을 획득했습니다!");
-        CloseLootPanel();
+        if (successCount > 0)
+        {
+            Debug.Log($"전리품 {successCount}개 획득!");
+        }
+        
+        if (failCount > 0)
+        {
+            Debug.LogWarning($"인벤토리 공간 부족으로 {failCount}개를 가져올 수 없습니다!");
+        }
+        
+        // 모두 가져갔으면 창 닫기
+        if (failCount == 0 && successCount > 0)
+        {
+            CloseLootPanel();
+        }
+    }
+    
+    /// <summary>
+    /// 특정 슬롯의 전리품을 인벤토리로 옮기기
+    /// </summary>
+    public void TransferLootToInventory(SlotUI lootSlot, int amount = 0)
+    {
+        if (lootSlot == null || lootSlot.currentItem == null)
+        {
+            Debug.LogWarning("전리품 슬롯이 비어있습니다.");
+            return;
+        }
+        
+        if (!lootSlots.Contains(lootSlot))
+        {
+            Debug.LogWarning("이 슬롯은 전리품 슬롯이 아닙니다!");
+            return;
+        }
+        
+        ItemData item = lootSlot.currentItem;
+        int amountToTransfer = amount > 0 ? Mathf.Min(amount, lootSlot.quantity) : lootSlot.quantity;
+        
+        if (InventoryManager.Instance != null)
+        {
+            bool success = InventoryManager.Instance.AddItem(item, amountToTransfer);
+            
+            if (success)
+            {
+                lootSlot.quantity -= amountToTransfer;
+                
+                if (lootSlot.quantity <= 0)
+                {
+                    lootSlot.ClearSlot();
+                }
+                else
+                {
+                    lootSlot.UpdateUI();
+                }
+                
+                Debug.Log($"전리품 → 인벤토리: {item.itemName} x{amountToTransfer}");
+            }
+            else
+            {
+                Debug.LogWarning("인벤토리가 가득 찼습니다!");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 특정 슬롯이 전리품 슬롯인지 확인
+    /// </summary>
+    public bool IsLootSlot(SlotUI slot)
+    {
+        return lootSlots.Contains(slot);
     }
     
     /// <summary>
