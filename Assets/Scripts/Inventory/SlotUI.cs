@@ -39,6 +39,30 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     
     private void Start()
     {
+        // ✅ Inspector에 연결 안 되어 있으면 자동으로 찾기
+        if (iconImage == null)
+        {
+            iconImage = transform.Find("ItemIcon")?.GetComponent<Image>();
+            if (iconImage == null)
+            {
+                Debug.LogWarning($"[{gameObject.name}] iconImage를 찾을 수 없습니다!");
+            }
+        }
+        
+        if (quantityText == null)
+        {
+            quantityText = transform.Find("QuantityText")?.GetComponent<TextMeshProUGUI>();
+            if (quantityText == null)
+            {
+                // 자식의 자식에서도 찾기 시도
+                quantityText = GetComponentInChildren<TextMeshProUGUI>();
+                if (quantityText == null)
+                {
+                    Debug.LogWarning($"[{gameObject.name}] quantityText를 찾을 수 없습니다!");
+                }
+            }
+        }
+        
         UpdateUI();
         canvas = GetComponentInParent<Canvas>();
     }
@@ -63,18 +87,24 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 Debug.LogWarning($"[{gameObject.name}] iconImage가 null입니다!");
             }
             
-            // 수량 표시
+            // ✅ 수량 표시 (중요!)
             if (quantityText != null)
             {
                 if (quantity > 1)
                 {
                     quantityText.text = quantity.ToString();
                     quantityText.gameObject.SetActive(true);
+                    Debug.Log($"[{gameObject.name}] 수량 표시: {quantity}");
                 }
                 else
                 {
                     quantityText.gameObject.SetActive(false);
+                    Debug.Log($"[{gameObject.name}] 수량 1개 - 텍스트 숨김");
                 }
+            }
+            else
+            {
+                Debug.LogError($"[{gameObject.name}] quantityText가 null입니다! 수량을 표시할 수 없습니다.");
             }
         }
         else
@@ -157,13 +187,20 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
+        // ✅ 분할 패널이 열려있으면 드래그 차단
+        if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
+        {
+            canDrag = false;
+            return;
+        }
+        
         if (currentItem == null)
         {
             canDrag = false;
             return;
         }
         
-        // ✅ 요리 중 드래그 제한 제거 - 모든 슬롯에서 드래그 가능
+        // Shift + 드래그는 별도 처리하지 않음 (OnEndDrag에서 처리)
         canDrag = true;
         Debug.Log($"드래그 시작: {currentItem.itemName}");
         
@@ -241,8 +278,19 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         if (targetSlot != null)
         {
             Debug.Log($"대상 슬롯 찾음: {targetSlot.name}");
-            // 아이템 이동/교환
-            InventoryManager.Instance.TryMoveOrSwapDrag(this, targetSlot);
+            
+            // Shift + 드래그 = 아이템 분할 (대상이 빈 슬롯일 때만)
+            if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && 
+                targetSlot.currentItem == null && 
+                quantity > 1)
+            {
+                HandleShiftDrag(targetSlot);
+            }
+            else
+            {
+                // 일반 드래그 = 아이템 이동/교환
+                InventoryManager.Instance.TryMoveOrSwapDrag(this, targetSlot);
+            }
         }
         else
         {
@@ -298,6 +346,12 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     
     public void OnPointerClick(PointerEventData eventData)
     {
+        // ✅ 분할 패널이 열려있으면 클릭 차단
+        if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
+        {
+            return;
+        }
+        
         // 우클릭: 컨텍스트 메뉴
         if (eventData.button == PointerEventData.InputButton.Right)
         {
@@ -308,10 +362,19 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 좌클릭: 더블클릭 체크
+        // 좌클릭: Shift 키 체크
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            HandleLeftClick();
+            // Shift + 클릭 = 아이템 분할
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                HandleShiftClick();
+            }
+            else
+            {
+                // 일반 클릭 = 더블클릭 체크
+                HandleLeftClick();
+            }
         }
     }
     
@@ -570,6 +633,79 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         else
         {
             Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
+        }
+    }
+    
+    // ─────────────────────────────────────────────
+    // Shift 키 처리 (아이템 분할)
+    // ─────────────────────────────────────────────
+    
+    /// <summary>
+    /// Shift + 클릭 처리
+    /// </summary>
+    private void HandleShiftClick()
+    {
+        if (currentItem == null || quantity <= 1)
+        {
+            Debug.Log("분할할 수 없는 아이템입니다.");
+            return;
+        }
+        
+        // 스택 가능한 아이템만 분할 가능
+        if (currentItem.stackSize <= 1)
+        {
+            Debug.Log("이 아이템은 분할할 수 없습니다.");
+            return;
+        }
+        
+        Debug.Log($"Shift + 클릭: {currentItem.itemName} 분할");
+        
+        // 분할 패널 열기
+        if (ItemSplitManager.Instance != null)
+        {
+            ItemSplitManager.Instance.OpenForClick(this);
+        }
+        else
+        {
+            Debug.LogError("ItemSplitManager.Instance가 null입니다!");
+        }
+    }
+    
+    /// <summary>
+    /// Shift + 드래그 처리
+    /// </summary>
+    private void HandleShiftDrag(SlotUI targetSlot)
+    {
+        if (currentItem == null || quantity <= 1)
+        {
+            Debug.Log("분할할 수 없는 아이템입니다.");
+            return;
+        }
+        
+        // 스택 가능한 아이템만 분할 가능
+        if (currentItem.stackSize <= 1)
+        {
+            Debug.Log("이 아이템은 분할할 수 없습니다.");
+            return;
+        }
+        
+        // 대상 슬롯이 비어있어야 함
+        if (targetSlot.currentItem != null)
+        {
+            Debug.Log("대상 슬롯이 비어있어야 합니다.");
+            return;
+        }
+        
+        Debug.Log($"Shift + 드래그: {currentItem.itemName} → {targetSlot.name}");
+        
+        // 분할 패널 열기
+        if (ItemSplitManager.Instance != null)
+        {
+            ItemSplitManager.Instance.OpenForDrag(this, targetSlot);
+        }
+        else
+        {
+            Debug.LogError("ItemSplitManager.Instance가 null입니다!");
         }
     }
 }

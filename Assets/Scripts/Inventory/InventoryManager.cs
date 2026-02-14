@@ -272,7 +272,7 @@ public class InventoryManager : MonoBehaviour
     // ─────────────────────────────────────────────
     
     /// <summary>
-    /// ✅ 드래그 앤 드롭으로 아이템 이동 또는 교환
+    /// ✅ 드래그 앤 드롭으로 아이템 이동, 교환, 또는 합치기
     /// </summary>
     public void TryMoveOrSwapDrag(SlotUI fromSlot, SlotUI toSlot)
     {
@@ -287,22 +287,67 @@ public class InventoryManager : MonoBehaviour
         Debug.Log($"From: {fromSlot.name} - {(fromSlot.currentItem != null ? fromSlot.currentItem.itemName : "빈 슬롯")}");
         Debug.Log($"To: {toSlot.name} - {(toSlot.currentItem != null ? toSlot.currentItem.itemName : "빈 슬롯")}");
         
-        // ✅ 1. 둘 다 아이템이 있는 경우 → 교환
+        // ✅ 1. 같은 아이템이면 합치기 시도
+        if (fromSlot.currentItem != null && toSlot.currentItem != null && 
+            fromSlot.currentItem == toSlot.currentItem)
+        {
+            TryStackItems(fromSlot, toSlot);
+            return;
+        }
+        
+        // ✅ 2. 둘 다 아이템이 있는 경우 → 교환
         if (fromSlot.currentItem != null && toSlot.currentItem != null)
         {
             SwapItems(fromSlot, toSlot);
             return;
         }
         
-        // ✅ 2. 대상 슬롯이 비어있는 경우 → 이동
+        // ✅ 3. 대상 슬롯이 비어있는 경우 → 이동
         if (toSlot.currentItem == null)
         {
             MoveItem(fromSlot, toSlot);
             return;
         }
         
-        // ✅ 3. 출발 슬롯이 비어있는 경우 (이론상 발생 안 함)
+        // ✅ 4. 출발 슬롯이 비어있는 경우 (이론상 발생 안 함)
         Debug.LogWarning("출발 슬롯이 비어있습니다!");
+    }
+    
+    /// <summary>
+    /// ✅ 같은 아이템을 합치기
+    /// </summary>
+    private void TryStackItems(SlotUI fromSlot, SlotUI toSlot)
+    {
+        Debug.Log($"같은 아이템 합치기: {fromSlot.currentItem.itemName}");
+        
+        int maxStack = fromSlot.currentItem.stackSize;
+        int availableSpace = maxStack - toSlot.quantity;
+        
+        if (availableSpace <= 0)
+        {
+            Debug.LogWarning("대상 슬롯이 가득 찼습니다!");
+            return;
+        }
+        
+        // 합칠 수 있는 만큼 이동
+        int amountToMove = Mathf.Min(fromSlot.quantity, availableSpace);
+        
+        toSlot.quantity += amountToMove;
+        fromSlot.quantity -= amountToMove;
+        
+        // 원본 슬롯이 비었으면 제거
+        if (fromSlot.quantity <= 0)
+        {
+            fromSlot.ClearSlot();
+        }
+        else
+        {
+            fromSlot.UpdateUI();
+        }
+        
+        toSlot.UpdateUI();
+        
+        Debug.Log($"합치기 완료: {amountToMove}개 이동 (대상: {toSlot.quantity}/{maxStack})");
     }
     
     /// <summary>

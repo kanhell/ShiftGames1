@@ -308,3 +308,4 @@ MonoBehaviour:
   quantity: 0
   slotType: 0
   allowedItemType: 0
+  doubleClickTime: 0.3

@@ -72,10 +72,19 @@ public class UIManager : MonoBehaviour
     
     private void Update()
     {
+        // ✅ 분할 패널이 열려있을 때만 단축키 차단
+        bool isSplitPanelOpen = ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen();
+        
         // ESC 키: 최상위 패널 닫기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             HandleEscapeKey();
+        }
+        
+        // ✅ 분할 패널이 열려있으면 아래 단축키들 무시
+        if (isSplitPanelOpen)
+        {
+            return;
         }
         
         // I 키: 인벤토리만 토글
@@ -102,6 +111,14 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void HandleEscapeKey()
     {
+        // ✅ 분할 패널이 열려있으면 최우선으로 닫기
+        if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
+        {
+            ItemSplitManager.Instance.ClosePanel();
+            Debug.Log("ESC: 분할 패널 닫음");
+            return;
+        }
+        
         if (PanelStackManager.Instance != null)
         {
             bool closed = PanelStackManager.Instance.CloseTopPanel();
