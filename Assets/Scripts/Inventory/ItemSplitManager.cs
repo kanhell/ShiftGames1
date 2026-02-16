@@ -94,11 +94,11 @@ public class ItemSplitManager : MonoBehaviour
         {
             quantitySlider.onValueChanged.AddListener(OnSliderValueChanged);
             
-            // ✅ 슬라이더 기본 설정 확인
-            quantitySlider.minValue = 0; // ✅ 0부터 시작
+            // ✅ 슬라이더 기본 설정
+            quantitySlider.minValue = 1; // ✅ 1부터 시작
             quantitySlider.maxValue = 10;
             quantitySlider.wholeNumbers = true;
-            quantitySlider.value = 0;
+            quantitySlider.value = 1; // ✅ 초기값 1
             
             LogDebug("슬라이더 초기화 완료");
         }
@@ -240,9 +240,9 @@ public class ItemSplitManager : MonoBehaviour
         // 슬라이더 설정
         if (quantitySlider != null)
         {
-            quantitySlider.minValue = 0;
+            quantitySlider.minValue = 1; // ✅ 최소 1개
             quantitySlider.maxValue = maxQuantity;
-            quantitySlider.value = 0;
+            quantitySlider.value = 1; // ✅ 초기값 1
         }
         
         // 아이템 정보 표시
@@ -286,7 +286,7 @@ public class ItemSplitManager : MonoBehaviour
             return;
         }
         
-        // ✅ 0개를 선택하면 아무것도 안 함
+        // ✅ 1개 이하를 선택하면 아무것도 안 함
         if (selectedQuantity <= 0)
         {
             LogDebug("0개는 분할할 수 없습니다.");
@@ -295,6 +295,9 @@ public class ItemSplitManager : MonoBehaviour
         }
         
         LogDebug($"분할 확인: {selectedQuantity}개");
+        
+        // ✅ 아이템 정보를 미리 저장 (ClearSlot 전에!)
+        ItemData itemToHold = sourceSlot.currentItem;
         
         // ✅ 원본에서 수량 감소
         sourceSlot.quantity -= selectedQuantity;
@@ -308,10 +311,10 @@ public class ItemSplitManager : MonoBehaviour
             sourceSlot.UpdateUI();
         }
         
-        // ✅ ItemCursorFollower로 아이템 전달
+        // ✅ ItemCursorFollower로 아이템 전달 (저장한 아이템 사용)
         if (ItemCursorFollower.Instance != null)
         {
-            ItemCursorFollower.Instance.StartHolding(sourceSlot.currentItem, selectedQuantity, sourceSlot);
+            ItemCursorFollower.Instance.StartHolding(itemToHold, selectedQuantity, sourceSlot);
             LogDebug($"ItemCursorFollower.StartHolding 호출 완료");
         }
         else
