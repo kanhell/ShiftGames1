@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tomato
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uD1A0\uB9C8\uD1A0"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -2512150239005748929, guid: bde838a8739e1544cb518e52ee2d2e2d, type: 3}
   itemType: 7
   stackSize: 99
   description: 

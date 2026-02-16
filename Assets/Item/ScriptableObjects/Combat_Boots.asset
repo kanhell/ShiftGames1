@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Combat_Boots
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC804\uD22C\uD654"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -591260542885086067, guid: d2a12a9252ed69742b15e91b8da50853, type: 3}
   itemType: 4
   stackSize: 1
   description: "\uD3B8\uC548\uD55C \uC804\uD22C\uC6A9 \uC2E0\uBC1C"

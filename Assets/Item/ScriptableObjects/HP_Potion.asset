@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HP_Potion
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uCCB4\uB825 \uD3EC\uC158"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 4040071974952511444, guid: 769190fe584c72c418fa8f7b49620b93, type: 3}
   itemType: 0
   stackSize: 5
   description: "HP\uB97C 50 \uD68C\uBCF5\uD569\uB2C8\uB2E4."

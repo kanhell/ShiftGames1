@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Meat
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uACE0\uAE30"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -809115827362613520, guid: efe4b728990852f4c908689877a92e3b, type: 3}
   itemType: 7
   stackSize: 99
   description: 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Iron_Sword
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uCCA0\uAC80"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 8885975897065909361, guid: 00e08b2656e93c64f9ad6d3a04e91254, type: 3}
   itemType: 1
   stackSize: 1
   description: "\uAE30\uBCF8\uC801\uC778 \uCCA0\uC81C \uAC80\uC785\uB2C8\uB2E4"

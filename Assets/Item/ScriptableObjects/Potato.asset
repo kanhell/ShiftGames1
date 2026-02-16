@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Potato
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uAC10\uC790"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 1258067554901739100, guid: 05b42f674522d654e8a6adda046acef7, type: 3}
   itemType: 7
   stackSize: 99
   description: 

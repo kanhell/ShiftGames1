@@ -194,6 +194,14 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
+        // ✅ ItemCursorFollower가 아이템을 들고 있으면 드래그 차단
+        if (ItemCursorFollower.Instance != null && ItemCursorFollower.Instance.IsHolding())
+        {
+            canDrag = false;
+            Debug.Log("ItemCursorFollower가 아이템을 들고 있어서 드래그 차단");
+            return;
+        }
+        
         if (currentItem == null)
         {
             canDrag = false;
@@ -349,6 +357,13 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         // ✅ 분할 패널이 열려있으면 클릭 차단
         if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
         {
+            return;
+        }
+        
+        // ✅ ItemCursorFollower가 아이템을 들고 있으면 클릭 차단
+        if (ItemCursorFollower.Instance != null && ItemCursorFollower.Instance.IsHolding())
+        {
+            Debug.Log("ItemCursorFollower가 아이템을 들고 있어서 클릭 차단");
             return;
         }
         

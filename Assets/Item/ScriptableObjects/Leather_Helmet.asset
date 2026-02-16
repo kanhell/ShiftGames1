@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Leather_Helmet
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uAC00\uC8FD \uD22C\uAD6C"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 2829622054808015371, guid: 7a8612dd195e69c4e8a1b3099172ed68, type: 3}
   itemType: 2
   stackSize: 1
   description: "\uAC00\uBCBC\uC6B4 \uAC00\uC8FD \uD22C\uAD6C"

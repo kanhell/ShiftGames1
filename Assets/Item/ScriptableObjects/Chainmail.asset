@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Chainmail
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uCCB4\uC778\uBA54\uC77C"
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -5375778895974986467, guid: 05da1a1aa89cc0944b70b140f07bc34d, type: 3}
   itemType: 3
   stackSize: 1
   description: "\uD2BC\uD2BC\uD55C \uC1E0\uC0AC\uC2AC \uAC11\uC637\t"
