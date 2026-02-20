@@ -303,11 +303,12 @@ public class ItemCursorFollower : MonoBehaviour
             LogDebug($"같은 아이템 합치기: {heldItem.itemName} x{heldQuantity}");
             StopHolding();
         }
-        // 다른 아이템이 있는 슬롯에 드롭 → 아무것도 안 함 (마우스에 계속 남아있음)
+        // 다른 아이템이 있는 슬롯에 드롭 (교환)
         else
         {
-            LogDebug("다른 아이템이 있는 슬롯입니다. 드롭 무시 (마우스에 계속 남아있음)");
-            // ✅ 아무것도 하지 않음 (StopHolding()도 ReturnToSource()도 호출 안 함)
+            // 교환 로직 (선택사항)
+            LogDebug("다른 아이템이 있는 슬롯입니다. 교환은 아직 미구현.");
+            ReturnToSource();
         }
     }
     

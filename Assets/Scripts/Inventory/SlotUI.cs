@@ -8,7 +8,7 @@ using TMPro;
 /// <summary>
 /// 개별 슬롯 UI 관리 (드래그 앤 드롭 + 더블클릭 지원)
 /// </summary>
-public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI References")]
     public Image iconImage;
@@ -454,6 +454,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     private void HandleInventoryDoubleClick()
     {
+        // ✅ 상점이 열려있고 판매 모드인 경우 → 아이템 판매
+        if (ShopManager.Instance != null && 
+            ShopManager.Instance.IsShopOpen() && 
+            ShopManager.Instance.IsSellMode())
+        {
+            SellItemToShop();
+            return;
+        }
+        
         // 전리품 슬롯인지 확인
         if (IsLootSlot())
         {
@@ -721,6 +730,76 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         else
         {
             Debug.LogError("ItemSplitManager.Instance가 null입니다!");
+        }
+    }
+    
+    /// <summary>
+    /// 상점에 아이템 판매
+    /// </summary>
+    private void SellItemToShop()
+    {
+        if (currentItem == null || quantity <= 0)
+        {
+            Debug.LogWarning("판매할 아이템이 없습니다.");
+            return;
+        }
+        
+        // 판매 가격 확인
+        if (currentItem.sellPrice <= 0)
+        {
+            Debug.LogWarning($"{currentItem.itemName}은(는) 판매할 수 없습니다!");
+            return;
+        }
+        
+        // 골드 추가
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.AddGold(currentItem.sellPrice);
+        }
+        
+        // 아이템 1개 제거
+        quantity--;
+        
+        if (quantity <= 0)
+        {
+            ClearSlot();
+        }
+        else
+        {
+            UpdateUI();
+        }
+        
+        Debug.Log($"{currentItem.itemName} 판매 완료! +{currentItem.sellPrice}G");
+    }
+    
+    // ─────────────────────────────────────────────
+    // 툴팁 (마우스 호버)
+    // ─────────────────────────────────────────────
+    
+    /// <summary>
+    /// 마우스가 슬롯 위에 올라갔을 때
+    /// </summary>
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (currentItem != null && ItemTooltip.Instance != null)
+        {
+            // 상점이 열려있고 판매 모드인지 확인
+            bool isSellMode = ShopManager.Instance != null && 
+                             ShopManager.Instance.IsShopOpen() && 
+                             ShopManager.Instance.IsSellMode();
+            
+            ItemTooltip.Instance.ShowTooltip(currentItem, isSellMode);
+        }
+    }
+    
+    /// <summary>
+    /// 마우스가 슬롯에서 벗어났을 때
+    /// </summary>
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (ItemTooltip.Instance != null)
+        {
+            ItemTooltip.Instance.HideTooltip();
         }
     }
 }

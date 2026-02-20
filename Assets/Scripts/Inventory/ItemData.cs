@@ -17,6 +17,13 @@ public class ItemData : ScriptableObject
     [Tooltip("최대 겹침 개수 (1 = 겹침 불가)")]
     public int stackSize = 1;
     
+    [Header("가격")]
+    [Tooltip("구매 가격 (0 = 구매 불가)")]
+    public int buyPrice = 100;
+    
+    [Tooltip("판매 가격 (0 = 판매 불가)")]
+    public int sellPrice = 50;
+    
     [Header("설명")]
     [TextArea(3, 5)]
     public string description = "";
