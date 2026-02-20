@@ -17,5 +17,5 @@ MonoBehaviour:
   itemType: 7
   stackSize: 99
   buyPrice: 100
-  sellPrice: 0
+  sellPrice: 50
   description: 

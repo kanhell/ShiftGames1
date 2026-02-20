@@ -659,6 +659,24 @@ public class ContextMenu : MonoBehaviour
     }
     #endregion
     
+    #region Public Methods
+    /// <summary>
+    /// 컨텍스트 메뉴가 열려있는지 확인
+    /// </summary>
+    public bool IsMenuOpen()
+    {
+        return (equipmentMenuPanel != null && equipmentMenuPanel.activeSelf) ||
+               (consumableMenuPanel != null && consumableMenuPanel.activeSelf) ||
+               (unequipmentMenuPanel != null && unequipmentMenuPanel.activeSelf) ||
+               (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
+               (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
+               (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
+               (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
+               (lootMenuPanel != null && lootMenuPanel.activeSelf) ||
+               (confirmPanel != null && confirmPanel.activeSelf);
+    }
+    #endregion
+    
     #region Nested Types
     private enum MenuType
     {

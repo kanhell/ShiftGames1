@@ -68,6 +68,14 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
         
+        // ✅ 분할 패널이 열려있으면 드래그 차단
+        if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
+        {
+            isDragging = false;
+            LogDebug("분할 패널 열림 - 드래그 차단");
+            return;
+        }
+        
         // 슬롯이나 버튼 위에서 시작한 드래그는 무시
         if (IsClickOnInteractableUI(eventData))
         {

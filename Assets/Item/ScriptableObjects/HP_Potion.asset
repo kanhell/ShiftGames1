@@ -16,4 +16,6 @@ MonoBehaviour:
   itemIcon: {fileID: 4040071974952511444, guid: 769190fe584c72c418fa8f7b49620b93, type: 3}
   itemType: 0
   stackSize: 5
+  buyPrice: 100
+  sellPrice: 0
   description: "HP\uB97C 50 \uD68C\uBCF5\uD569\uB2C8\uB2E4."

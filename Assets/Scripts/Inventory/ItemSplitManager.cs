@@ -81,18 +81,30 @@ public class ItemSplitManager : MonoBehaviour
         // 버튼 이벤트 연결
         if (confirmButton != null)
         {
-            confirmButton.onClick.AddListener(OnConfirmClicked);
+            confirmButton.onClick.RemoveAllListeners();
+            confirmButton.onClick.AddListener(() => {
+                Debug.Log("★★★★★ 확인 버튼 클릭 감지됨!");
+                OnConfirmClicked();
+            });
         }
         
         if (cancelButton != null)
         {
-            cancelButton.onClick.AddListener(OnCancelClicked);
+            cancelButton.onClick.RemoveAllListeners();
+            cancelButton.onClick.AddListener(() => {
+                Debug.Log("★★★★★ 취소 버튼 클릭 감지됨!");
+                OnCancelClicked();
+            });
         }
         
         // 슬라이더 이벤트 연결
         if (quantitySlider != null)
         {
-            quantitySlider.onValueChanged.AddListener(OnSliderValueChanged);
+            quantitySlider.onValueChanged.RemoveAllListeners();
+            quantitySlider.onValueChanged.AddListener((value) => {
+                Debug.Log($"★★★★★ 슬라이더 값 변경: {value}");
+                OnSliderValueChanged(value);
+            });
             
             // ✅ 슬라이더 기본 설정
             quantitySlider.minValue = 1; // ✅ 1부터 시작
@@ -107,18 +119,20 @@ public class ItemSplitManager : MonoBehaviour
             Debug.LogError("QuantitySlider가 연결되지 않았습니다!");
         }
         
-        // ✅ 초기 비활성화: InputBlocker와 ItemSplitPanel
+        /* ✅ 초기 비활성화: InputBlocker (임시로 주석)
         if (inputBlocker != null)
         {
             inputBlocker.SetActive(false);
         }
+        */
         
+        // ✅ 초기 비활성화: ItemSplitPanel
         if (panelObject != null)
         {
             panelObject.SetActive(false);
         }
         
-        LogDebug("UI 초기화 완료 - InputBlocker와 ItemSplitPanel 비활성화");
+        LogDebug("UI 초기화 완료 - ItemSplitPanel 비활성화");
     }
     #endregion
     
@@ -177,12 +191,13 @@ public class ItemSplitManager : MonoBehaviour
             LogDebug("ItemSplitPanel 비활성화");
         }
         
-        // ✅ InputBlocker 비활성화
+        /* ✅ InputBlocker 비활성화 (임시로 주석)
         if (inputBlocker != null)
         {
             inputBlocker.SetActive(false);
             LogDebug("InputBlocker 비활성화");
         }
+        */
         
         // 데이터 초기화
         sourceSlot = null;
@@ -214,28 +229,26 @@ public class ItemSplitManager : MonoBehaviour
         // ✅ 최대 개수를 원본 수량으로 설정
         maxQuantity = sourceSlot.quantity;
         
-        // ✅ InputBlocker 활성화 (제일 먼저)
+        // ✅ ItemSplitPanel 먼저 활성화
+        panelObject.SetActive(true);
+        LogDebug("ItemSplitPanel 활성화");
+        
+        /* ✅ InputBlocker 임시로 비활성화 (디버깅용)
         if (inputBlocker != null)
         {
             inputBlocker.SetActive(true);
-            inputBlocker.transform.SetAsFirstSibling(); // 제일 뒤로 (먼저 렌더링)
-            LogDebug("InputBlocker 활성화");
+            
+            // InputBlocker를 ItemSplitPanel 바로 뒤로 이동
+            int panelIndex = panelObject.transform.GetSiblingIndex();
+            inputBlocker.transform.SetSiblingIndex(panelIndex - 1);
+            
+            LogDebug($"InputBlocker 활성화 (Index: {inputBlocker.transform.GetSiblingIndex()})");
         }
         else
         {
             Debug.LogError("inputBlocker가 null입니다!");
         }
-        
-        // ✅ ItemSplitPanel 활성화
-        panelObject.SetActive(true);
-        LogDebug("ItemSplitPanel 활성화");
-        
-        // ✅ 위치 조정 (마지막에서 두 번째로)
-        var alwaysSecond = GetComponent<ItemSplitManagerAlwaysSecond>();
-        if (alwaysSecond != null)
-        {
-            alwaysSecond.OnPanelOpened();
-        }
+        */
         
         // 슬라이더 설정
         if (quantitySlider != null)

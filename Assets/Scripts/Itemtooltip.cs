@@ -120,24 +120,15 @@ public class ItemTooltip : MonoBehaviour
             Debug.LogError("[ItemTooltip] itemNameText가 null입니다!");
         }
         
-        // 가격 표시
+        // ✅ 가격 표시 (무조건 판매 가격)
         if (priceText != null)
         {
-            int price = isSellMode ? item.sellPrice : item.buyPrice;
+            int price = item.sellPrice;
             
-            if (price <= 0)
-            {
-                // 판매/구매 불가
-                priceText.text = isSellMode ? "판매 불가" : "구매 불가";
-                priceText.color = Color.red;
-            }
-            else
-            {
-                // 가격 표시
-                string modeText = isSellMode ? "판매 가격" : "구매 가격";
-                priceText.text = $"{modeText}: {price}G";
-                priceText.color = Color.white;
-            }
+            // 판매 가격 표시 (0이어도 "0 Gold"로 표시)
+            priceText.text = $"{price} Gold";
+            priceText.color = new Color(1f, 0.86f, 0f); // 노란색
+            
             Debug.Log($"[ItemTooltip] 가격 설정: {priceText.text}");
         }
         else
@@ -161,6 +152,7 @@ public class ItemTooltip : MonoBehaviour
         {
             tooltipPanel.SetActive(true);
             Debug.Log($"[ItemTooltip] 툴팁 패널 활성화 완료! Active: {tooltipPanel.activeSelf}");
+            
             UpdateTooltipPosition();
         }
         else
@@ -180,8 +172,8 @@ public class ItemTooltip : MonoBehaviour
             return;
         }
         
-        // ✅ 임시: 마우스 왼쪽 위에 표시
-        Vector2 position = Input.mousePosition + new Vector3(-180, 100, 0); // 툴팁을 마우스 왼쪽 위에
+        // ✅ 마우스 오른쪽 하단에 표시
+        Vector2 position = Input.mousePosition + new Vector3(20, -20, 0); // 오른쪽 하단
         
         Debug.Log($"[ItemTooltip] 마우스 위치: {Input.mousePosition}, 툴팁 위치: {position}");
         

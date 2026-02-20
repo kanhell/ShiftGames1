@@ -744,14 +744,9 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 판매 가격 확인
-        if (currentItem.sellPrice <= 0)
-        {
-            Debug.LogWarning($"{currentItem.itemName}은(는) 판매할 수 없습니다!");
-            return;
-        }
+        // ✅ 판매 가격 체크 제거 - 0 Gold여도 판매 가능
         
-        // 골드 추가
+        // 골드 추가 (0이어도 추가)
         if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.AddGold(currentItem.sellPrice);
@@ -783,6 +778,12 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     {
         if (currentItem != null && ItemTooltip.Instance != null)
         {
+            // ✅ 컨텍스트 메뉴가 열려있으면 툴팁 표시 안 함
+            if (ContextMenu.Instance != null && ContextMenu.Instance.IsMenuOpen())
+            {
+                return;
+            }
+            
             // 상점이 열려있고 판매 모드인지 확인
             bool isSellMode = ShopManager.Instance != null && 
                              ShopManager.Instance.IsShopOpen() && 
