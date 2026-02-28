@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("UI Panels")]
     [SerializeField] private GameObject inventoryPanel; // 인벤토리 패널
     [SerializeField] private GameObject equipmentPanel; // 장비 패널
+    [SerializeField] private GameObject cookingPanel; // 요리 패널
     
     [Header("Cooking Button")]
     [SerializeField] private GameObject cookingButtonPanel; // 요리 버튼 패널
@@ -21,6 +22,8 @@ public class UIManager : MonoBehaviour
     
     private bool isInventoryOpen = false;
     private bool isEquipmentOpen = false;
+    private bool isCookingOpen = false;
+    private bool isCookingButtonOpen = false;
     
     private void Awake()
     {
@@ -72,17 +75,21 @@ public class UIManager : MonoBehaviour
     
     private void Update()
     {
-        // ✅ 분할 패널이 열려있을 때만 단축키 차단
+        // ✅ 분할 패널이 열려있을 때 모든 단축키 차단 (ESC 제외)
         bool isSplitPanelOpen = ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen();
         
-        // ESC 키: 최상위 패널 닫기
+        // ✅ 상점이 열려있을 때 모든 단축키 차단 (ESC, Y 제외)
+        bool isShopOpen = ShopManager.Instance != null && ShopManager.Instance.IsShopOpen();
+        
+        // ESC 키: 항상 처리
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             HandleEscapeKey();
+            return; // ✅ ESC 처리 후 다른 키 무시
         }
         
-        // ✅ 분할 패널이 열려있으면 아래 단축키들 무시
-        if (isSplitPanelOpen)
+        // ✅ 분할 패널이나 상점이 열려있으면 아래 단축키들 무시
+        if (isSplitPanelOpen || isShopOpen)
         {
             return;
         }
@@ -177,6 +184,12 @@ public class UIManager : MonoBehaviour
                 inventoryPanel.SetActive(false);
                 Debug.Log("[UIManager] 인벤토리 닫힘");
             }
+            
+            // ✅ 인벤토리 창의 툴팁만 숨김
+            if (ItemTooltip.Instance != null)
+            {
+                ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Inventory);
+            }
         }
     }
     
@@ -222,6 +235,12 @@ public class UIManager : MonoBehaviour
             {
                 equipmentPanel.SetActive(false);
                 Debug.Log("[UIManager] 장비창 닫힘");
+            }
+            
+            // ✅ 장비창의 툴팁만 숨김
+            if (ItemTooltip.Instance != null)
+            {
+                ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Equipment);
             }
         }
     }
@@ -314,5 +333,71 @@ public class UIManager : MonoBehaviour
         {
             ToggleInventory();
         }
+    }
+    
+    /// <summary>
+    /// 모든 패널 닫기 (상점 열 때 사용)
+    /// </summary>
+    public void CloseAllPanels()
+    {
+        // 인벤토리 닫기
+        if (isInventoryOpen && inventoryPanel != null)
+        {
+            inventoryPanel.SetActive(false);
+            isInventoryOpen = false;
+        }
+        
+        // 장비창 닫기
+        if (isEquipmentOpen && equipmentPanel != null)
+        {
+            equipmentPanel.SetActive(false);
+            isEquipmentOpen = false;
+        }
+        
+        // 요리창 닫기
+        if (isCookingOpen && cookingPanel != null)
+        {
+            cookingPanel.SetActive(false);
+            isCookingOpen = false;
+        }
+        
+        // 요리 버튼 닫기
+        if (isCookingButtonOpen && cookingButtonPanel != null)
+        {
+            cookingButtonPanel.SetActive(false);
+            isCookingButtonOpen = false;
+        }
+        
+        // ✅ 툴팁 강제 숨김
+        if (ItemTooltip.Instance != null)
+        {
+            ItemTooltip.Instance.HideTooltip();
+        }
+        
+        Debug.Log("[UIManager] 모든 패널 닫기");
+    }
+    
+    /// <summary>
+    /// 아무 패널이라도 열려있는지 확인
+    /// </summary>
+    public bool IsAnyPanelOpen()
+    {
+        return isInventoryOpen || isEquipmentOpen || isCookingOpen;
+    }
+    
+    /// <summary>
+    /// 인벤토리가 열려있는지 확인
+    /// </summary>
+    public bool IsInventoryOpen()
+    {
+        return isInventoryOpen;
+    }
+    
+    /// <summary>
+    /// 장비창이 열려있는지 확인
+    /// </summary>
+    public bool IsEquipmentOpen()
+    {
+        return isEquipmentOpen;
     }
 }

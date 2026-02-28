@@ -32,7 +32,6 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     #region Private Fields
     private bool isDragging = false;
     private Vector2 lastMousePosition;
-    private PanelZOrderManager zOrderManager;
     private ManagedPanel managedPanel;
     #endregion
     
@@ -56,7 +55,6 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             canvas = GetComponentInParent<Canvas>();
         }
         
-        zOrderManager = GetComponent<PanelZOrderManager>();
         managedPanel = GetComponent<ManagedPanel>();
     }
     #endregion
@@ -127,17 +125,9 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             return;
         }
         
-        // PanelZOrderManager가 있으면 그쪽에서 처리
-        if (zOrderManager != null)
-        {
-            zOrderManager.BringToFront();
-            LogDebug("최상위로 이동 (PanelZOrderManager 사용)");
-        }
-        else
-        {
-            transform.SetAsLastSibling();
-            LogDebug("최상위로 이동 (직접)");
-        }
+        // SetAsLastSibling으로 최상위 이동
+        transform.SetAsLastSibling();
+        LogDebug("최상위로 이동");
     }
     
     private bool IsClickOnInteractableUI(PointerEventData eventData)

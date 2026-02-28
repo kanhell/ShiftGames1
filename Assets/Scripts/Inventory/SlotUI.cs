@@ -13,6 +13,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     [Header("UI References")]
     public Image iconImage;
     public TextMeshProUGUI quantityText;
+    public TextMeshProUGUI priceText; // ✅ 가격 표시용 (상점에서만)
     
     [Header("Slot Data")]
     public ItemData currentItem;
@@ -87,24 +88,61 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 Debug.LogWarning($"[{gameObject.name}] iconImage가 null입니다!");
             }
             
-            // ✅ 수량 표시 (중요!)
+            // ✅ 수량 표시 로직 (Consumable/Ingredient만 표시)
             if (quantityText != null)
             {
-                if (quantity > 1)
+                bool isConsumableOrIngredient = currentItem.itemType == ItemType.Consumable || 
+                                                 currentItem.itemType == ItemType.Ingredient;
+                
+                if (isConsumableOrIngredient && quantity > 1)
                 {
+                    // Consumable/Ingredient는 실제 수량 표시
                     quantityText.text = quantity.ToString();
                     quantityText.gameObject.SetActive(true);
                     Debug.Log($"[{gameObject.name}] 수량 표시: {quantity}");
                 }
                 else
                 {
+                    // 장비류는 수량 표시 안 함 (내부적으로 여러 개여도 1개로 보임)
                     quantityText.gameObject.SetActive(false);
-                    Debug.Log($"[{gameObject.name}] 수량 1개 - 텍스트 숨김");
+                    Debug.Log($"[{gameObject.name}] 장비 - 수량 텍스트 숨김");
                 }
             }
             else
             {
                 Debug.LogError($"[{gameObject.name}] quantityText가 null입니다! 수량을 표시할 수 없습니다.");
+            }
+            
+            // ✅ 가격 표시 로직 (상점 패널 안에 있을 때)
+            if (priceText != null)
+            {
+                bool isInShopPanel = IsInShopPanel();
+                
+                if (isInShopPanel)
+                {
+                    // 어느 그리드에 있는지 확인
+                    bool isInShopGrid = IsInShopGrid();
+                    
+                    if (isInShopGrid)
+                    {
+                        // ShopGrid: 구매 가격 표시
+                        priceText.gameObject.SetActive(true);
+                        priceText.text = $"{currentItem.buyPrice}G";
+                        Debug.Log($"[{gameObject.name}] 구매 가격 표시: {currentItem.buyPrice}G");
+                    }
+                    else
+                    {
+                        // InventoryGrid (상점 안): 판매 가격 표시
+                        priceText.gameObject.SetActive(true);
+                        priceText.text = $"{currentItem.sellPrice}G";
+                        Debug.Log($"[{gameObject.name}] 판매 가격 표시: {currentItem.sellPrice}G");
+                    }
+                }
+                else
+                {
+                    // 상점 밖: 가격 숨김
+                    priceText.gameObject.SetActive(false);
+                }
             }
         }
         else
@@ -118,6 +156,11 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             if (quantityText != null)
             {
                 quantityText.gameObject.SetActive(false);
+            }
+            
+            if (priceText != null)
+            {
+                priceText.gameObject.SetActive(false);
             }
         }
     }
@@ -200,6 +243,23 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             canDrag = false;
             Debug.Log("ItemCursorFollower가 아이템을 들고 있어서 드래그 차단");
             return;
+        }
+        
+        // ✅ 상점이 열려있으면 ShopGrid와 InventoryGrid 모두 드래그 차단
+        if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
+        {
+            if (transform.parent != null)
+            {
+                string parentName = transform.parent.name;
+                
+                // ShopGrid 또는 InventoryGrid의 자식이면 드래그 차단
+                if (parentName == "ShopGrid" || parentName == "InventoryGrid")
+                {
+                    canDrag = false;
+                    Debug.Log("상점이 열려있을 때는 드래그할 수 없습니다.");
+                    return;
+                }
+            }
         }
         
         if (currentItem == null)
@@ -367,9 +427,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 우클릭: 컨텍스트 메뉴
+        // ✅ 상점이 열려있으면 우클릭 차단
         if (eventData.button == PointerEventData.InputButton.Right)
         {
+            if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
+            {
+                Debug.Log("상점이 열려있을 때는 우클릭이 작동하지 않습니다.");
+                return;
+            }
+            
             if (currentItem != null && ContextMenu.Instance != null)
             {
                 ContextMenu.Instance.OpenMenu(this, eventData.position);
@@ -380,6 +446,13 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         // 좌클릭: Shift 키 체크
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            // ✅ 상점이 열려있으면 선택 시스템 사용
+            if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
+            {
+                HandleShopSelection();
+                return;
+            }
+            
             // Shift + 클릭 = 아이템 분할
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
@@ -454,12 +527,10 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     private void HandleInventoryDoubleClick()
     {
-        // ✅ 상점이 열려있고 판매 모드인 경우 → 아이템 판매
-        if (ShopManager.Instance != null && 
-            ShopManager.Instance.IsShopOpen() && 
-            ShopManager.Instance.IsSellMode())
+        // ✅ 상점이 열려있으면 더블클릭 차단 (구매/판매는 클릭으로만)
+        if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
         {
-            SellItemToShop();
+            Debug.Log("상점이 열려있을 때는 더블클릭이 작동하지 않습니다.");
             return;
         }
         
@@ -784,12 +855,18 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 return;
             }
             
-            // 상점이 열려있고 판매 모드인지 확인
-            bool isSellMode = ShopManager.Instance != null && 
-                             ShopManager.Instance.IsShopOpen() && 
-                             ShopManager.Instance.IsSellMode();
+            // ✅ 이 슬롯이 어느 창에 속해있는지 판단
+            ItemTooltip.PanelSource panelSource = DeterminePanelSource();
             
-            ItemTooltip.Instance.ShowTooltip(currentItem, isSellMode);
+            // 상점이 열려있는지 확인
+            bool isShopOpen = ShopManager.Instance != null && ShopManager.Instance.IsShopOpen();
+            bool isSellMode = isShopOpen && ShopManager.Instance.IsSellMode();
+            bool isBuyMode = isShopOpen && !ShopManager.Instance.IsSellMode();
+            
+            // 구매 모드인지 확인 (ShopGrid의 자식이면 상점 아이템)
+            bool isShopItem = panelSource == ItemTooltip.PanelSource.Shop;
+            
+            ItemTooltip.Instance.ShowTooltip(currentItem, panelSource, isSellMode, isBuyMode && isShopItem);
         }
     }
     
@@ -802,6 +879,145 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         {
             ItemTooltip.Instance.HideTooltip();
         }
+    }
+    
+    /// <summary>
+    /// 이 슬롯이 어느 창에 속해있는지 판단
+    /// </summary>
+    private ItemTooltip.PanelSource DeterminePanelSource()
+    {
+        // ✅ 핵심: 상위 계층을 따라 올라가면서 체크
+        Transform current = transform;
+        
+        // 최대 5단계까지 부모를 확인
+        for (int i = 0; i < 5 && current != null; i++)
+        {
+            string nodeName = current.name;
+            
+            // ✅ 1순위: ShopPanel - 상점창 안의 모든 것은 상점 툴팁
+            if (nodeName.Contains("ShopPanel") || nodeName == "ShopPanel")
+            {
+                return ItemTooltip.PanelSource.Shop;
+            }
+            
+            // 2순위: LootPanel
+            if (nodeName.Contains("LootPanel") || nodeName.Contains("Loot"))
+            {
+                return ItemTooltip.PanelSource.Loot;
+            }
+            
+            // 3순위: EquipmentPanel
+            if (nodeName.Contains("EquipmentPanel") || nodeName.Contains("Equipment"))
+            {
+                return ItemTooltip.PanelSource.Equipment;
+            }
+            
+            // 4순위: InventoryPanel (정확히 InventoryPanel일 때만)
+            if (nodeName == "InventoryPanel")
+            {
+                return ItemTooltip.PanelSource.Inventory;
+            }
+            
+            current = current.parent;
+        }
+        
+        // ===== 폴백: 직접 부모 이름으로 판단 =====
+        if (transform.parent != null)
+        {
+            string parentName = transform.parent.name;
+            
+            if (parentName.Contains("Shop"))
+            {
+                return ItemTooltip.PanelSource.Shop;
+            }
+            else if (parentName.Contains("Loot"))
+            {
+                return ItemTooltip.PanelSource.Loot;
+            }
+            else if (parentName.Contains("Equipment") || slotType == SlotType.Equipment)
+            {
+                return ItemTooltip.PanelSource.Equipment;
+            }
+            else if (parentName.Contains("Inventory"))
+            {
+                return ItemTooltip.PanelSource.Inventory;
+            }
+        }
+        
+        // 기본값: 인벤토리
+        return ItemTooltip.PanelSource.Inventory;
+    }
+    
+    /// <summary>
+    /// 이 슬롯이 상점 그리드에 있는지 확인
+    /// </summary>
+    private bool IsInShopGrid()
+    {
+        // 상위 계층 확인 (ShopGrid 또는 ShopPanel 내부인지)
+        Transform current = transform;
+        
+        for (int i = 0; i < 5 && current != null; i++)
+        {
+            string nodeName = current.name;
+            
+            // ShopGrid에 속해있으면 true
+            if (nodeName == "ShopGrid" || nodeName.Contains("ShopGrid"))
+            {
+                return true;
+            }
+            
+            current = current.parent;
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// 이 슬롯이 상점 패널 안에 있는지 확인 (ShopGrid 또는 InventoryGrid)
+    /// </summary>
+    private bool IsInShopPanel()
+    {
+        // 상위 계층 확인
+        Transform current = transform;
+        
+        for (int i = 0; i < 5 && current != null; i++)
+        {
+            string nodeName = current.name;
+            
+            // ShopPanel에 속해있으면 true
+            if (nodeName == "ShopPanel" || nodeName.Contains("ShopPanel"))
+            {
+                return true;
+            }
+            
+            current = current.parent;
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// 상점에서 아이템 선택 처리
+    /// </summary>
+    private void HandleShopSelection()
+    {
+        if (currentItem == null)
+        {
+            Debug.Log("빈 슬롯은 선택할 수 없습니다.");
+            return;
+        }
+        
+        if (ShopManager.Instance == null)
+        {
+            Debug.LogError("ShopManager.Instance가 null입니다!");
+            return;
+        }
+        
+        // 슬롯이 ShopGrid의 자식이면 상점 슬롯
+        bool isShopSlot = transform.parent != null && transform.parent.name == "ShopGrid";
+        
+        // ShopManager에 선택 요청
+        ShopManager.Instance.OnSlotClicked(this, isShopSlot);
     }
 }
 

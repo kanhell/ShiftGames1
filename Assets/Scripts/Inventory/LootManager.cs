@@ -151,7 +151,21 @@ public class LootManager : MonoBehaviour
         isLootOpen = false;
         lootPanel.SetActive(false);
         
+        // ✅ 전리품 창의 툴팁만 숨김
+        if (ItemTooltip.Instance != null)
+        {
+            ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Loot);
+        }
+        
         LogDebug("전리품 창 닫힘");
+    }
+    
+    /// <summary>
+    /// 전리품 창이 열려있는지 확인
+    /// </summary>
+    public bool IsLootPanelOpen()
+    {
+        return isLootOpen;
     }
     
     /// <summary>

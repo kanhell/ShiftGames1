@@ -240,6 +240,14 @@ public class InventoryManager : MonoBehaviour
     }
     
     /// <summary>
+    /// 현재 골드 가져오기
+    /// </summary>
+    public int GetGold()
+    {
+        return goldAmount;
+    }
+    
+    /// <summary>
     /// 골드 제거
     /// </summary>
     public bool RemoveGold(int amount)
@@ -449,6 +457,7 @@ public class InventoryManager : MonoBehaviour
                         inventorySlot.UpdateUI();
                     }
                     
+                    // ✅ QuickSlot UI 업데이트 (중요!)
                     quickSlot.UpdateUI();
                     Debug.Log($"퀵슬롯에 추가: {addAmount}개 (총 {quickSlot.quantity}개)");
                 }
@@ -638,5 +647,28 @@ public class InventoryManager : MonoBehaviour
         }
         
         return aToB && bToA;
+    }
+    
+    /// <summary>
+    /// 모든 인벤토리 아이템 가져오기 (상점에서 사용)
+    /// </summary>
+    public List<(ItemData item, int quantity)> GetAllItems()
+    {
+        List<(ItemData, int)> items = new List<(ItemData, int)>();
+        
+        foreach (var slot in inventorySlots)
+        {
+            if (slot.currentItem != null)
+            {
+                items.Add((slot.currentItem, slot.quantity));
+            }
+            else
+            {
+                // 빈 슬롯도 추가 (null, 0)
+                items.Add((null, 0));
+            }
+        }
+        
+        return items;
     }
 }
