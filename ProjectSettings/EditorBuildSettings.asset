@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/Tiles/DummyScrollableScene.unity
+    path: Assets/Scenes/DummyScrollableScene.unity
     guid: 0deeb4daae576e9459c5fc723d1e6217
   - enabled: 1
-    path: Assets/Scenes/DIalogScene.unity
+    path: Assets/Scenes/DialogScene.unity
     guid: de7b512355de6d04fb6f3baf21ff69ac
   - enabled: 1
     path: Assets/Scenes/Tiles/DummyRightScene.unity

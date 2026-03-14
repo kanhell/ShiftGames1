@@ -20,8 +20,8 @@ public class ConversationController : MonoBehaviour
             else if (npc.npcData == CNVData.npc2) npc2 = npc;
         }
 
-        npc1.isMON = false;
-        npc2.isMON = false;
+        npc1.npcData.isMON = false;
+        npc2.npcData.isMON = false;
     }
 
     public IEnumerator showCNV()

@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: NPC_npc1
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
   npcName: one
-  isDialog: 1
+  DialogData: {fileID: 11400000, guid: b09a60551d9d076499353a973ee565f2, type: 2}
+  DialogState: 0
   direction: 0
   state: 0
+  isMON: 0
   monologues:
   - "\uCC98\uC74C \uBCF4\uB294 \uC5BC\uAD74\uC774\uB124"
   - "\uC790\uB124.. \uB098 \uC880 \uB3C4\uC640\uC8FC\uACA0\uB098?"

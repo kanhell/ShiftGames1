@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TIL_dummy
   m_EditorClassIdentifier: Assembly-CSharp::TileData
   tileName: "\uD0DC\uCD08\uB9C8\uC744"
+  tileCode: DummyScrollableScene
   MaxLeft: -8
   MaxRight: 40
   dawn: {fileID: 0}

@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    // ΩÃ±€≈Ê
+    public static CameraController instance;
+
     public GameObject player;
     float obj_x;
     float x;
@@ -10,10 +13,15 @@ public class CameraController : MonoBehaviour
 
     float speed = Values.camera_speed;
     float dis = Values.camera_maxDis;
-    float camera_width = Values.camera_width;  // ¥Î√Ê ¿Ã¡§µµ µ 
+    float camera_width = Values.camera_width;
 
-    private void Awake()
+    void Awake()  // ΩÃ±€≈Ê
     {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
         DontDestroyOnLoad(gameObject);
     }
 

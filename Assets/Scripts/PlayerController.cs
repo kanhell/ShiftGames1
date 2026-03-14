@@ -1,11 +1,12 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
+    // ΩÃ±€≈Ê
+    public static PlayerController instance;
+
     // ¿Ãµø
     float x;
     float speed = Values.player_speed;
@@ -18,19 +19,27 @@ public class PlayerController : MonoBehaviour
     // collider
     Collider[] MONColliders;
     Collider[] CNVColliders;
-    Collider[] DLGNColliders;
+    Collider[] DLGColliders;
     Collider[] STCColliders;
 
-    // manual
+    // canvas
     public Canvas canvas;
     public TextMeshProUGUI textUI;
+
+    // manual
     NPCController obj;
     bool isCNV;
 
-    private void Awake()
+    void Awake()  // ΩÃ±€≈Ê
     {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
         DontDestroyOnLoad(gameObject);
     }
+
 
     void Update()
     {
@@ -59,12 +68,12 @@ public class PlayerController : MonoBehaviour
 
         // DLG, STC -> manual∑Œ «•Ω√
         isCNV = false;
-        DLGNColliders = Physics.OverlapSphere(transform.position, Values.player_DLG_radius, NPCLayer);
-        if (DLGNColliders.Length > 0)
+        DLGColliders = Physics.OverlapSphere(transform.position, Values.player_DLG_radius, NPCLayer);
+        if (DLGColliders.Length > 0)
         {
-            obj = DLGNColliders[0].GetComponent<NPCController>();
+            obj = DLGColliders[0].GetComponent<NPCController>();
 
-            if (obj.npcData.isDialog)
+            if (obj.npcData.DialogData != null && obj.npcData.DialogState == obj.npcData.state)
             {
                 isCNV = true;
                 textUI.text = Values.manual_DLG;
@@ -73,7 +82,9 @@ public class PlayerController : MonoBehaviour
                 // f≈∞ ¥©∏£∏È
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    // TODO : ¥Î»≠ §°
+                    Debug.Log("show Dialog");
+                    GameManager.instance.DialogData = obj.npcData.DialogData;
+                    SceneManager.LoadScene("DialogScene");
                 }
             }
         }

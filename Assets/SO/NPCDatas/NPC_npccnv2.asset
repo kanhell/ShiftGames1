@@ -13,16 +13,18 @@ MonoBehaviour:
   m_Name: NPC_npccnv2
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
   npcName: cnv2
-  isDialog: 0
+  DialogData: {fileID: 0}
+  DialogState: -1
   direction: 0
   state: 0
+  isMON: 0
   monologues:
   - "\uCC98\uC74C \uBCF4\uB294 \uC5BC\uAD74\uC774\uB124"
   statesDescription:
   - first
   bubbleposY: 6.8
-  front: {fileID: 21300000, guid: eacf631d813d5f34db7ab8cd94dbc5ac, type: 3}
-  left: {fileID: 21300000, guid: d7c239c4fd8990c4a998dd7e14dc89a1, type: 3}
-  right: {fileID: 21300000, guid: d7c239c4fd8990c4a998dd7e14dc89a1, type: 3}
+  front: {fileID: 5237468285011888049, guid: ba94a2495d15ce84e910bb11504cd4d3, type: 3}
+  left: {fileID: 4702216129459513532, guid: 9394aa40d33a0824dad91856a9365d31, type: 3}
+  right: {fileID: 7099362201037712371, guid: d863496e43d4b9b4681e614525573448, type: 3}
   back: {fileID: 0}
   dialog: {fileID: 0}

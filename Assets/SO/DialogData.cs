@@ -1,23 +1,28 @@
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DLG_npc_context", menuName = "NPC/DialogData")]
+[CreateAssetMenu(fileName = "DLG_", menuName = "NPC/DialogData")]
 public class DialogData : ScriptableObject
 {
     [Header("[Info]")]
-    public string npcName;  // NPC 이름
-    public bool isDialog;  // 대화를 걸 수 있는지
+    [TextArea] public string discreption;
+    public NPCData NPCData;
+    public Sprite background;
+    public int NPCState;
 
-    [Header("[Monologue]")]
-    public List<string> monologues;  // 혼잣말 또는 지나가는 말
-    public List<string> statesDescription;  // monologue 상태
-
-
-    [Header("[Sprites]")]
-    public Sprite front;
-    public Sprite back;
-    public Sprite left;
-    public Sprite dialog;
+    [Header("[Dialog]")]
+    public List<DialogLine> DialogLines;
+    public List<string> codes;
+    public string currentCode;
 }
 
+[System.Serializable]
+public class DialogLine
+{
+    public string code;
+    public List<string> lines;
+    public List<string> options;
+    public List<string> nextCode_byOption;
+}
 

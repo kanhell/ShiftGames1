@@ -21,6 +21,13 @@ public static class Values
     public static string manual_STC = "f키를 눌러 건물 들어가기";
     public static string manual_noLoad = "길이 막혔습니다";
 
+    // dialog
+    public static int dialog_optionPos_topY = 260;
+    public static int dialog_optionPos_bottomY = -100;
+    public static int dialog_optionPos_X = 500;
+
+    public static float dialog_MONTime = 3f;
+
 }
 
 

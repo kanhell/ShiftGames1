@@ -12,7 +12,6 @@ public class NPCController : MonoBehaviour
     TextMeshProUGUI textUI;
 
     // MON
-    public bool isMON = true;
     float MONshowTime = Values.npc_mon_time;
 
     // sprite
@@ -33,9 +32,9 @@ public class NPCController : MonoBehaviour
 
     public IEnumerator ShowMON()  // MON ¶ç¿ì±â
     {
-        if (!isMON) yield break;
+        if (!npcData.isMON) yield break;
 
-        isMON = false;
+        npcData.isMON = false;
         Debug.Log(npcData.npcName + " : showMON");
         StartCoroutine(ShowBubble(npcData.monologues[npcData.state], MONshowTime));
         yield return new WaitForSeconds(MONshowTime);

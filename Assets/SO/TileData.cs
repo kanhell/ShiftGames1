@@ -6,6 +6,7 @@ public class TileData : ScriptableObject
 {
     [Header("[Info]")]
     public string tileName;
+    public string tileCode;
     public float MaxLeft;
     public float MaxRight;
 
