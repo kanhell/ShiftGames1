@@ -1,6 +1,3 @@
-// Assets/Scripts/Shop/WeightedRandomSelector.cs
-// 가중치 기반 랜덤 선택 알고리즘 (디자인 패턴: Strategy Pattern)
-
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

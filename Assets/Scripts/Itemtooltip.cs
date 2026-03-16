@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/ItemTooltip.cs
-
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -41,7 +39,6 @@ public class ItemTooltip : MonoBehaviour
     private RectTransform tooltipRect;
     private Canvas canvas;
     
-    // ✅ 현재 툴팁이 어느 창의 아이템인지 추적
     private PanelSource currentPanelSource = PanelSource.None;
     #endregion
     
@@ -85,7 +82,6 @@ public class ItemTooltip : MonoBehaviour
     {
         if (item == null) return;
         
-        // ✅ 어느 창의 아이템인지 저장
         currentPanelSource = panelSource;
         
         // 기존 코루틴 중지
@@ -114,7 +110,6 @@ public class ItemTooltip : MonoBehaviour
             tooltipPanel.SetActive(false);
         }
         
-        // ✅ 창 정보 초기화
         currentPanelSource = PanelSource.None;
     }
     
@@ -137,31 +132,19 @@ public class ItemTooltip : MonoBehaviour
     /// </summary>
     private IEnumerator ShowTooltipDelayed(ItemData item, bool isSellMode, bool isBuyMode)
     {
-        Debug.Log($"[ItemTooltip] 1초 대기 시작... 아이템: {item.itemName}, 창: {currentPanelSource}");
         yield return new WaitForSeconds(showDelay);
         
-        // ✅ 핵심: 1초 대기 후 해당 창이 닫혀있으면 툴팁 표시 안 함
         if (!IsSourcePanelOpen(currentPanelSource))
         {
-            Debug.Log($"[ItemTooltip] {currentPanelSource} 창이 닫혀있어 툴팁 표시 취소");
             yield break;
         }
-        
-        Debug.Log($"[ItemTooltip] 툴팁 표시 시작");
         
         // 아이템 이름
         if (itemNameText != null)
         {
             itemNameText.text = item.itemName;
-            Debug.Log($"[ItemTooltip] 아이템 이름 설정: {item.itemName}");
         }
-        else
-        {
-            Debug.LogError("[ItemTooltip] itemNameText가 null입니다!");
-        }
-        
-        // ✅ 가격 표시
-        if (priceText != null)
+                if (priceText != null)
         {
             if (isBuyMode)
             {
@@ -176,37 +159,20 @@ public class ItemTooltip : MonoBehaviour
             
             priceText.color = new Color(1f, 0.86f, 0f); // 노란색
             
-            Debug.Log($"[ItemTooltip] 가격 설정: {priceText.text}");
         }
-        else
-        {
-            Debug.LogError("[ItemTooltip] priceText가 null입니다!");
-        }
-        
-        // 설명
+                // 설명
         if (descriptionText != null)
         {
             descriptionText.text = string.IsNullOrEmpty(item.description) ? "설명 없음" : item.description;
-            Debug.Log($"[ItemTooltip] 설명 설정: {descriptionText.text}");
         }
-        else
-        {
-            Debug.LogError("[ItemTooltip] descriptionText가 null입니다!");
-        }
-        
-        // 패널 표시
+                // 패널 표시
         if (tooltipPanel != null)
         {
             tooltipPanel.SetActive(true);
-            Debug.Log($"[ItemTooltip] 툴팁 패널 활성화 완료! Active: {tooltipPanel.activeSelf}");
             
             UpdateTooltipPosition();
         }
-        else
-        {
-            Debug.LogError("[ItemTooltip] tooltipPanel이 null입니다!");
-        }
-    }
+            }
     
     /// <summary>
     /// 툴팁 위치 업데이트 (마우스 따라다님)
@@ -226,7 +192,6 @@ public class ItemTooltip : MonoBehaviour
     {
         if (tooltipRect == null || canvas == null)
         {
-            Debug.LogError("[ItemTooltip] tooltipRect 또는 canvas가 null입니다!");
             return;
         }
         
@@ -250,7 +215,6 @@ public class ItemTooltip : MonoBehaviour
             // 마우스 왼쪽으로 이동
             offset.x = -20;
             pivot.x = 1; // Pivot을 오른쪽으로
-            Debug.Log("[ItemTooltip] 오른쪽 경계 감지 → 마우스 왼쪽으로 이동");
         }
         
         // ===== 아래쪽 경계 체크 =====
@@ -261,7 +225,6 @@ public class ItemTooltip : MonoBehaviour
             // 마우스 위쪽으로 이동
             offset.y = 20;
             pivot.y = 0; // Pivot을 아래쪽으로
-            Debug.Log("[ItemTooltip] 아래쪽 경계 감지 → 마우스 위쪽으로 이동");
         }
         
         // ===== 왼쪽 경계 체크 (왼쪽으로 이동했는데도 화면 밖이면) =====
@@ -269,7 +232,6 @@ public class ItemTooltip : MonoBehaviour
         {
             // 최소 왼쪽 경계 보정
             offset.x = -mousePosition.x + tooltipWidth + 10;
-            Debug.Log("[ItemTooltip] 왼쪽 경계 추가 보정");
         }
         
         // ===== 위쪽 경계 체크 (위쪽으로 이동했는데도 화면 밖이면) =====
@@ -277,7 +239,6 @@ public class ItemTooltip : MonoBehaviour
         {
             // 최대 위쪽 경계 보정
             offset.y = Screen.height - mousePosition.y - tooltipHeight - 10;
-            Debug.Log("[ItemTooltip] 위쪽 경계 추가 보정");
         }
         
         // Pivot 적용
@@ -288,7 +249,6 @@ public class ItemTooltip : MonoBehaviour
         
         tooltipPanel.transform.position = finalPosition;
         
-        Debug.Log($"[ItemTooltip] 마우스: {mousePosition}, 오프셋: {offset}, Pivot: {pivot}, 최종: {finalPosition}");
     }
     
     /// <summary>
@@ -302,11 +262,9 @@ public class ItemTooltip : MonoBehaviour
                 return ShopManager.Instance != null && ShopManager.Instance.IsShopOpen();
                 
             case PanelSource.Inventory:
-                // ✅ 인벤토리만 체크
                 return UIManager.Instance != null && UIManager.Instance.IsInventoryOpen();
                 
             case PanelSource.Equipment:
-                // ✅ 장비창만 체크
                 return UIManager.Instance != null && UIManager.Instance.IsEquipmentOpen();
                 
             case PanelSource.Loot:
@@ -321,13 +279,11 @@ public class ItemTooltip : MonoBehaviour
     #region Update
     private void Update()
     {
-        // ✅ 핵심: 툴팁이 표시 중일 때 지속적으로 창 상태 체크
         if (tooltipPanel != null && tooltipPanel.activeSelf)
         {
             // 툴팁이 속한 창이 닫혔으면 즉시 숨김
             if (!IsSourcePanelOpen(currentPanelSource))
             {
-                Debug.Log($"[ItemTooltip] Update: {currentPanelSource} 창이 닫혀서 툴팁 숨김");
                 HideTooltip();
                 return;
             }

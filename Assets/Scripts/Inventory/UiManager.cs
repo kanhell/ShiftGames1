@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/UIManager.cs
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,27 +41,16 @@ public class UIManager : MonoBehaviour
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(false);
-            Debug.Log("인벤토리 패널 초기화: 비활성화");
-        }
-        else
-        {
-            Debug.LogWarning("Inventory Panel이 연결되지 않았습니다!");
         }
         
         if (equipmentPanel != null)
         {
             equipmentPanel.SetActive(false);
-            Debug.Log("장비 패널 초기화: 비활성화");
-        }
-        else
-        {
-            Debug.LogWarning("Equipment Panel이 연결되지 않았습니다!");
         }
         
         if (cookingButtonPanel != null)
         {
             cookingButtonPanel.SetActive(false);
-            Debug.Log("요리 버튼 패널 초기화: 비활성화");
         }
         
         // 요리 버튼 이벤트 연결
@@ -75,20 +62,17 @@ public class UIManager : MonoBehaviour
     
     private void Update()
     {
-        // ✅ 분할 패널이 열려있을 때 모든 단축키 차단 (ESC 제외)
         bool isSplitPanelOpen = ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen();
         
-        // ✅ 상점이 열려있을 때 모든 단축키 차단 (ESC, Y 제외)
         bool isShopOpen = ShopManager.Instance != null && ShopManager.Instance.IsShopOpen();
         
         // ESC 키: 항상 처리
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             HandleEscapeKey();
-            return; // ✅ ESC 처리 후 다른 키 무시
+            return;
         }
         
-        // ✅ 분할 패널이나 상점이 열려있으면 아래 단축키들 무시
         if (isSplitPanelOpen || isShopOpen)
         {
             return;
@@ -118,11 +102,9 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void HandleEscapeKey()
     {
-        // ✅ 분할 패널이 열려있으면 최우선으로 닫기
         if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
         {
             ItemSplitManager.Instance.ClosePanel();
-            Debug.Log("ESC: 분할 패널 닫음");
             return;
         }
         
@@ -130,15 +112,7 @@ public class UIManager : MonoBehaviour
         {
             bool closed = PanelStackManager.Instance.CloseTopPanel();
             
-            if (closed)
-            {
-                Debug.Log("ESC: 최상위 패널 닫음");
-            }
-            else
-            {
-                Debug.Log("ESC: 닫을 패널이 없습니다");
-            }
-        }
+                                }
     }
     
     /// <summary>
@@ -151,7 +125,6 @@ public class UIManager : MonoBehaviour
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(isInventoryOpen);
-            Debug.Log($"[UIManager] 인벤토리 → {(isInventoryOpen ? "열림" : "닫힘")}");
         }
     }
     
@@ -166,7 +139,6 @@ public class UIManager : MonoBehaviour
             if (inventoryPanel != null)
             {
                 inventoryPanel.SetActive(true);
-                Debug.Log("[UIManager] 인벤토리 열림");
             }
         }
     }
@@ -182,10 +154,8 @@ public class UIManager : MonoBehaviour
             if (inventoryPanel != null)
             {
                 inventoryPanel.SetActive(false);
-                Debug.Log("[UIManager] 인벤토리 닫힘");
             }
             
-            // ✅ 인벤토리 창의 툴팁만 숨김
             if (ItemTooltip.Instance != null)
             {
                 ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Inventory);
@@ -203,7 +173,6 @@ public class UIManager : MonoBehaviour
         if (equipmentPanel != null)
         {
             equipmentPanel.SetActive(isEquipmentOpen);
-            Debug.Log($"[UIManager] 장비창 → {(isEquipmentOpen ? "열림" : "닫힘")}");
         }
     }
     
@@ -218,7 +187,6 @@ public class UIManager : MonoBehaviour
             if (equipmentPanel != null)
             {
                 equipmentPanel.SetActive(true);
-                Debug.Log("[UIManager] 장비창 열림");
             }
         }
     }
@@ -234,10 +202,8 @@ public class UIManager : MonoBehaviour
             if (equipmentPanel != null)
             {
                 equipmentPanel.SetActive(false);
-                Debug.Log("[UIManager] 장비창 닫힘");
             }
             
-            // ✅ 장비창의 툴팁만 숨김
             if (ItemTooltip.Instance != null)
             {
                 ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Equipment);
@@ -263,7 +229,6 @@ public class UIManager : MonoBehaviour
             equipmentPanel.SetActive(isInventoryOpen);
         }
         
-        Debug.Log($"[UIManager] 인벤토리 + 장비 → {(isInventoryOpen ? "열림" : "닫힘")}");
     }
     
     /// <summary>
@@ -275,7 +240,6 @@ public class UIManager : MonoBehaviour
         {
             bool isActive = cookingButtonPanel.activeSelf;
             cookingButtonPanel.SetActive(!isActive);
-            Debug.Log($"요리 버튼 {(!isActive ? "표시" : "숨김")}");
         }
     }
     
@@ -284,32 +248,23 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void OnCookingButtonClicked()
     {
-        Debug.Log("=== 요리 버튼 클릭됨 ===");
         
         // 요리 버튼 숨기기
         if (cookingButtonPanel != null)
         {
             cookingButtonPanel.SetActive(false);
-            Debug.Log("요리 버튼 패널 숨김");
         }
         
         // 요리창 열기
         if (CookingManager.Instance != null)
         {
             CookingManager.Instance.OpenCookingPanel();
-            Debug.Log("요리창 열림");
         }
-        else
-        {
-            Debug.LogError("CookingManager.Instance가 null입니다!");
-        }
-        
-        // 인벤토리만 자동으로 열기 (장비창은 제외)
+                // 인벤토리만 자동으로 열기 (장비창은 제외)
         if (inventoryPanel != null && !inventoryPanel.activeSelf)
         {
             inventoryPanel.SetActive(true);
             isInventoryOpen = true; // 상태 업데이트
-            Debug.Log("인벤토리 패널만 자동 열림");
         }
     }
     
@@ -368,13 +323,11 @@ public class UIManager : MonoBehaviour
             isCookingButtonOpen = false;
         }
         
-        // ✅ 툴팁 강제 숨김
         if (ItemTooltip.Instance != null)
         {
             ItemTooltip.Instance.HideTooltip();
         }
         
-        Debug.Log("[UIManager] 모든 패널 닫기");
     }
     
     /// <summary>

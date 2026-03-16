@@ -1,5 +1,3 @@
-// Assets/Scripts/Inventory/ContextMenu.cs
-
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -218,7 +216,6 @@ public class ContextMenu : MonoBehaviour
     
     private MenuType DetermineMenuType(SlotUI slot)
     {
-        // ✅ 0. 전리품 슬롯 체크 (최우선)
         if (IsLootSlot(slot))
         {
             return MenuType.Loot;
@@ -462,12 +459,7 @@ public class ContextMenu : MonoBehaviour
         {
             InventoryManager.Instance.EquipItem(targetSlot);
         }
-        else
-        {
-            Debug.Log($"{targetSlot.currentItem.itemName} 사용!");
-        }
-        
-        CloseMenu();
+                CloseMenu();
     }
     
     private void OnConsumeButtonClicked()
@@ -487,14 +479,8 @@ public class ContextMenu : MonoBehaviour
         if (emptySlot != null)
         {
             TransferItem(targetSlot, emptySlot);
-            Debug.Log("장착 해제됨");
         }
-        else
-        {
-            Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
-        }
-        
-        CloseMenu();
+                CloseMenu();
     }
     
     private void OnAddToCookingButtonClicked()
@@ -509,30 +495,19 @@ public class ContextMenu : MonoBehaviour
         
         if (ingredient.itemType != ItemType.Ingredient)
         {
-            Debug.LogWarning("재료 아이템이 아닙니다!");
             CloseMenu();
             return;
         }
         
         if (CookingManager.Instance == null)
         {
-            Debug.LogError("CookingManager.Instance가 null입니다!");
             CloseMenu();
             return;
         }
         
         bool success = CookingManager.Instance.TryAddIngredient(ingredient, targetSlot);
         
-        if (success)
-        {
-            Debug.Log($"재료 추가 성공: {ingredient.itemName}");
-        }
-        else
-        {
-            Debug.LogWarning("재료 슬롯이 가득 찼습니다!");
-        }
-        
-        CloseMenu();
+                        CloseMenu();
     }
     
     private void OnRemoveFromCookingButtonClicked()
@@ -544,14 +519,8 @@ public class ContextMenu : MonoBehaviour
         if (emptySlot != null)
         {
             TransferItem(targetSlot, emptySlot);
-            Debug.Log($"재료 빼기 성공: {emptySlot.currentItem.itemName}");
         }
-        else
-        {
-            Debug.LogWarning("인벤토리에 빈 공간이 없습니다!");
-        }
-        
-        CloseMenu();
+                CloseMenu();
     }
     
     private void OnTransferToInventoryButtonClicked()
@@ -560,14 +529,12 @@ public class ContextMenu : MonoBehaviour
         
         if (LootManager.Instance == null)
         {
-            Debug.LogError("LootManager.Instance가 null입니다!");
             CloseMenu();
             return;
         }
         
         if (!LootManager.Instance.IsLootSlot(targetSlot))
         {
-            Debug.LogWarning("전리품 슬롯이 아닙니다!");
             CloseMenu();
             return;
         }
@@ -598,7 +565,6 @@ public class ContextMenu : MonoBehaviour
             int quantity = targetSlot.quantity;
             
             targetSlot.ClearSlot();
-            Debug.Log($"{itemName} x{quantity}을(를) 버렸습니다.");
         }
         
         SetActiveSafe(confirmPanel, false);
@@ -625,8 +591,6 @@ public class ContextMenu : MonoBehaviour
     
     private void UseConsumable(SlotUI slot)
     {
-        Debug.Log($"{slot.currentItem.itemName} 사용!");
-        
         slot.quantity--;
         
         if (slot.quantity <= 0)

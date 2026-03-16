@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/DraggablePanel.cs
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -66,7 +64,6 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
         
-        // ✅ 분할 패널이 열려있으면 드래그 차단
         if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
         {
             isDragging = false;
@@ -173,10 +170,6 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     
     private void LogDebug(string message)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[{gameObject.name}] {message}");
-        }
-    }
+            }
     #endregion
 }

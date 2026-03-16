@@ -1,5 +1,3 @@
-// Assets/Scripts/Inventory/InventoryManager.cs
-
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -95,7 +93,6 @@ public class InventoryManager : MonoBehaviour
                     
                     if (amount <= 0)
                     {
-                        Debug.Log($"아이템 추가 완료: {item.itemName}");
                         return true;
                     }
                 }
@@ -108,7 +105,6 @@ public class InventoryManager : MonoBehaviour
             SlotUI emptySlot = FindEmptySlot();
             if (emptySlot == null)
             {
-                Debug.LogWarning("인벤토리가 가득 찼습니다!");
                 return false;
             }
             
@@ -117,7 +113,6 @@ public class InventoryManager : MonoBehaviour
             amount -= addAmount;
         }
         
-        Debug.Log($"아이템 추가 완료: {item.itemName}");
         return true;
     }
     
@@ -151,7 +146,6 @@ public class InventoryManager : MonoBehaviour
                 
                 if (remaining <= 0)
                 {
-                    Debug.Log($"아이템 제거 완료: {item.itemName} x{amount}");
                     return true;
                 }
             }
@@ -159,7 +153,6 @@ public class InventoryManager : MonoBehaviour
         
         if (remaining > 0)
         {
-            Debug.LogWarning($"{item.itemName}이(가) 부족합니다! (필요: {amount}, 부족: {remaining})");
             return false;
         }
         
@@ -203,7 +196,6 @@ public class InventoryManager : MonoBehaviour
             slot.UpdateUI();
         }
         
-        Debug.Log($"슬롯에서 아이템 제거: {amount}개");
     }
     
     /// <summary>
@@ -236,7 +228,6 @@ public class InventoryManager : MonoBehaviour
     {
         goldAmount += amount;
         UpdateGoldUI();
-        Debug.Log($"골드 +{amount} (총: {goldAmount})");
     }
     
     /// <summary>
@@ -254,13 +245,11 @@ public class InventoryManager : MonoBehaviour
     {
         if (goldAmount < amount)
         {
-            Debug.LogWarning("골드가 부족합니다!");
             return false;
         }
         
         goldAmount -= amount;
         UpdateGoldUI();
-        Debug.Log($"골드 -{amount} (총: {goldAmount})");
         return true;
     }
     
@@ -280,22 +269,16 @@ public class InventoryManager : MonoBehaviour
     // ─────────────────────────────────────────────
     
     /// <summary>
-    /// ✅ 드래그 앤 드롭으로 아이템 이동, 교환, 또는 합치기
+    /// 아이템 이동 또는 교체 시도
     /// </summary>
     public void TryMoveOrSwapDrag(SlotUI fromSlot, SlotUI toSlot)
     {
         // 자기 자신에게 드롭한 경우 무시
         if (fromSlot == toSlot)
         {
-            Debug.Log("같은 슬롯에 드롭 - 무시");
             return;
         }
         
-        Debug.Log($"=== 드래그 이동 시도 ===");
-        Debug.Log($"From: {fromSlot.name} - {(fromSlot.currentItem != null ? fromSlot.currentItem.itemName : "빈 슬롯")}");
-        Debug.Log($"To: {toSlot.name} - {(toSlot.currentItem != null ? toSlot.currentItem.itemName : "빈 슬롯")}");
-        
-        // ✅ 1. 같은 아이템이면 합치기 시도
         if (fromSlot.currentItem != null && toSlot.currentItem != null && 
             fromSlot.currentItem == toSlot.currentItem)
         {
@@ -303,37 +286,31 @@ public class InventoryManager : MonoBehaviour
             return;
         }
         
-        // ✅ 2. 둘 다 아이템이 있는 경우 → 교환
         if (fromSlot.currentItem != null && toSlot.currentItem != null)
         {
             SwapItems(fromSlot, toSlot);
             return;
         }
         
-        // ✅ 3. 대상 슬롯이 비어있는 경우 → 이동
         if (toSlot.currentItem == null)
         {
             MoveItem(fromSlot, toSlot);
             return;
         }
         
-        // ✅ 4. 출발 슬롯이 비어있는 경우 (이론상 발생 안 함)
-        Debug.LogWarning("출발 슬롯이 비어있습니다!");
     }
     
     /// <summary>
-    /// ✅ 같은 아이템을 합치기
+    /// 같은 아이템끼리 스택 시도
     /// </summary>
     private void TryStackItems(SlotUI fromSlot, SlotUI toSlot)
     {
-        Debug.Log($"같은 아이템 합치기: {fromSlot.currentItem.itemName}");
         
         int maxStack = fromSlot.currentItem.stackSize;
         int availableSpace = maxStack - toSlot.quantity;
         
         if (availableSpace <= 0)
         {
-            Debug.LogWarning("대상 슬롯이 가득 찼습니다!");
             return;
         }
         
@@ -355,7 +332,6 @@ public class InventoryManager : MonoBehaviour
         
         toSlot.UpdateUI();
         
-        Debug.Log($"합치기 완료: {amountToMove}개 이동 (대상: {toSlot.quantity}/{maxStack})");
     }
     
     /// <summary>
@@ -373,11 +349,7 @@ public class InventoryManager : MonoBehaviour
             {
                 TryMoveOrSwapDrag(clickedSlot, targetEquipSlot);
             }
-            else
-            {
-                Debug.Log($"{clickedSlot.currentItem.itemName}은(는) 장비 아이템이 아닙니다.");
-            }
-        }
+                    }
         // 장비 슬롯 → 인벤토리로 복귀
         else
         {
@@ -401,7 +373,6 @@ public class InventoryManager : MonoBehaviour
         
         if (equipSlot == null)
         {
-            Debug.LogWarning($"{inventorySlot.currentItem.itemName}은(는) 장비 아이템이 아닙니다!");
             return;
         }
         
@@ -416,20 +387,17 @@ public class InventoryManager : MonoBehaviour
     {
         if (inventorySlot == null || inventorySlot.currentItem == null)
         {
-            Debug.LogWarning("inventorySlot이 null입니다!");
             return;
         }
         
         // 소비 아이템만 퀵슬롯에 장착 가능
         if (inventorySlot.currentItem.itemType != ItemType.Consumable)
         {
-            Debug.LogWarning($"{inventorySlot.currentItem.itemName}은(는) 소비 아이템이 아닙니다!");
             return;
         }
         
         if (quickSlot == null)
         {
-            Debug.LogWarning("QuickSlot이 연결되지 않았습니다!");
             return;
         }
         
@@ -457,15 +425,9 @@ public class InventoryManager : MonoBehaviour
                         inventorySlot.UpdateUI();
                     }
                     
-                    // ✅ QuickSlot UI 업데이트 (중요!)
                     quickSlot.UpdateUI();
-                    Debug.Log($"퀵슬롯에 추가: {addAmount}개 (총 {quickSlot.quantity}개)");
                 }
-                else
-                {
-                    Debug.LogWarning("퀵슬롯이 가득 찼습니다! (최대 5개)");
-                }
-                return;
+                                return;
             }
             
             // 다른 아이템이면 교체
@@ -489,7 +451,6 @@ public class InventoryManager : MonoBehaviour
             }
             
             quickSlot.UpdateUI();
-            Debug.Log($"퀵슬롯 교체: {quickSlot.currentItem.itemName}");
         }
         else
         {
@@ -508,7 +469,6 @@ public class InventoryManager : MonoBehaviour
             }
             
             quickSlot.UpdateUI();
-            Debug.Log($"퀵슬롯 장착: {quickSlot.currentItem.itemName} x{moveAmount}");
         }
     }
     
@@ -530,22 +490,18 @@ public class InventoryManager : MonoBehaviour
     }
     
     // ─────────────────────────────────────────────
-    // ✅ 아이템 교환 기능
     // ─────────────────────────────────────────────
     
     /// <summary>
-    /// ✅ 두 슬롯의 아이템 교환
+    /// 아이템 교체 (두 슬롯 모두 아이템이 있을 때)
     /// </summary>
     private void SwapItems(SlotUI slotA, SlotUI slotB)
     {
-        Debug.Log($"아이템 교환 시도: {slotA.currentItem.itemName} ↔ {slotB.currentItem.itemName}");
         
-        // ✅ 교환 가능 여부 확인
         bool canSwap = CanSwapItems(slotA, slotB);
         
         if (!canSwap)
         {
-            Debug.LogWarning("이 슬롯에는 해당 아이템을 놓을 수 없습니다!");
             return;
         }
         
@@ -563,24 +519,19 @@ public class InventoryManager : MonoBehaviour
         slotA.UpdateUI();
         slotB.UpdateUI();
         
-        Debug.Log("교환 완료!");
     }
     
     /// <summary>
-    /// ✅ 아이템을 다른 슬롯으로 이동
+    /// 아이템 이동 (빈 슬롯으로 이동)
     /// </summary>
     private void MoveItem(SlotUI fromSlot, SlotUI toSlot)
     {
-        Debug.Log($"아이템 이동 시도: {fromSlot.currentItem.itemName} → {toSlot.name}");
         
-        // ✅ 이동 가능 여부 확인
         if (!toSlot.CanAcceptItem(fromSlot.currentItem))
         {
-            Debug.LogWarning($"{toSlot.name}에는 {fromSlot.currentItem.itemName}을(를) 놓을 수 없습니다!");
             return;
         }
         
-        // ✅ 같은 아이템이면 스택
         if (toSlot.currentItem == fromSlot.currentItem)
         {
             // 스택 가능한지 확인
@@ -605,28 +556,24 @@ public class InventoryManager : MonoBehaviour
                 
                 toSlot.UpdateUI();
                 
-                Debug.Log($"스택 완료: {amountToMove}개 이동");
                 return;
             }
             else
             {
-                Debug.LogWarning("스택이 가득 찼습니다!");
                 return;
             }
         }
         
-        // ✅ 다른 아이템이면 이동
         toSlot.SetItem(fromSlot.currentItem, fromSlot.quantity);
         fromSlot.ClearSlot();
         
         toSlot.UpdateUI();
         fromSlot.UpdateUI();
         
-        Debug.Log("이동 완료!");
     }
     
     /// <summary>
-    /// ✅ 두 슬롯의 아이템 교환이 가능한지 확인
+    /// 두 슬롯의 아이템이 서로 들어갈 수 있는지 확인 (장비 슬롯 제약 조건)
     /// </summary>
     private bool CanSwapItems(SlotUI slotA, SlotUI slotB)
     {
@@ -636,17 +583,7 @@ public class InventoryManager : MonoBehaviour
         // B의 아이템이 A 슬롯에 들어갈 수 있는지
         bool bToA = slotA.CanAcceptItem(slotB.currentItem);
         
-        if (!aToB)
-        {
-            Debug.LogWarning($"{slotB.name}은(는) {slotA.currentItem.itemName}을(를) 받을 수 없습니다!");
-        }
-        
-        if (!bToA)
-        {
-            Debug.LogWarning($"{slotA.name}은(는) {slotB.currentItem.itemName}을(를) 받을 수 없습니다!");
-        }
-        
-        return aToB && bToA;
+                        return aToB && bToA;
     }
     
     /// <summary>

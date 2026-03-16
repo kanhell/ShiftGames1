@@ -1,6 +1,3 @@
-// Assets/Scripts/Shop/ItemDatabase.cs
-// 모든 아이템을 중앙에서 관리하는 데이터베이스
-
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -83,18 +80,11 @@ public class ItemDatabase : ScriptableObject
     {
         if (allItems == null)
         {
-            Debug.LogError("[ItemDatabase] allItems가 null입니다!");
             return;
         }
         
         int nullCount = allItems.Count(item => item == null);
-        if (nullCount > 0)
-        {
-            Debug.LogWarning($"[ItemDatabase] {nullCount}개의 null 아이템이 있습니다.");
-        }
-        
-        Debug.Log($"[ItemDatabase] 총 {allItems.Count}개 아이템, 최대 Tier: {GetMaxTier()}");
-    }
+            }
     
     #endregion
 }

@@ -1,4 +1,3 @@
-// Assets/Scripts/Shop/ShopManager.cs
 // 최종 수정 버전 - 중복 제거 및 오류 수정
 
 using System.Collections.Generic;
@@ -118,7 +117,6 @@ public class ShopManager : MonoBehaviour
     {
         if (itemDatabase == null)
         {
-            Debug.LogError("[ShopManager] ItemDatabase가 할당되지 않았습니다!");
             return;
         }
         
@@ -233,7 +231,6 @@ public class ShopManager : MonoBehaviour
         
         DeselectAll();
         
-        // ✅ 상점 창의 툴팁만 숨김
         if (ItemTooltip.Instance != null)
         {
             ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Shop);
@@ -260,7 +257,6 @@ public class ShopManager : MonoBehaviour
         {
             if (currentSelectionType == SelectionType.Equipment)
             {
-                Debug.Log("장비가 선택되어 있어 Consumable/Ingredient를 선택할 수 없습니다.");
                 return;
             }
             
@@ -269,7 +265,6 @@ public class ShopManager : MonoBehaviour
                 bool prevIsShop = IsSlotInShopGrid(singleSelectedSlot);
                 if (prevIsShop != isShopSlot)
                 {
-                    Debug.Log("인벤토리와 상점 아이템을 동시에 선택할 수 없습니다.");
                     return;
                 }
             }
@@ -280,7 +275,6 @@ public class ShopManager : MonoBehaviour
         {
             if (currentSelectionType == SelectionType.ConsumableIngredient)
             {
-                Debug.Log("Consumable/Ingredient가 선택되어 있어 장비를 선택할 수 없습니다.");
                 return;
             }
             
@@ -323,7 +317,6 @@ public class ShopManager : MonoBehaviour
             bool prevIsShop = IsSlotInShopGrid(multiSelectedSlots[0]);
             if (prevIsShop != isShopSlot)
             {
-                Debug.Log("인벤토리와 상점 아이템을 동시에 선택할 수 없습니다.");
                 return;
             }
         }
@@ -565,7 +558,6 @@ public class ShopManager : MonoBehaviour
         
         if (InventoryManager.Instance.GetGold() < totalCost)
         {
-            Debug.Log($"골드 부족! (필요: {totalCost}G)");
             return;
         }
         
@@ -590,7 +582,6 @@ public class ShopManager : MonoBehaviour
             UpdateInventoryDisplay();
             UpdateGoldDisplay();
             
-            Debug.Log($"{item.itemName} {selectedQuantity}개 구매 완료!");
         }
     }
     
@@ -610,7 +601,6 @@ public class ShopManager : MonoBehaviour
         
         if (InventoryManager.Instance.GetGold() < totalCost)
         {
-            Debug.Log($"골드 부족! (필요: {totalCost}G)");
             return;
         }
         
@@ -631,7 +621,6 @@ public class ShopManager : MonoBehaviour
         UpdateInventoryDisplay();
         UpdateGoldDisplay();
         
-        Debug.Log($"장비 {itemsToBuy.Count}종류 구매 완료!");
     }
     
     private void SellConsumableIngredient()
@@ -651,7 +640,6 @@ public class ShopManager : MonoBehaviour
             UpdateInventoryDisplay();
             UpdateGoldDisplay();
             
-            Debug.Log($"{item.itemName} {selectedQuantity}개 판매 완료!");
         }
     }
     
@@ -680,7 +668,6 @@ public class ShopManager : MonoBehaviour
         UpdateInventoryDisplay();
         UpdateGoldDisplay();
         
-        Debug.Log($"장비 {itemsToSell.Count}종류 판매 완료!");
     }
     
     #endregion
@@ -696,7 +683,6 @@ public class ShopManager : MonoBehaviour
         
         if (itemDatabase == null || itemDatabase.allItems.Count == 0)
         {
-            Debug.LogError("[ShopManager] ItemDatabase가 비어있습니다!");
             return;
         }
         
@@ -725,7 +711,6 @@ public class ShopManager : MonoBehaviour
             ItemData selectedItem = WeightedRandomSelector.SelectRandom(tierItems);
             if (selectedItem == null) continue;
             
-            // ✅ Village 레벨에 따른 동적 수량 계산
             int quantity = CalculateItemQuantity(selectedItem);
             
             bool isDuplicate = false;
@@ -942,11 +927,7 @@ public class ShopManager : MonoBehaviour
     
     private void LogDebug(string message)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[ShopManager] {message}");
-        }
-    }
+            }
     
     #endregion
 }

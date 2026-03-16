@@ -1,5 +1,3 @@
-// Assets/Scripts/Loot/LootManager.cs
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -151,7 +149,6 @@ public class LootManager : MonoBehaviour
         isLootOpen = false;
         lootPanel.SetActive(false);
         
-        // ✅ 전리품 창의 툴팁만 숨김
         if (ItemTooltip.Instance != null)
         {
             ItemTooltip.Instance.HideTooltipIfFromPanel(ItemTooltip.PanelSource.Loot);
@@ -175,7 +172,6 @@ public class LootManager : MonoBehaviour
     {
         if (item == null)
         {
-            Debug.LogWarning("AddLoot: item이 null입니다!");
             return;
         }
         
@@ -186,11 +182,7 @@ public class LootManager : MonoBehaviour
         amount = TryAddToEmptySlots(item, amount);
         
         // 공간 부족 경고
-        if (amount > 0)
-        {
-            Debug.LogWarning($"{item.itemName} {amount}개를 추가할 전리품 공간이 부족합니다!");
-        }
-    }
+            }
     
     /// <summary>
     /// 전리품 전체 획득
@@ -218,17 +210,7 @@ public class LootManager : MonoBehaviour
             }
         }
         
-        if (successCount > 0)
-        {
-            Debug.Log($"전리품 {successCount}개 획득!");
-        }
-        
-        if (failCount > 0)
-        {
-            Debug.LogWarning($"인벤토리 공간 부족으로 {failCount}개를 가져올 수 없습니다!");
-        }
-        
-        // 모두 가져갔으면 창 닫기
+                        // 모두 가져갔으면 창 닫기
         if (failCount == 0 && successCount > 0)
         {
             CloseLootPanel();
@@ -242,13 +224,11 @@ public class LootManager : MonoBehaviour
     {
         if (lootSlot == null || lootSlot.currentItem == null)
         {
-            Debug.LogWarning("전리품 슬롯이 비어있습니다.");
             return;
         }
         
         if (!lootSlots.Contains(lootSlot))
         {
-            Debug.LogWarning("이 슬롯은 전리품 슬롯이 아닙니다!");
             return;
         }
         
@@ -272,13 +252,8 @@ public class LootManager : MonoBehaviour
                     lootSlot.UpdateUI();
                 }
                 
-                Debug.Log($"전리품 → 인벤토리: {item.itemName} x{amountToTransfer}");
             }
-            else
-            {
-                Debug.LogWarning("인벤토리가 가득 찼습니다!");
-            }
-        }
+                    }
     }
     
     /// <summary>
@@ -299,7 +274,6 @@ public class LootManager : MonoBehaviour
             slot.ClearSlot();
         }
         
-        Debug.Log("전리품을 모두 비웠습니다.");
     }
     #endregion
     
@@ -308,7 +282,6 @@ public class LootManager : MonoBehaviour
     {
         if (lootPanel == null)
         {
-            Debug.LogError("lootPanel이 null입니다!");
             return false;
         }
         return true;
@@ -353,10 +326,6 @@ public class LootManager : MonoBehaviour
     
     private void LogDebug(string message)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[LootManager] {message}");
-        }
-    }
+            }
     #endregion
 }

@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/ItemCursorFollower.cs
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -45,31 +43,9 @@ public class ItemCursorFollower : MonoBehaviour
     {
         canvas = GetComponentInParent<Canvas>();
         
-        if (canvas == null)
-        {
-            Debug.LogError("[ItemCursorFollower] Canvas를 찾을 수 없습니다!");
-        }
-        
-        // Inspector 연결 확인
-        if (followerObject == null)
-        {
-            Debug.LogError("[ItemCursorFollower] FollowerObject가 Inspector에 연결되지 않았습니다!");
-        }
-        
-        if (itemIconImage == null)
-        {
-            Debug.LogError("[ItemCursorFollower] ItemIconImage가 Inspector에 연결되지 않았습니다!");
-        }
-        
-        if (quantityText == null)
-        {
-            Debug.LogError("[ItemCursorFollower] QuantityText가 Inspector에 연결되지 않았습니다!");
-        }
-        
         if (followerObject != null)
         {
             followerObject.SetActive(false);
-            Debug.Log("[ItemCursorFollower] 초기화 완료");
         }
     }
     
@@ -79,12 +55,6 @@ public class ItemCursorFollower : MonoBehaviour
         {
             UpdateFollowerPosition();
             HandleInput();
-        }
-        
-        // ✅ 디버그: Update가 실행되고 있는지 확인 (1초마다)
-        if (Time.frameCount % 60 == 0 && isHolding)
-        {
-            Debug.Log($"[ItemCursorFollower] Update 실행 중 - isHolding: {isHolding}, 아이템: {(heldItem != null ? heldItem.itemName : "null")}");
         }
     }
     #endregion
@@ -109,11 +79,8 @@ public class ItemCursorFollower : MonoBehaviour
     /// </summary>
     public void StartHolding(ItemData item, int quantity, SlotUI source)
     {
-        Debug.Log($"[ItemCursorFollower] StartHolding 호출됨 - 아이템: {(item != null ? item.itemName : "null")}, 수량: {quantity}");
-        
         if (item == null || quantity <= 0)
         {
-            Debug.LogWarning("[ItemCursorFollower] 유효하지 않은 아이템입니다.");
             return;
         }
         
@@ -122,21 +89,13 @@ public class ItemCursorFollower : MonoBehaviour
         sourceSlot = source;
         isHolding = true;
         
-        Debug.Log($"[ItemCursorFollower] isHolding = true 설정 완료");
-        
         // UI 표시
         if (followerObject != null)
         {
             followerObject.SetActive(true);
             followerObject.transform.SetAsLastSibling(); // 최상위로
-            Debug.Log($"[ItemCursorFollower] FollowerObject 활성화 완료");
         }
-        else
-        {
-            Debug.LogError("[ItemCursorFollower] followerObject가 null입니다! UI를 표시할 수 없습니다.");
-        }
-        
-        // 아이콘 설정
+                // 아이콘 설정
         if (itemIconImage != null)
         {
             itemIconImage.sprite = item.itemIcon;
@@ -154,27 +113,14 @@ public class ItemCursorFollower : MonoBehaviour
                 rectTransform.sizeDelta = iconSize;
             }
             
-            Debug.Log($"[ItemCursorFollower] 아이콘 설정 완료 - {item.itemName}");
         }
-        else
-        {
-            Debug.LogError("[ItemCursorFollower] itemIconImage가 null입니다!");
-        }
-        
-        // 수량 텍스트 설정
+                // 수량 텍스트 설정
         if (quantityText != null)
         {
             quantityText.text = quantity.ToString();
             quantityText.enabled = true;
-            Debug.Log($"[ItemCursorFollower] 수량 텍스트 설정 완료 - {quantity}");
         }
-        else
-        {
-            Debug.LogError("[ItemCursorFollower] quantityText가 null입니다!");
-        }
-        
-        Debug.Log($"[ItemCursorFollower] 아이템 들기 시작 완료: {item.itemName} x{quantity}");
-    }
+            }
     
     /// <summary>
     /// 아이템 들기 중단
@@ -213,11 +159,7 @@ public class ItemCursorFollower : MonoBehaviour
         {
             followerObject.transform.position = Input.mousePosition;
         }
-        else
-        {
-            Debug.LogError("[ItemCursorFollower] UpdateFollowerPosition - followerObject가 null입니다!");
-        }
-    }
+            }
     
     /// <summary>
     /// 입력 처리 (클릭/ESC)
@@ -303,12 +245,10 @@ public class ItemCursorFollower : MonoBehaviour
             LogDebug($"같은 아이템 합치기: {heldItem.itemName} x{heldQuantity}");
             StopHolding();
         }
-        // 다른 아이템이 있는 슬롯에 드롭 (교환)
+        // 다른 아이템이 있는 슬롯에 드롭 → 아무것도 안 함 (마우스에 계속 남아있음)
         else
         {
-            // 교환 로직 (선택사항)
-            LogDebug("다른 아이템이 있는 슬롯입니다. 교환은 아직 미구현.");
-            ReturnToSource();
+            LogDebug("다른 아이템이 있는 슬롯입니다. 드롭 무시 (마우스에 계속 남아있음)");
         }
     }
     
@@ -323,20 +263,11 @@ public class ItemCursorFollower : MonoBehaviour
             sourceSlot.UpdateUI();
             LogDebug($"원래 슬롯으로 복구: {heldItem.itemName} x{heldQuantity}");
         }
-        else
-        {
-            Debug.LogWarning("원본 슬롯을 찾을 수 없습니다!");
-        }
-        
-        StopHolding();
+                StopHolding();
     }
     
     private void LogDebug(string message)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[ItemCursorFollower] {message}");
-        }
-    }
+            }
     #endregion
 }

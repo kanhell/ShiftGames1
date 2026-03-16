@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/ItemSplitManager.cs
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -83,7 +81,6 @@ public class ItemSplitManager : MonoBehaviour
         {
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.onClick.AddListener(() => {
-                Debug.Log("★★★★★ 확인 버튼 클릭 감지됨!");
                 OnConfirmClicked();
             });
         }
@@ -92,7 +89,6 @@ public class ItemSplitManager : MonoBehaviour
         {
             cancelButton.onClick.RemoveAllListeners();
             cancelButton.onClick.AddListener(() => {
-                Debug.Log("★★★★★ 취소 버튼 클릭 감지됨!");
                 OnCancelClicked();
             });
         }
@@ -102,31 +98,23 @@ public class ItemSplitManager : MonoBehaviour
         {
             quantitySlider.onValueChanged.RemoveAllListeners();
             quantitySlider.onValueChanged.AddListener((value) => {
-                Debug.Log($"★★★★★ 슬라이더 값 변경: {value}");
                 OnSliderValueChanged(value);
             });
             
-            // ✅ 슬라이더 기본 설정
-            quantitySlider.minValue = 1; // ✅ 1부터 시작
+            quantitySlider.minValue = 1;
             quantitySlider.maxValue = 10;
             quantitySlider.wholeNumbers = true;
-            quantitySlider.value = 1; // ✅ 초기값 1
+            quantitySlider.value = 1;
             
             LogDebug("슬라이더 초기화 완료");
         }
-        else
-        {
-            Debug.LogError("QuantitySlider가 연결되지 않았습니다!");
-        }
-        
-        /* ✅ 초기 비활성화: InputBlocker (임시로 주석)
+                /* ✅ 초기 비활성화: InputBlocker (임시로 주석)
         if (inputBlocker != null)
         {
             inputBlocker.SetActive(false);
         }
         */
         
-        // ✅ 초기 비활성화: ItemSplitPanel
         if (panelObject != null)
         {
             panelObject.SetActive(false);
@@ -184,7 +172,6 @@ public class ItemSplitManager : MonoBehaviour
     /// </summary>
     public void ClosePanel()
     {
-        // ✅ ItemSplitPanel 비활성화
         if (panelObject != null)
         {
             panelObject.SetActive(false);
@@ -212,7 +199,6 @@ public class ItemSplitManager : MonoBehaviour
     /// </summary>
     public bool IsOpen()
     {
-        // ✅ panelObject가 활성화되어 있으면 열린 상태
         return panelObject != null && panelObject.activeSelf;
     }
     #endregion
@@ -222,14 +208,11 @@ public class ItemSplitManager : MonoBehaviour
     {
         if (panelObject == null)
         {
-            Debug.LogError("panelObject가 null입니다!");
             return;
         }
         
-        // ✅ 최대 개수를 원본 수량으로 설정
         maxQuantity = sourceSlot.quantity;
         
-        // ✅ ItemSplitPanel 먼저 활성화
         panelObject.SetActive(true);
         LogDebug("ItemSplitPanel 활성화");
         
@@ -244,18 +227,14 @@ public class ItemSplitManager : MonoBehaviour
             
             LogDebug($"InputBlocker 활성화 (Index: {inputBlocker.transform.GetSiblingIndex()})");
         }
-        else
-        {
-            Debug.LogError("inputBlocker가 null입니다!");
-        }
-        */
+                */
         
         // 슬라이더 설정
         if (quantitySlider != null)
         {
-            quantitySlider.minValue = 1; // ✅ 최소 1개
+            quantitySlider.minValue = 1;
             quantitySlider.maxValue = maxQuantity;
-            quantitySlider.value = 1; // ✅ 초기값 1
+            quantitySlider.value = 1;
         }
         
         // 아이템 정보 표시
@@ -286,7 +265,6 @@ public class ItemSplitManager : MonoBehaviour
     {
         if (quantityText != null)
         {
-            // ✅ 간단하게 "1 / 4" 형식으로만 표시
             quantityText.text = $"{selectedQuantity} / {sourceSlot.quantity}";
         }
     }
@@ -299,7 +277,6 @@ public class ItemSplitManager : MonoBehaviour
             return;
         }
         
-        // ✅ 1개 이하를 선택하면 아무것도 안 함
         if (selectedQuantity <= 0)
         {
             LogDebug("0개는 분할할 수 없습니다.");
@@ -309,10 +286,8 @@ public class ItemSplitManager : MonoBehaviour
         
         LogDebug($"분할 확인: {selectedQuantity}개");
         
-        // ✅ 아이템 정보를 미리 저장 (ClearSlot 전에!)
         ItemData itemToHold = sourceSlot.currentItem;
         
-        // ✅ 원본에서 수량 감소
         sourceSlot.quantity -= selectedQuantity;
         
         if (sourceSlot.quantity <= 0)
@@ -324,18 +299,12 @@ public class ItemSplitManager : MonoBehaviour
             sourceSlot.UpdateUI();
         }
         
-        // ✅ ItemCursorFollower로 아이템 전달 (저장한 아이템 사용)
         if (ItemCursorFollower.Instance != null)
         {
             ItemCursorFollower.Instance.StartHolding(itemToHold, selectedQuantity, sourceSlot);
             LogDebug($"ItemCursorFollower.StartHolding 호출 완료");
         }
-        else
-        {
-            Debug.LogError("ItemCursorFollower.Instance가 null입니다! Canvas에 ItemCursorFollower가 있는지 확인하세요.");
-        }
-        
-        // 패널 닫기
+                // 패널 닫기
         ClosePanel();
     }
     
@@ -352,7 +321,6 @@ public class ItemSplitManager : MonoBehaviour
         
         if (emptySlot == null)
         {
-            Debug.LogWarning("빈 슬롯을 찾을 수 없습니다!");
             return;
         }
         
@@ -364,7 +332,6 @@ public class ItemSplitManager : MonoBehaviour
     {
         if (targetSlot == null)
         {
-            Debug.LogWarning("대상 슬롯이 null입니다!");
             return;
         }
         
@@ -376,7 +343,6 @@ public class ItemSplitManager : MonoBehaviour
     {
         if (from == null)
         {
-            Debug.LogError("출발 슬롯이 null입니다!");
             return;
         }
         
@@ -385,7 +351,6 @@ public class ItemSplitManager : MonoBehaviour
         // 원본에서 수량 감소
         from.quantity -= amount;
         
-        // ✅ 원본 슬롯 UI 업데이트
         if (from.quantity <= 0)
         {
             from.ClearSlot();
@@ -395,29 +360,20 @@ public class ItemSplitManager : MonoBehaviour
             from.UpdateUI();
         }
         
-        // ✅ ItemCursorFollower로 아이템 전달 (마우스 따라다니기)
         if (ItemCursorFollower.Instance != null)
         {
             LogDebug($"ItemCursorFollower.StartHolding 호출");
             ItemCursorFollower.Instance.StartHolding(from.currentItem, amount, from);
-            Debug.Log($"아이템 분할 완료: {from.currentItem.itemName} x{amount} (마우스 따라다님)");
         }
         else
         {
-            Debug.LogError("ItemCursorFollower.Instance가 null입니다! Canvas에 ItemCursorFollower가 있는지 확인하세요.");
-            
             // ItemCursorFollower가 없으면 기존 방식 (직접 대상 슬롯에 넣기)
             if (to != null)
             {
                 to.SetItem(from.currentItem, amount);
                 to.UpdateUI();
-                Debug.Log($"아이템 분할 완료: {from.currentItem.itemName} x{amount}");
             }
-            else
-            {
-                Debug.LogError("ItemCursorFollower와 대상 슬롯이 모두 null입니다!");
-            }
-        }
+                    }
     }
     
     private SlotUI FindEmptySlotNear(SlotUI source)
@@ -433,21 +389,15 @@ public class ItemSplitManager : MonoBehaviour
     
     private void HandleEscapeKey()
     {
-        // ✅ ESC 키: 분할창만 닫기 (다른 창은 그대로)
         if (IsOpen() && Input.GetKeyDown(KeyCode.Escape))
         {
             OnCancelClicked();
-            // ✅ ESC 이벤트 소비 (다른 곳에서 처리 못하게)
             Input.ResetInputAxes();
         }
     }
     
     private void LogDebug(string message)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[ItemSplitManager] {message}");
-        }
-    }
+            }
     #endregion
 }
