@@ -69,6 +69,9 @@ public class ShopManager : MonoBehaviour
     private List<SlotUI> shopSlots = new List<SlotUI>();
     private List<SlotUI> inventorySlots = new List<SlotUI>();
     
+    // 상점 아이템 목록 (새로고침 시에만 변경됨)
+    private List<(ItemData item, int quantity)> shopItems = new List<(ItemData, int)>();
+    
     // 선택 시스템
     private SlotUI singleSelectedSlot = null;
     private List<SlotUI> multiSelectedSlots = new List<SlotUI>();
@@ -676,11 +679,6 @@ public class ShopManager : MonoBehaviour
     
     private void GenerateRandomShopItems()
     {
-        foreach (var slot in shopSlots)
-        {
-            slot.ClearSlot();
-        }
-        
         if (itemDatabase == null || itemDatabase.allItems.Count == 0)
         {
             return;
@@ -695,7 +693,7 @@ public class ShopManager : MonoBehaviour
             LogDebug($"  Tier {kvp.Key}: {kvp.Value:F1}%");
         }
         
-        List<(ItemData item, int quantity)> generatedItems = new List<(ItemData, int)>();
+        shopItems.Clear();
         
         for (int i = 0; i < shopItemSlotCount; i++)
         {
@@ -714,11 +712,11 @@ public class ShopManager : MonoBehaviour
             int quantity = CalculateItemQuantity(selectedItem);
             
             bool isDuplicate = false;
-            for (int j = 0; j < generatedItems.Count; j++)
+            for (int j = 0; j < shopItems.Count; j++)
             {
-                if (generatedItems[j].item == selectedItem)
+                if (shopItems[j].item == selectedItem)
                 {
-                    generatedItems[j] = (generatedItems[j].item, generatedItems[j].quantity + quantity);
+                    shopItems[j] = (shopItems[j].item, shopItems[j].quantity + quantity);
                     isDuplicate = true;
                     break;
                 }
@@ -726,20 +724,38 @@ public class ShopManager : MonoBehaviour
             
             if (!isDuplicate)
             {
-                generatedItems.Add((selectedItem, quantity));
+                shopItems.Add((selectedItem, quantity));
             }
             
             LogDebug($"  생성: [T{selectedTier}] {selectedItem.itemName} x{quantity}");
         }
         
-        for (int i = 0; i < generatedItems.Count && i < shopSlots.Count; i++)
+        LogDebug($"상점 아이템 {shopItems.Count}종류 생성 완료!");
+        
+        // 생성 후 화면에 표시
+        UpdateShopDisplay();
+    }
+    
+    /// <summary>
+    /// 기존 상점 아이템 목록을 슬롯에 표시 (새로고침하지 않음)
+    /// </summary>
+    private void UpdateShopDisplay()
+    {
+        // 모든 슬롯 클리어
+        foreach (var slot in shopSlots)
         {
-            var (item, quantity) = generatedItems[i];
+            slot.ClearSlot();
+        }
+        
+        // shopItems를 슬롯에 표시
+        for (int i = 0; i < shopItems.Count && i < shopSlots.Count; i++)
+        {
+            var (item, quantity) = shopItems[i];
             shopSlots[i].SetItem(item, quantity);
             shopSlots[i].UpdateUI();
         }
         
-        LogDebug($"상점 아이템 {generatedItems.Count}종류 생성 완료!");
+        LogDebug($"상점 아이템 표시: {shopItems.Count}종류");
     }
     
     private void RefreshShop()
@@ -828,7 +844,8 @@ public class ShopManager : MonoBehaviour
         
         if (mode == ShopMode.Buy)
         {
-            GenerateRandomShopItems();
+            // 기존 상점 아이템 표시 (새로 생성하지 않음)
+            UpdateShopDisplay();
             LogDebug("구매 모드");
         }
         else

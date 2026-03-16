@@ -11242,7 +11242,7 @@ MonoBehaviour:
   pricePanel: {fileID: 324976768}
   priceText: {fileID: 267408907}
   refreshTimerText: {fileID: 395427980}
-  refreshInterval: 3600
+  refreshInterval: 10
   shopSlotPrefab: {fileID: 6822247599300468552, guid: a03dab0ac9de66142b0e6545b9369d55, type: 3}
   showDebugLogs: 0
 --- !u!1 &1108485264
