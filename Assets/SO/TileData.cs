@@ -6,10 +6,17 @@ public class TileData : ScriptableObject
 {
     [Header("[Info]")]
     public string tileName;
-    public string tileCode;
+    public string SceneName;
+
+    [Header("[Size]")]
     public float MaxLeft;
     public float MaxRight;
 
+    [Header("[LinkedTiles]")]
+    public TileData leftTile;
+    public TileData rightTile;
+    public TileData topTile;
+    public TileData bottomTile;
 
     [Header("[Sprites]")]
     public Sprite dawn;

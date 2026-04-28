@@ -129,6 +129,6 @@ public class DialogController : MonoBehaviour
     void DialogStop()
     {
         dialogData.currentCode = "00";
-        SceneManager.LoadScene(GameManager.instance.tileData.tileCode);
+        SceneManager.LoadScene(GameManager.instance.tileData.SceneName);
     }
 }

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ed7a6a7b92f39d479453680f80e416c, type: 3}
-  m_Name: TIL_dummy
+  m_Name: TIL_left
   m_EditorClassIdentifier: Assembly-CSharp::TileData
-  tileName: "\uD0DC\uCD08\uB9C8\uC744"
-  SceneName: DummyScrollableScene
-  MaxLeft: -8
-  MaxRight: 40
-  leftTile: {fileID: 11400000, guid: bba412c46e7984148a7d0385b73f19f9, type: 2}
-  rightTile: {fileID: 0}
+  tileName: left
+  SceneName: DummyLeftScene
+  MaxLeft: -10
+  MaxRight: 10
+  leftTile: {fileID: 0}
+  rightTile: {fileID: 11400000, guid: 580c3d3f17dd9eb448ade12d236b5905, type: 2}
   topTile: {fileID: 0}
   bottomTile: {fileID: 0}
   dawn: {fileID: 0}

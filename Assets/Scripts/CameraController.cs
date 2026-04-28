@@ -9,8 +9,6 @@ public class CameraController : MonoBehaviour
     float obj_x;
     float x;
 
-    public TileData tile;
-
     float speed = Values.camera_speed;
     float dis = Values.camera_maxDis;
     float camera_width = Values.camera_width;
@@ -30,9 +28,14 @@ public class CameraController : MonoBehaviour
         obj_x = player.transform.position.x;
         x = transform.position.x;
 
-        if (obj_x < x-dis && x-camera_width > tile.MaxLeft)  // 왼쪽으로 이동
+        if (obj_x < x-dis && x-camera_width > GameManager.instance.tileData.MaxLeft)  // 왼쪽으로 이동
             transform.Translate(new Vector2(-speed * Time.deltaTime, 0));
-        if (obj_x > x+dis && x+camera_width < tile.MaxRight)  // 오른쪽으로 이동
+        if (obj_x > x+dis && x+camera_width < GameManager.instance.tileData.MaxRight)  // 오른쪽으로 이동
             transform.Translate(new Vector2(speed * Time.deltaTime, 0));
+    }
+
+    public void ChangePos(float x)
+    {
+        transform.position = new Vector3(x, 0, Values.camera_posZ);
     }
 }

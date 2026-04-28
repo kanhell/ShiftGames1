@@ -13,6 +13,11 @@ public class GameManager : MonoBehaviour
     // DialogScene
     public DialogData DialogData;
 
+    // Scene ¿Ãµø
+    public float playerPosX;
+    public float cameraPosX;
+    public Stack<insideTileData> tileStacks = new Stack<insideTileData>();
+
     void Awake()  // ΩÃ±€≈Ê
     {
         if (instance == null)
