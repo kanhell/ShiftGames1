@@ -120,7 +120,7 @@ public class ItemCursorFollower : MonoBehaviour
             quantityText.text = quantity.ToString();
             quantityText.enabled = true;
         }
-            }
+    }
     
     /// <summary>
     /// 아이템 들기 중단
@@ -159,7 +159,7 @@ public class ItemCursorFollower : MonoBehaviour
         {
             followerObject.transform.position = Input.mousePosition;
         }
-            }
+    }
     
     /// <summary>
     /// 입력 처리 (클릭/ESC)
@@ -266,8 +266,6 @@ public class ItemCursorFollower : MonoBehaviour
                 StopHolding();
     }
     
-    private void LogDebug(string message)
-    {
-            }
+    private void LogDebug(string message) { }
     #endregion
 }

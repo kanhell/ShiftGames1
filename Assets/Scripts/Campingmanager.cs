@@ -76,30 +76,6 @@ public class CampingManager : MonoBehaviour
         
         bool isOpen = campingPanel.activeSelf;
         campingPanel.SetActive(!isOpen);
-        
-        Debug.Log($"[CampingManager] 야영 패널 {(!isOpen ? "열림" : "닫힘")}");
-    }
-    
-    /// <summary>
-    /// 야영 패널 열기
-    /// </summary>
-    public void OpenCampingPanel()
-    {
-        if (campingPanel != null)
-        {
-            campingPanel.SetActive(true);
-        }
-    }
-    
-    /// <summary>
-    /// 야영 패널 닫기
-    /// </summary>
-    public void CloseCampingPanel()
-    {
-        if (campingPanel != null)
-        {
-            campingPanel.SetActive(false);
-        }
     }
     
     /// <summary>
@@ -138,8 +114,6 @@ public class CampingManager : MonoBehaviour
         float roll = Random.Range(0f, 100f);
         bool isAttacked = roll < attackChance;
         
-        Debug.Log($"[CampingManager] 확률 굴림: {roll:F2}% (기준: {attackChance}%) → {(isAttacked ? "습격!" : "안전")}");
-        
         // 결과 표시
         ShowResult(isAttacked);
         
@@ -176,8 +150,6 @@ public class CampingManager : MonoBehaviour
             resultText.text = "습격이 왔습니다!";
             resultText.color = attackColor;
             
-            Debug.Log("[CampingManager] 습격 발생!");
-            
             // TODO: 전투 시작 또는 피해 처리
             OnAttackOccurred();
         }
@@ -187,28 +159,9 @@ public class CampingManager : MonoBehaviour
             resultText.text = " 안전하게 야영했습니다.";
             resultText.color = safeColor;
             
-            Debug.Log("[CampingManager] 안전하게 야영 완료");
-            
             // TODO: 체력 회복 등
             OnSafeCamping();
         }
-    }
-    
-    /// <summary>
-    /// 습격 확률 설정
-    /// </summary>
-    public void SetAttackChance(float chance)
-    {
-        attackChance = Mathf.Clamp(chance, 0f, 100f);
-        Debug.Log($"[CampingManager] 습격 확률 설정: {attackChance}%");
-    }
-    
-    /// <summary>
-    /// 현재 습격 확률 가져오기
-    /// </summary>
-    public float GetAttackChance()
-    {
-        return attackChance;
     }
     
     /// <summary>
@@ -217,7 +170,6 @@ public class CampingManager : MonoBehaviour
     private void OnAttackOccurred()
     {
         // TODO: 전투 시작, 적 생성, 피해 처리 등
-        Debug.Log("[CampingManager] 습격 처리 시작 (확장 필요)");
     }
     
     /// <summary>
@@ -226,6 +178,5 @@ public class CampingManager : MonoBehaviour
     private void OnSafeCamping()
     {
         // TODO: 체력 회복, 버프 등
-        Debug.Log("[CampingManager] 안전한 야영 처리 (확장 필요)");
     }
 }

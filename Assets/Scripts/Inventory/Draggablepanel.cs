@@ -170,6 +170,7 @@ public class DraggablePanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     
     private void LogDebug(string message)
     {
-            }
+        
+    }
     #endregion
 }

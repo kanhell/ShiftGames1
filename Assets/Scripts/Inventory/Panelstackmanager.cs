@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/PanelStackManager.cs
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -114,6 +112,7 @@ public class PanelStackManager : MonoBehaviour
         return true;
     }
     
+    /*
     /// <summary>
     /// 모든 패널 닫기
     /// </summary>
@@ -139,6 +138,7 @@ public class PanelStackManager : MonoBehaviour
     {
         return panelStack.Count;
     }
+    */
     #endregion
     
     #region Helper Methods

@@ -108,12 +108,6 @@ public class ItemSplitManager : MonoBehaviour
             
             LogDebug("슬라이더 초기화 완료");
         }
-                /* ✅ 초기 비활성화: InputBlocker (임시로 주석)
-        if (inputBlocker != null)
-        {
-            inputBlocker.SetActive(false);
-        }
-        */
         
         if (panelObject != null)
         {
@@ -178,14 +172,6 @@ public class ItemSplitManager : MonoBehaviour
             LogDebug("ItemSplitPanel 비활성화");
         }
         
-        /* ✅ InputBlocker 비활성화 (임시로 주석)
-        if (inputBlocker != null)
-        {
-            inputBlocker.SetActive(false);
-            LogDebug("InputBlocker 비활성화");
-        }
-        */
-        
         // 데이터 초기화
         sourceSlot = null;
         targetSlot = null;
@@ -215,19 +201,6 @@ public class ItemSplitManager : MonoBehaviour
         
         panelObject.SetActive(true);
         LogDebug("ItemSplitPanel 활성화");
-        
-        /* ✅ InputBlocker 임시로 비활성화 (디버깅용)
-        if (inputBlocker != null)
-        {
-            inputBlocker.SetActive(true);
-            
-            // InputBlocker를 ItemSplitPanel 바로 뒤로 이동
-            int panelIndex = panelObject.transform.GetSiblingIndex();
-            inputBlocker.transform.SetSiblingIndex(panelIndex - 1);
-            
-            LogDebug($"InputBlocker 활성화 (Index: {inputBlocker.transform.GetSiblingIndex()})");
-        }
-                */
         
         // 슬라이더 설정
         if (quantitySlider != null)
@@ -314,79 +287,6 @@ public class ItemSplitManager : MonoBehaviour
         ClosePanel();
     }
     
-    private void SplitToEmptySlot()
-    {
-        // 빈 슬롯 찾기
-        SlotUI emptySlot = FindEmptySlotNear(sourceSlot);
-        
-        if (emptySlot == null)
-        {
-            return;
-        }
-        
-        // 아이템 분할
-        PerformSplit(sourceSlot, emptySlot, selectedQuantity);
-    }
-    
-    private void SplitToTargetSlot()
-    {
-        if (targetSlot == null)
-        {
-            return;
-        }
-        
-        // 아이템 분할
-        PerformSplit(sourceSlot, targetSlot, selectedQuantity);
-    }
-    
-    private void PerformSplit(SlotUI from, SlotUI to, int amount)
-    {
-        if (from == null)
-        {
-            return;
-        }
-        
-        LogDebug($"PerformSplit 호출: {from.currentItem.itemName} x{amount}");
-        
-        // 원본에서 수량 감소
-        from.quantity -= amount;
-        
-        if (from.quantity <= 0)
-        {
-            from.ClearSlot();
-        }
-        else
-        {
-            from.UpdateUI();
-        }
-        
-        if (ItemCursorFollower.Instance != null)
-        {
-            LogDebug($"ItemCursorFollower.StartHolding 호출");
-            ItemCursorFollower.Instance.StartHolding(from.currentItem, amount, from);
-        }
-        else
-        {
-            // ItemCursorFollower가 없으면 기존 방식 (직접 대상 슬롯에 넣기)
-            if (to != null)
-            {
-                to.SetItem(from.currentItem, amount);
-                to.UpdateUI();
-            }
-                    }
-    }
-    
-    private SlotUI FindEmptySlotNear(SlotUI source)
-    {
-        // 인벤토리 매니저에서 빈 슬롯 찾기
-        if (InventoryManager.Instance != null)
-        {
-            return InventoryManager.Instance.FindEmptyInventorySlot();
-        }
-        
-        return null;
-    }
-    
     private void HandleEscapeKey()
     {
         if (IsOpen() && Input.GetKeyDown(KeyCode.Escape))
@@ -398,6 +298,7 @@ public class ItemSplitManager : MonoBehaviour
     
     private void LogDebug(string message)
     {
-            }
+        
+    }
     #endregion
 }

@@ -1,5 +1,3 @@
-// 최종 수정 버전 - 중복 제거 및 오류 수정
-
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -827,16 +825,6 @@ public class ShopManager : MonoBehaviour
     
     #region Shop Management
     
-    public void OnBuyTabClicked()
-    {
-        SetMode(ShopMode.Buy);
-    }
-    
-    public void OnSellTabClicked()
-    {
-        SetMode(ShopMode.Sell);
-    }
-    
     private void SetMode(ShopMode mode)
     {
         currentMode = mode;
@@ -927,24 +915,7 @@ public class ShopManager : MonoBehaviour
     
     #region Utility
     
-    public void SetVillageLevel(int newVillage)
-    {
-        village = newVillage;
-        if (isShopOpen && currentMode == ShopMode.Buy)
-        {
-            RefreshShop();
-        }
-        LogDebug($"Village 레벨 변경: {village}");
-    }
-    
-    public int GetVillageLevel()
-    {
-        return village;
-    }
-    
-    private void LogDebug(string message)
-    {
-            }
+    private void LogDebug(string message) { }
     
     #endregion
 }

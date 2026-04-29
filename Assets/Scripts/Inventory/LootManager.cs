@@ -182,7 +182,7 @@ public class LootManager : MonoBehaviour
         amount = TryAddToEmptySlots(item, amount);
         
         // 공간 부족 경고
-            }
+    }
     
     /// <summary>
     /// 전리품 전체 획득
@@ -210,7 +210,7 @@ public class LootManager : MonoBehaviour
             }
         }
         
-                        // 모두 가져갔으면 창 닫기
+        // 모두 가져갔으면 창 닫기
         if (failCount == 0 && successCount > 0)
         {
             CloseLootPanel();
@@ -263,18 +263,6 @@ public class LootManager : MonoBehaviour
     {
         return lootSlots.Contains(slot);
     }
-    
-    /// <summary>
-    /// 전리품 전체 삭제
-    /// </summary>
-    public void ClearAllLoot()
-    {
-        foreach (SlotUI slot in lootSlots)
-        {
-            slot.ClearSlot();
-        }
-        
-    }
     #endregion
     
     #region Private Methods
@@ -324,8 +312,6 @@ public class LootManager : MonoBehaviour
         return amount;
     }
     
-    private void LogDebug(string message)
-    {
-            }
+    private void LogDebug(string message) { }
     #endregion
 }

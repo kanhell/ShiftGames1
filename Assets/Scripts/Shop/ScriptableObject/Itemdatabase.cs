@@ -25,23 +25,28 @@ public class ItemDatabase : ScriptableObject
     /// <summary>
     /// 여러 Tier의 아이템 필터링
     /// </summary>
+    /*
     public List<ItemData> GetItemsByTiers(params int[] tiers)
     {
         HashSet<int> tierSet = new HashSet<int>(tiers);
         return allItems.Where(item => item != null && tierSet.Contains(item.tier)).ToList();
     }
+    */
     
     /// <summary>
     /// 특정 타입의 아이템만 필터링
     /// </summary>
+    /*
     public List<ItemData> GetItemsByType(ItemType itemType)
     {
         return allItems.Where(item => item != null && item.itemType == itemType).ToList();
     }
+    */
     
     /// <summary>
     /// Tier와 타입으로 동시 필터링
     /// </summary>
+    /*
     public List<ItemData> GetItemsByTierAndType(int tier, ItemType itemType)
     {
         return allItems.Where(item => 
@@ -50,6 +55,7 @@ public class ItemDatabase : ScriptableObject
             item.itemType == itemType
         ).ToList();
     }
+    */
     
     /// <summary>
     /// 최대 Tier 반환
@@ -63,11 +69,13 @@ public class ItemDatabase : ScriptableObject
     /// <summary>
     /// 랜덤 아이템 가져오기 (단일)
     /// </summary>
+    /*
     public ItemData GetRandomItem()
     {
         if (allItems == null || allItems.Count == 0) return null;
         return allItems[Random.Range(0, allItems.Count)];
     }
+    */
     
     #endregion
     
@@ -76,6 +84,7 @@ public class ItemDatabase : ScriptableObject
     /// <summary>
     /// 데이터베이스 유효성 검사 (에디터용)
     /// </summary>
+    /*
     public void ValidateDatabase()
     {
         if (allItems == null)
@@ -84,7 +93,8 @@ public class ItemDatabase : ScriptableObject
         }
         
         int nullCount = allItems.Count(item => item == null);
-            }
+    }
+    */
     
     #endregion
 }

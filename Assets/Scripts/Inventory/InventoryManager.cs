@@ -178,27 +178,6 @@ public class InventoryManager : MonoBehaviour
     }
     
     /// <summary>
-    /// 특정 슬롯의 아이템 제거
-    /// </summary>
-    public void RemoveItemFromSlot(SlotUI slot, int amount)
-    {
-        if (slot == null || slot.currentItem == null) return;
-        
-        amount = Mathf.Min(amount, slot.quantity);
-        slot.quantity -= amount;
-        
-        if (slot.quantity <= 0)
-        {
-            slot.ClearSlot();
-        }
-        else
-        {
-            slot.UpdateUI();
-        }
-        
-    }
-    
-    /// <summary>
     /// 빈 슬롯 찾기 (Public)
     /// </summary>
     public SlotUI FindEmptyInventorySlot()
@@ -332,33 +311,6 @@ public class InventoryManager : MonoBehaviour
         
         toSlot.UpdateUI();
         
-    }
-    
-    /// <summary>
-    /// 우클릭: 빠른 장착/사용
-    /// </summary>
-    public void OnSlotRightClick(SlotUI clickedSlot)
-    {
-        if (clickedSlot.currentItem == null) return;
-        
-        // 인벤토리 → 장비 슬롯 자동 장착
-        if (clickedSlot.slotType == SlotType.Inventory)
-        {
-            SlotUI targetEquipSlot = GetEquipmentSlotByType(clickedSlot.currentItem.itemType);
-            if (targetEquipSlot != null)
-            {
-                TryMoveOrSwapDrag(clickedSlot, targetEquipSlot);
-            }
-                    }
-        // 장비 슬롯 → 인벤토리로 복귀
-        else
-        {
-            SlotUI emptySlot = FindEmptySlot();
-            if (emptySlot != null)
-            {
-                TryMoveOrSwapDrag(clickedSlot, emptySlot);
-            }
-        }
     }
     
     /// <summary>

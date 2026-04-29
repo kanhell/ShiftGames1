@@ -28,8 +28,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     // 드래그 관련
     private GameObject draggedIcon;
     private Canvas canvas;
-    private Transform originalParent;
-    private int originalSiblingIndex;
     private bool canDrag = false; // 드래그 가능 여부
     
     // 더블클릭 관련
@@ -488,14 +486,22 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
+        // 소비 아이템 → 퀵슬롯에 장착
+        if (currentItem.itemType == ItemType.Consumable)
+        {
+            if (InventoryManager.Instance != null)
+            {
+                InventoryManager.Instance.EquipToQuickSlot(this);
+            }
+            return;
+        }
+        
         // 재료 아이템 + 요리창 열려있음 → 요리창에 추가
         if (currentItem.itemType == ItemType.Ingredient && IsCookingPanelOpen())
         {
             AddToCookingPanel();
             return;
         }
-        
-        // 그 외: 아무 동작 안 함
     }
     
     /// <summary>
@@ -592,7 +598,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             ClearSlot();
             
         }
-            }
+    }
     
     /// <summary>
     /// 요리창이 열려있는지 확인
@@ -616,7 +622,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         // 재료 추가 시도
         bool success = CookingManager.Instance.TryAddIngredient(currentItem, this);
         
-                    }
+    }
     
     /// <summary>
     /// 요리 슬롯에서 인벤토리로 되돌리기
@@ -643,7 +649,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             ClearSlot();
             
         }
-            }
+    }
     
     // ─────────────────────────────────────────────
     // Shift 키 처리 (아이템 분할)
@@ -670,7 +676,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         {
             ItemSplitManager.Instance.OpenForClick(this);
         }
-            }
+    }
     
     /// <summary>
     /// Shift + 드래그 처리
@@ -699,36 +705,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         {
             ItemSplitManager.Instance.OpenForDrag(this, targetSlot);
         }
-            }
-    
-    /// <summary>
-    /// 상점에 아이템 판매
-    /// </summary>
-    private void SellItemToShop()
-    {
-        if (currentItem == null || quantity <= 0)
-        {
-            return;
-        }
-        
-        // 골드 추가 (0이어도 추가)
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.AddGold(currentItem.sellPrice);
-        }
-        
-        // 아이템 1개 제거
-        quantity--;
-        
-        if (quantity <= 0)
-        {
-            ClearSlot();
-        }
-        else
-        {
-            UpdateUI();
-        }
-        
     }
     
     // ─────────────────────────────────────────────

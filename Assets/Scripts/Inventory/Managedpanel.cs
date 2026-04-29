@@ -1,5 +1,3 @@
-// Assets/Scripts/UI/ManagedPanel.cs
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,11 +28,8 @@ public class ManagedPanel : MonoBehaviour, IPointerDownHandler
     #region Unity Lifecycle
     private void OnEnable()
     {
-        // 패널이 활성화되면 스택에 등록
         RegisterToStack();
-        
-        // 활성화될 때 최상위로 이동
-        BringToFrontOnEnable();
+        transform.SetAsLastSibling();
     }
     
     private void OnDisable()
@@ -141,23 +136,6 @@ public class ManagedPanel : MonoBehaviour, IPointerDownHandler
             isRegistered = false;
             LogDebug("스택에서 제거됨");
         }
-    }
-    
-    /// <summary>
-    /// 패널이 활성화될 때 최상위로 이동 (약간의 지연 후)
-    /// </summary>
-    private void BringToFrontOnEnable()
-    {
-        // Transform 최상위 이동
-        transform.SetAsLastSibling();
-        
-        // 스택 최상위로 이동 (RegisterToStack에서 이미 최상위로 등록되지만, 명시적으로 한 번 더)
-        if (PanelStackManager.Instance != null)
-        {
-            PanelStackManager.Instance.BringPanelToFront(this);
-        }
-        
-        LogDebug("활성화 → 최상위로 이동");
     }
     
     private void LogDebug(string message)

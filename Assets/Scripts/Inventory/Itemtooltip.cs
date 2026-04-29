@@ -160,12 +160,12 @@ public class ItemTooltip : MonoBehaviour
             priceText.color = new Color(1f, 0.86f, 0f); // 노란색
             
         }
-                // 설명
+        // 설명
         if (descriptionText != null)
         {
             descriptionText.text = string.IsNullOrEmpty(item.description) ? "설명 없음" : item.description;
         }
-                // 패널 표시
+        // 패널 표시
         if (tooltipPanel != null)
         {
             tooltipPanel.SetActive(true);
