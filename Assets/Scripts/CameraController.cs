@@ -2,33 +2,40 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    GameObject player;
+    // 싱글톤
+    public static CameraController instance;
 
-    public float speed = 8;
-
+    public GameObject player;
     float obj_x;
     float x;
-    public float dis = 3.5f;
 
-    public float width = 8;
+    float speed = Values.camera_speed;
+    float dis = Values.camera_maxDis;
+    float camera_width = Values.camera_width;
 
-    private void Start()
+    void Awake()  // 싱글톤
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
     }
+
     private void Update()
     {
         obj_x = player.transform.position.x;
         x = transform.position.x;
 
-        if (obj_x < x-dis && x-width > GameManager.instance.limitMin)  // 왼쪽으로 이동
+        if (obj_x < x-dis && x-camera_width > GameManager.instance.tileData.MaxLeft)  // 왼쪽으로 이동
             transform.Translate(new Vector2(-speed * Time.deltaTime, 0));
-        if (obj_x > x+dis && x+width < GameManager.instance.limitMax)  // 오른쪽으로 이동
+        if (obj_x > x+dis && x+camera_width < GameManager.instance.tileData.MaxRight)  // 오른쪽으로 이동
             transform.Translate(new Vector2(speed * Time.deltaTime, 0));
     }
 
-    public void setInitialPos(float x)
+    public void ChangePos(float x)
     {
-        transform.position = new Vector3(x, 0, -10);
+        transform.position = new Vector3(x, 0, Values.camera_posZ);
     }
 }

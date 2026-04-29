@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed7a6a7b92f39d479453680f80e416c, type: 3}
+  m_Name: TIL_left
+  m_EditorClassIdentifier: Assembly-CSharp::TileData
+  tileName: left
+  SceneName: DummyLeftScene
+  MaxLeft: -10
+  MaxRight: 10
+  leftTile: {fileID: 0}
+  rightTile: {fileID: 11400000, guid: 580c3d3f17dd9eb448ade12d236b5905, type: 2}
+  topTile: {fileID: 0}
+  bottomTile: {fileID: 0}
+  dawn: {fileID: 0}
+  day: {fileID: 0}
+  dusk: {fileID: 0}
+  night: {fileID: 0}

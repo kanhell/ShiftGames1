@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28c99c1be1995cd41b5b44125d08b9af, type: 3}
+  m_Name: CNV_cnv1_cnv2_meet
+  m_EditorClassIdentifier: Assembly-CSharp::ConversationData
+  npc1: {fileID: 11400000, guid: cc35eda2e1634bb409df0ab78a1aaeca, type: 2}
+  npc2: {fileID: 11400000, guid: 879131355bd83e8498f7053c4b997e18, type: 2}
+  lines:
+  - speaker: 2
+    line: "\uC548\uB155"
+    time: 0.8
+  - speaker: 1
+    line: "\uC751 \uC624\uB79C\uB9CC"
+    time: 0.8
+  - speaker: 2
+    line: "\uADF8\uB2C8\uAE4C"
+    time: 0.8
