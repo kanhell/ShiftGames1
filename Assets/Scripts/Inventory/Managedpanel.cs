@@ -97,6 +97,13 @@ public class ManagedPanel : MonoBehaviour, IPointerDownHandler
                     CookingManager.Instance.CloseCookingPanel();
                 }
                 break;
+
+            case PanelType.Potion:
+                if (PotionManager.Instance != null)
+                {
+                    PotionManager.Instance.ClosePotionPanel();
+                }
+                break;
                 
             case PanelType.Loot:
                 if (LootManager.Instance != null)
@@ -157,5 +164,6 @@ public enum PanelType
     Inventory,
     Equipment,
     Cooking,
+    Potion,
     Loot
 }

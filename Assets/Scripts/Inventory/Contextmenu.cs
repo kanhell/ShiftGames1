@@ -19,6 +19,8 @@ public class ContextMenu : MonoBehaviour
     [SerializeField] private GameObject ingredientMenuPanel;
     [SerializeField] private GameObject cookingIngredientMenuPanel;
     [SerializeField] private GameObject cookingSlotMenuPanel;
+    [SerializeField] private GameObject potionIngredientMenuPanel;
+    [SerializeField] private GameObject potionSlotMenuPanel;
     [SerializeField] private GameObject lootMenuPanel;
     
     [Header("확인 팝업")]
@@ -56,6 +58,10 @@ public class ContextMenu : MonoBehaviour
     [Header("요리 슬롯 메뉴 버튼")]
     [SerializeField] private Button removeFromCookingButton;
     [SerializeField] private Button discardButton7;
+
+    [Header("포션 슬롯 메뉴 버튼")]
+    [SerializeField] private Button removeFromPotionButton;
+    [SerializeField] private Button discardButton8;
     
     [Header("전리품 메뉴 버튼")]
     [SerializeField] private Button transferToInventoryButton;
@@ -73,6 +79,8 @@ public class ContextMenu : MonoBehaviour
     private RectTransform ingredientMenuRect;
     private RectTransform cookingIngredientMenuRect;
     private RectTransform cookingSlotMenuRect;
+    private RectTransform potionIngredientMenuRect;
+    private RectTransform potionSlotMenuRect;
     private RectTransform lootMenuRect;
     #endregion
     
@@ -118,6 +126,8 @@ public class ContextMenu : MonoBehaviour
         ingredientMenuRect = GetRectTransformSafe(ingredientMenuPanel);
         cookingIngredientMenuRect = GetRectTransformSafe(cookingIngredientMenuPanel);
         cookingSlotMenuRect = GetRectTransformSafe(cookingSlotMenuPanel);
+        potionIngredientMenuRect = GetRectTransformSafe(potionIngredientMenuPanel);
+        potionSlotMenuRect = GetRectTransformSafe(potionSlotMenuPanel);
         lootMenuRect = GetRectTransformSafe(lootMenuPanel);
     }
     
@@ -157,6 +167,10 @@ public class ContextMenu : MonoBehaviour
         RegisterButtonSafe(removeFromCookingButton, OnRemoveFromCookingButtonClicked);
         RegisterButtonSafe(discardButton7, () => ShowConfirmDialog("정말 버리시겠습니까?"));
         
+        // 포션 슬롯 메뉴
+        RegisterButtonSafe(removeFromPotionButton, OnRemoveFromPotionButtonClicked);
+        RegisterButtonSafe(discardButton8, () => ShowConfirmDialog("정말 버리시겠습니까?"));
+        
         // 전리품 메뉴
         RegisterButtonSafe(transferToInventoryButton, OnTransferToInventoryButtonClicked);
         RegisterButtonSafe(discardLootButton, () => ShowConfirmDialog("정말 버리시겠습니까?"));
@@ -183,6 +197,8 @@ public class ContextMenu : MonoBehaviour
         SetActiveSafe(ingredientMenuPanel, false);
         SetActiveSafe(cookingIngredientMenuPanel, false);
         SetActiveSafe(cookingSlotMenuPanel, false);
+        SetActiveSafe(potionIngredientMenuPanel, false);
+        SetActiveSafe(potionSlotMenuPanel, false);
         SetActiveSafe(lootMenuPanel, false);
         SetActiveSafe(confirmPanel, false);
     }
@@ -225,11 +241,22 @@ public class ContextMenu : MonoBehaviour
         if (slot.slotType == SlotType.Cooking)
             return MenuType.CookingSlot;
         
-        // 2. 재료 아이템
+        // 1-1. 재료 아이템
         if (slot.currentItem.itemType == ItemType.Ingredient)
         {
             bool isCookingOpen = CookingManager.Instance != null && CookingManager.Instance.IsCookingOpen();
             return isCookingOpen ? MenuType.CookingIngredient : MenuType.Ingredient;
+        }
+
+        // 2. 포션 슬롯
+        if (slot.slotType == SlotType.Potion)
+            return MenuType.PotionSlot;
+        
+        // 2-2. 재료 아이템
+        if (slot.currentItem.itemType == ItemType.Ingredient)
+        {
+            bool isPotionOpen = PotionManager.Instance != null && PotionManager.Instance.IsPotionOpen();
+            return isPotionOpen ? MenuType.PotionIngredient : MenuType.Ingredient;
         }
         
         // 3. 퀵슬롯 소비 아이템
@@ -284,6 +311,16 @@ public class ContextMenu : MonoBehaviour
             case MenuType.CookingIngredient:
                 menuPanel = cookingIngredientMenuPanel;
                 menuRect = cookingIngredientMenuRect;
+                break;
+            
+            case MenuType.PotionSlot:
+                menuPanel = potionSlotMenuPanel;
+                menuRect = potionSlotMenuRect;
+                break;
+            
+            case MenuType.PotionIngredient:
+                menuPanel = potionIngredientMenuPanel;
+                menuRect = potionIngredientMenuRect;
                 break;
                 
             case MenuType.Ingredient:
@@ -342,6 +379,8 @@ public class ContextMenu : MonoBehaviour
         SetActiveSafe(ingredientMenuPanel, false);
         SetActiveSafe(cookingIngredientMenuPanel, false);
         SetActiveSafe(cookingSlotMenuPanel, false);
+        SetActiveSafe(potionIngredientMenuPanel, false);
+        SetActiveSafe(potionSlotMenuPanel, false);
         SetActiveSafe(lootMenuPanel, false);
     }
     
@@ -412,13 +451,15 @@ public class ContextMenu : MonoBehaviour
     private bool IsAnyMenuActive()
     {
         return equipmentMenuPanel.activeSelf ||
-               (consumableMenuPanel != null && consumableMenuPanel.activeSelf) ||
-               (unequipmentMenuPanel != null && unequipmentMenuPanel.activeSelf) ||
-               (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
-               (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
-               (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
-               (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
-               (lootMenuPanel != null && lootMenuPanel.activeSelf);
+                (consumableMenuPanel != null && consumableMenuPanel.activeSelf) ||
+                (unequipmentMenuPanel != null && unequipmentMenuPanel.activeSelf) ||
+                (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
+                (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
+                (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
+                (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
+                (potionIngredientMenuPanel != null && potionIngredientMenuPanel.activeSelf) ||
+                (potionSlotMenuPanel != null && potionSlotMenuPanel.activeSelf) ||
+                (lootMenuPanel != null && lootMenuPanel.activeSelf);
     }
     
     private bool IsMouseOverAnyMenu()
@@ -432,6 +473,8 @@ public class ContextMenu : MonoBehaviour
                IsMouseOverMenu(ingredientMenuPanel, ingredientMenuRect, mousePos) ||
                IsMouseOverMenu(cookingIngredientMenuPanel, cookingIngredientMenuRect, mousePos) ||
                IsMouseOverMenu(cookingSlotMenuPanel, cookingSlotMenuRect, mousePos) ||
+               IsMouseOverMenu(potionIngredientMenuPanel, potionIngredientMenuRect, mousePos) ||
+               IsMouseOverMenu(potionSlotMenuPanel, potionSlotMenuRect, mousePos) ||
                IsMouseOverMenu(lootMenuPanel, lootMenuRect, mousePos);
     }
     
@@ -511,6 +554,19 @@ public class ContextMenu : MonoBehaviour
     }
     
     private void OnRemoveFromCookingButtonClicked()
+    {
+        if (!IsValidTargetSlot()) return;
+        
+        SlotUI emptySlot = InventoryManager.Instance.FindEmptyInventorySlot();
+        
+        if (emptySlot != null)
+        {
+            TransferItem(targetSlot, emptySlot);
+        }
+                CloseMenu();
+    }
+
+    private void OnRemoveFromPotionButtonClicked()
     {
         if (!IsValidTargetSlot()) return;
         
@@ -629,15 +685,17 @@ public class ContextMenu : MonoBehaviour
     /// </summary>
     public bool IsMenuOpen()
     {
-        return (equipmentMenuPanel != null && equipmentMenuPanel.activeSelf) ||
-               (consumableMenuPanel != null && consumableMenuPanel.activeSelf) ||
-               (unequipmentMenuPanel != null && unequipmentMenuPanel.activeSelf) ||
-               (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
-               (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
-               (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
-               (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
-               (lootMenuPanel != null && lootMenuPanel.activeSelf) ||
-               (confirmPanel != null && confirmPanel.activeSelf);
+        return  (equipmentMenuPanel != null && equipmentMenuPanel.activeSelf) ||
+                (consumableMenuPanel != null && consumableMenuPanel.activeSelf) ||
+                (unequipmentMenuPanel != null && unequipmentMenuPanel.activeSelf) ||
+                (quickSlotMenuPanel != null && quickSlotMenuPanel.activeSelf) ||
+                (ingredientMenuPanel != null && ingredientMenuPanel.activeSelf) ||
+                (cookingIngredientMenuPanel != null && cookingIngredientMenuPanel.activeSelf) ||
+                (cookingSlotMenuPanel != null && cookingSlotMenuPanel.activeSelf) ||
+                (potionIngredientMenuPanel != null && potionIngredientMenuPanel.activeSelf) ||
+                (potionSlotMenuPanel != null && potionSlotMenuPanel.activeSelf) ||
+                (lootMenuPanel != null && lootMenuPanel.activeSelf) ||
+                (confirmPanel != null && confirmPanel.activeSelf);
     }
     #endregion
     
@@ -651,6 +709,8 @@ public class ContextMenu : MonoBehaviour
         Ingredient,
         CookingIngredient,
         CookingSlot,
+        PotionIngredient,
+        PotionSlot,
         Loot
     }
     #endregion

@@ -22,6 +22,7 @@ public class PanelCloseButton : MonoBehaviour
         Inventory,      // 인벤토리
         Equipment,      // 장비창
         Cooking,        // 요리창
+        Potion,         // 포션창
         Loot            // 전리품
     }
     
@@ -63,6 +64,13 @@ public class PanelCloseButton : MonoBehaviour
                 if (CookingManager.Instance != null)
                 {
                     CookingManager.Instance.CloseCookingPanel();
+                }
+                break;
+                
+            case PanelType.Potion:
+                if (PotionManager.Instance != null)
+                {
+                    PotionManager.Instance.ClosePotionPanel();
                 }
                 break;
                 

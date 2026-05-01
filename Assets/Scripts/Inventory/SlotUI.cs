@@ -39,7 +39,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         if (iconImage == null)
         {
             iconImage = transform.Find("ItemIcon")?.GetComponent<Image>();
-                    }
+        }
         
         if (quantityText == null)
         {
@@ -47,7 +47,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             if (quantityText == null)
             {
                 quantityText = GetComponentInChildren<TextMeshProUGUI>();
-                            }
+            }
         }
         
         UpdateUI();
@@ -75,13 +75,11 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 
                 if (isConsumableOrIngredient && quantity > 1)
                 {
-                    // Consumable/Ingredient는 실제 수량 표시
                     quantityText.text = quantity.ToString();
                     quantityText.gameObject.SetActive(true);
                 }
                 else
                 {
-                    // 장비류는 수량 표시 안 함 (내부적으로 여러 개여도 1개로 보임)
                     quantityText.gameObject.SetActive(false);
                 }
             }
@@ -93,17 +91,8 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 if (isInShopPanel)
                 {
                     bool isInShopGrid = IsInShopGrid();
-                    
-                    if (isInShopGrid)
-                    {
-                        priceText.gameObject.SetActive(true);
-                        priceText.text = $"{currentItem.buyPrice}G";
-                    }
-                    else
-                    {
-                        priceText.gameObject.SetActive(true);
-                        priceText.text = $"{currentItem.sellPrice}G";
-                    }
+                    priceText.gameObject.SetActive(true);
+                    priceText.text = isInShopGrid ? $"{currentItem.buyPrice}G" : $"{currentItem.sellPrice}G";
                 }
                 else
                 {
@@ -160,25 +149,28 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         // 요리 재료 슬롯 체크
         if (slotType == SlotType.Cooking)
         {
-            bool canAccept = item.itemType == ItemType.Ingredient;
-            return canAccept;
+            return item.itemType == ItemType.Ingredient;
         }
         
-        // 퀵슬롯은 소비 아이템만 수용 (최대 5개)
+        // 포션 재료 슬롯 체크
+        if (slotType == SlotType.Potion)
+        {
+            return item.itemType == ItemType.Ingredient;
+        }
+        
+        // 퀵슬롯은 소비 아이템만 수용
         if (gameObject.name.Contains("Quick"))
         {
-            bool canAccept = item.itemType == ItemType.Consumable;
-            return canAccept;
+            return item.itemType == ItemType.Consumable;
         }
         
         if (slotType == SlotType.Inventory)
         {
-            return true; // 인벤토리는 모든 아이템 수용
+            return true;
         }
         else // SlotType.Equipment
         {
-            bool canAccept = item.itemType == allowedItemType;
-            return canAccept;
+            return item.itemType == allowedItemType;
         }
     }
     
@@ -186,9 +178,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     // 드래그 앤 드롭 이벤트
     // ─────────────────────────────────────────────
     
-    /// <summary>
-    /// 드래그 시작
-    /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (ItemSplitManager.Instance != null && ItemSplitManager.Instance.IsOpen())
@@ -208,8 +197,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             if (transform.parent != null)
             {
                 string parentName = transform.parent.name;
-                
-                // ShopGrid 또는 InventoryGrid의 자식이면 드래그 차단
                 if (parentName == "ShopGrid" || parentName == "InventoryGrid")
                 {
                     canDrag = false;
@@ -224,28 +211,23 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // Shift + 드래그는 별도 처리하지 않음 (OnEndDrag에서 처리)
         canDrag = true;
         
-        // 드래그할 아이콘 생성
         draggedIcon = new GameObject("DraggedIcon");
         draggedIcon.transform.SetParent(canvas.transform, false);
-        draggedIcon.transform.SetAsLastSibling(); // 최상위로
+        draggedIcon.transform.SetAsLastSibling();
         
         Image dragImage = draggedIcon.AddComponent<Image>();
         dragImage.sprite = currentItem.itemIcon;
-        dragImage.raycastTarget = false; // 레이캐스트 무시
+        dragImage.raycastTarget = false;
         
-        // 반투명 효과
         Color color = dragImage.color;
         color.a = 0.6f;
         dragImage.color = color;
         
-        // 크기 설정
         RectTransform rectTransform = draggedIcon.GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(64, 64);
         
-        // 원본 아이콘 반투명 처리
         if (iconImage != null)
         {
             Color iconColor = iconImage.color;
@@ -254,31 +236,22 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         }
     }
     
-    /// <summary>
-    /// 드래그 중
-    /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
-        // 드래그 가능하고 드래그 아이콘이 있을 때만 이동
         if (canDrag && draggedIcon != null)
         {
             draggedIcon.transform.position = eventData.position;
         }
     }
     
-    /// <summary>
-    /// 드래그 종료
-    /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
-        // 드래그 아이콘 제거
         if (draggedIcon != null)
         {
             Destroy(draggedIcon);
             draggedIcon = null;
         }
         
-        // 원본 아이콘 복원
         if (iconImage != null)
         {
             Color iconColor = iconImage.color;
@@ -286,20 +259,16 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             iconImage.color = iconColor;
         }
         
-        // 드래그 불가 상태였으면 종료
         if (!canDrag)
         {
             canDrag = false;
             return;
         }
         
-        // 드롭 대상 찾기
         SlotUI targetSlot = GetSlotUnderMouse(eventData);
         
         if (targetSlot != null)
         {
-            
-            // Shift + 드래그 = 아이템 분할 (대상이 빈 슬롯일 때만)
             if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && 
                 targetSlot.currentItem == null && 
                 quantity > 1)
@@ -308,22 +277,10 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             }
             else
             {
-                // 일반 드래그 = 아이템 이동/교환
                 InventoryManager.Instance.TryMoveOrSwapDrag(this, targetSlot);
             }
         }
-        else
-        {
-            
-            // Raycast 결과 전체 출력 (디버깅용)
-            var results = new System.Collections.Generic.List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-            foreach (var result in results)
-            {
-            }
-        }
         
-        // 드래그 플래그 리셋
         canDrag = false;
     }
     
@@ -337,14 +294,12 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         
         foreach (var result in results)
         {
-            // 직접 SlotUI 컴포넌트가 있는지 확인
             SlotUI slot = result.gameObject.GetComponent<SlotUI>();
             if (slot != null)
             {
                 return slot;
             }
             
-            // 부모에서 SlotUI 찾기 (슬롯의 자식 오브젝트를 클릭한 경우)
             slot = result.gameObject.GetComponentInParent<SlotUI>();
             if (slot != null)
             {
@@ -356,7 +311,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     // ─────────────────────────────────────────────
-    // 마우스 클릭 이벤트 (우클릭 + 더블클릭)
+    // 마우스 클릭 이벤트
     // ─────────────────────────────────────────────
     
     public void OnPointerClick(PointerEventData eventData)
@@ -371,6 +326,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
+        // 우클릭
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
@@ -385,7 +341,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 좌클릭: Shift 키 체크
+        // 좌클릭
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             if (ShopManager.Instance != null && ShopManager.Instance.IsShopOpen())
@@ -394,14 +350,14 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 return;
             }
             
-            // Shift + 클릭 = 아이템 분할
+            // Shift + 클릭
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 HandleShiftClick();
             }
             else
             {
-                // 일반 클릭 = 더블클릭 체크
+                // 더블클릭 감지
                 HandleLeftClick();
             }
         }
@@ -412,7 +368,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     // ─────────────────────────────────────────────
     
     /// <summary>
-    /// 좌클릭 처리 (더블클릭 감지 포함)
+    /// 좌클릭 처리 (더블클릭 감지)
     /// </summary>
     private void HandleLeftClick()
     {
@@ -426,7 +382,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             
             if (clickCount >= 2)
             {
-                // 더블클릭 감지!
                 OnDoubleClickDetected();
                 clickCount = 0;
             }
@@ -444,26 +399,26 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     /// </summary>
     private void OnDoubleClickDetected()
     {
-        
-        // 1. 인벤토리 슬롯
         if (slotType == SlotType.Inventory)
         {
             HandleInventoryDoubleClick();
         }
-        // 2. 장비 슬롯
         else if (slotType == SlotType.Equipment)
         {
             HandleEquipmentDoubleClick();
         }
-        // 3. 요리 재료 슬롯
         else if (slotType == SlotType.Cooking)
         {
-            HandleCookingSlotDoubleClick();
+            HandleCookingDoubleClick();
+        }
+        else if (slotType == SlotType.Potion)
+        {
+            HandlePotionDoubleClick();
         }
     }
     
     /// <summary>
-    /// 인벤토리 슬롯 더블클릭 처리
+    /// 인벤토리 슬롯 더블클릭
     /// </summary>
     private void HandleInventoryDoubleClick()
     {
@@ -472,7 +427,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 전리품 슬롯인지 확인
+        // 전리품 슬롯
         if (IsLootSlot())
         {
             TransferLootToInventory();
@@ -486,7 +441,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 소비 아이템 → 퀵슬롯에 장착
+        // 소비 아이템 → 퀵슬롯 장착
         if (currentItem.itemType == ItemType.Consumable)
         {
             if (InventoryManager.Instance != null)
@@ -496,31 +451,48 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 재료 아이템 + 요리창 열려있음 → 요리창에 추가
+        // 재료 아이템 + 요리창 열림 → 요리창에 추가
         if (currentItem.itemType == ItemType.Ingredient && IsCookingPanelOpen())
         {
             AddToCookingPanel();
             return;
         }
+        
+        // 재료 아이템 + 포션창 열림 → 포션창에 추가
+        if (currentItem.itemType == ItemType.Ingredient && IsPotionPanelOpen())
+        {
+            AddToPotionPanel();
+            return;
+        }
     }
     
     /// <summary>
-    /// 장비 슬롯 더블클릭 처리
+    /// 장비 슬롯 더블클릭
     /// </summary>
     private void HandleEquipmentDoubleClick()
     {
-        // 장비 슬롯 → 인벤토리로 되돌리기
         UnequipToInventory();
     }
     
     /// <summary>
-    /// 요리 슬롯 더블클릭 처리
+    /// 요리 슬롯 더블클릭
     /// </summary>
-    private void HandleCookingSlotDoubleClick()
+    private void HandleCookingDoubleClick()
     {
-        // 요리 슬롯 → 인벤토리로 되돌리기
-        ReturnToInventory();
+        ReturnIngredientToInventory();
     }
+    
+    /// <summary>
+    /// 포션 슬롯 더블클릭
+    /// </summary>
+    private void HandlePotionDoubleClick()
+    {
+        ReturnIngredientToInventory();
+    }
+    
+    // ─────────────────────────────────────────────
+    // 헬퍼 메서드
+    // ─────────────────────────────────────────────
     
     /// <summary>
     /// 전리품 슬롯인지 확인
@@ -532,19 +504,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return LootManager.Instance.lootSlots.Contains(this);
         }
         return false;
-    }
-    
-    /// <summary>
-    /// 전리품을 인벤토리로 옮기기
-    /// </summary>
-    private void TransferLootToInventory()
-    {
-        if (LootManager.Instance == null)
-        {
-            return;
-        }
-        
-        LootManager.Instance.TransferLootToInventory(this, 0); // 0 = 전부
     }
     
     /// <summary>
@@ -561,6 +520,24 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     /// <summary>
+    /// 요리창이 열려있는지 확인
+    /// </summary>
+    private bool IsCookingPanelOpen()
+    {
+        if (CookingManager.Instance == null) return false;
+        return CookingManager.Instance.IsCookingOpen();
+    }
+    
+    /// <summary>
+    /// 포션창이 열려있는지 확인
+    /// </summary>
+    private bool IsPotionPanelOpen()
+    {
+        if (PotionManager.Instance == null) return false;
+        return PotionManager.Instance.IsPotionOpen();
+    }
+    
+    /// <summary>
     /// 장비 자동 장착
     /// </summary>
     private void EquipItemAuto()
@@ -574,7 +551,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     /// <summary>
-    /// 장비 해제하고 인벤토리로
+    /// 장비 해제 후 인벤토리로
     /// </summary>
     private void UnequipToInventory()
     {
@@ -583,12 +560,10 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 빈 인벤토리 슬롯 찾기
         SlotUI emptySlot = InventoryManager.Instance.FindEmptyInventorySlot();
         
         if (emptySlot != null)
         {
-            // 아이템 이동
             ItemData item = currentItem;
             int qty = quantity;
             
@@ -596,17 +571,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             emptySlot.UpdateUI();
             
             ClearSlot();
-            
         }
-    }
-    
-    /// <summary>
-    /// 요리창이 열려있는지 확인
-    /// </summary>
-    private bool IsCookingPanelOpen()
-    {
-        if (CookingManager.Instance == null) return false;
-        return CookingManager.Instance.IsCookingOpen();
     }
     
     /// <summary>
@@ -619,27 +584,46 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             return;
         }
         
-        // 재료 추가 시도
         bool success = CookingManager.Instance.TryAddIngredient(currentItem, this);
         
+        if (!success)
+        {
+            Debug.LogWarning($"요리 재료 추가 실패: {currentItem.itemName}");
+        }
     }
     
     /// <summary>
-    /// 요리 슬롯에서 인벤토리로 되돌리기
+    /// 포션창에 재료 추가
     /// </summary>
-    private void ReturnToInventory()
+    private void AddToPotionPanel()
+    {
+        if (PotionManager.Instance == null)
+        {
+            return;
+        }
+        
+        bool success = PotionManager.Instance.TryAddIngredient(currentItem, this);
+        
+        if (!success)
+        {
+            Debug.LogWarning($"포션 재료 추가 실패: {currentItem.itemName}");
+        }
+    }
+    
+    /// <summary>
+    /// 재료 슬롯에서 인벤토리로 반환
+    /// </summary>
+    private void ReturnIngredientToInventory()
     {
         if (InventoryManager.Instance == null)
         {
             return;
         }
         
-        // 빈 인벤토리 슬롯 찾기
         SlotUI emptySlot = InventoryManager.Instance.FindEmptyInventorySlot();
         
         if (emptySlot != null)
         {
-            // 아이템 이동
             ItemData item = currentItem;
             int qty = quantity;
             
@@ -647,31 +631,36 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             emptySlot.UpdateUI();
             
             ClearSlot();
-            
+        }
+        else
+        {
+            Debug.LogWarning("인벤토리에 빈 슬롯이 없습니다!");
         }
     }
     
-    // ─────────────────────────────────────────────
-    // Shift 키 처리 (아이템 분할)
-    // ─────────────────────────────────────────────
+    /// <summary>
+    /// 전리품을 인벤토리로 이동
+    /// </summary>
+    private void TransferLootToInventory()
+    {
+        if (LootManager.Instance == null)
+        {
+            return;
+        }
+        
+        LootManager.Instance.TransferLootToInventory(this, 0);
+    }
     
     /// <summary>
-    /// Shift + 클릭 처리
+    /// Shift + 클릭 (아이템 분할)
     /// </summary>
     private void HandleShiftClick()
     {
-        if (currentItem == null || quantity <= 1)
+        if (currentItem == null || quantity <= 1 || currentItem.stackSize <= 1)
         {
             return;
         }
         
-        // 스택 가능한 아이템만 분할 가능
-        if (currentItem.stackSize <= 1)
-        {
-            return;
-        }
-        
-        // 분할 패널 열기
         if (ItemSplitManager.Instance != null)
         {
             ItemSplitManager.Instance.OpenForClick(this);
@@ -679,41 +668,44 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     /// <summary>
-    /// Shift + 드래그 처리
+    /// Shift + 드래그 (아이템 분할)
     /// </summary>
     private void HandleShiftDrag(SlotUI targetSlot)
     {
-        if (currentItem == null || quantity <= 1)
+        if (currentItem == null || quantity <= 1 || currentItem.stackSize <= 1)
         {
             return;
         }
         
-        // 스택 가능한 아이템만 분할 가능
-        if (currentItem.stackSize <= 1)
-        {
-            return;
-        }
-        
-        // 대상 슬롯이 비어있어야 함
         if (targetSlot.currentItem != null)
         {
             return;
         }
         
-        // 분할 패널 열기
         if (ItemSplitManager.Instance != null)
         {
             ItemSplitManager.Instance.OpenForDrag(this, targetSlot);
         }
     }
     
+    /// <summary>
+    /// 상점 슬롯 선택
+    /// </summary>
+    private void HandleShopSelection()
+    {
+        if (currentItem == null || ShopManager.Instance == null)
+        {
+            return;
+        }
+        
+        bool isShopSlot = transform.parent != null && transform.parent.name == "ShopGrid";
+        ShopManager.Instance.OnSlotClicked(this, isShopSlot);
+    }
+    
     // ─────────────────────────────────────────────
-    // 툴팁 (마우스 호버)
+    // 툴팁
     // ─────────────────────────────────────────────
     
-    /// <summary>
-    /// 마우스가 슬롯 위에 올라갔을 때
-    /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (currentItem != null && ItemTooltip.Instance != null)
@@ -725,21 +717,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             
             ItemTooltip.PanelSource panelSource = DeterminePanelSource();
             
-            // 상점이 열려있는지 확인
             bool isShopOpen = ShopManager.Instance != null && ShopManager.Instance.IsShopOpen();
             bool isSellMode = isShopOpen && ShopManager.Instance.IsSellMode();
             bool isBuyMode = isShopOpen && !ShopManager.Instance.IsSellMode();
-            
-            // 구매 모드인지 확인 (ShopGrid의 자식이면 상점 아이템)
             bool isShopItem = panelSource == ItemTooltip.PanelSource.Shop;
             
             ItemTooltip.Instance.ShowTooltip(currentItem, panelSource, isSellMode, isBuyMode && isShopItem);
         }
     }
     
-    /// <summary>
-    /// 마우스가 슬롯에서 벗어났을 때
-    /// </summary>
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemTooltip.Instance != null)
@@ -749,13 +735,12 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     /// <summary>
-    /// 이 슬롯이 어느 창에 속해있는지 판단
+    /// 이 슬롯이 어느 패널에 속하는지 판단
     /// </summary>
     private ItemTooltip.PanelSource DeterminePanelSource()
     {
         Transform current = transform;
         
-        // 최대 5단계까지 부모를 확인
         for (int i = 0; i < 5 && current != null; i++)
         {
             string nodeName = current.name;
@@ -765,19 +750,16 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
                 return ItemTooltip.PanelSource.Shop;
             }
             
-            // 2순위: LootPanel
             if (nodeName.Contains("LootPanel") || nodeName.Contains("Loot"))
             {
                 return ItemTooltip.PanelSource.Loot;
             }
             
-            // 3순위: EquipmentPanel
             if (nodeName.Contains("EquipmentPanel") || nodeName.Contains("Equipment"))
             {
                 return ItemTooltip.PanelSource.Equipment;
             }
             
-            // 4순위: InventoryPanel (정확히 InventoryPanel일 때만)
             if (nodeName == "InventoryPanel")
             {
                 return ItemTooltip.PanelSource.Inventory;
@@ -786,7 +768,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             current = current.parent;
         }
         
-        // ===== 폴백: 직접 부모 이름으로 판단 =====
+        // 폴백
         if (transform.parent != null)
         {
             string parentName = transform.parent.name;
@@ -809,24 +791,19 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             }
         }
         
-        // 기본값: 인벤토리
         return ItemTooltip.PanelSource.Inventory;
     }
     
     /// <summary>
-    /// 이 슬롯이 상점 그리드에 있는지 확인
+    /// 상점 그리드에 있는지 확인
     /// </summary>
     private bool IsInShopGrid()
     {
-        // 상위 계층 확인 (ShopGrid 또는 ShopPanel 내부인지)
         Transform current = transform;
         
         for (int i = 0; i < 5 && current != null; i++)
         {
-            string nodeName = current.name;
-            
-            // ShopGrid에 속해있으면 true
-            if (nodeName == "ShopGrid" || nodeName.Contains("ShopGrid"))
+            if (current.name == "ShopGrid" || current.name.Contains("ShopGrid"))
             {
                 return true;
             }
@@ -838,19 +815,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     }
     
     /// <summary>
-    /// 이 슬롯이 상점 패널 안에 있는지 확인 (ShopGrid 또는 InventoryGrid)
+    /// 상점 패널에 있는지 확인
     /// </summary>
     private bool IsInShopPanel()
     {
-        // 상위 계층 확인
         Transform current = transform;
         
         for (int i = 0; i < 5 && current != null; i++)
         {
-            string nodeName = current.name;
-            
-            // ShopPanel에 속해있으면 true
-            if (nodeName == "ShopPanel" || nodeName.Contains("ShopPanel"))
+            if (current.name == "ShopPanel" || current.name.Contains("ShopPanel"))
             {
                 return true;
             }
@@ -859,28 +832,6 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         }
         
         return false;
-    }
-    
-    /// <summary>
-    /// 상점에서 아이템 선택 처리
-    /// </summary>
-    private void HandleShopSelection()
-    {
-        if (currentItem == null)
-        {
-            return;
-        }
-        
-        if (ShopManager.Instance == null)
-        {
-            return;
-        }
-        
-        // 슬롯이 ShopGrid의 자식이면 상점 슬롯
-        bool isShopSlot = transform.parent != null && transform.parent.name == "ShopGrid";
-        
-        // ShopManager에 선택 요청
-        ShopManager.Instance.OnSlotClicked(this, isShopSlot);
     }
 }
 
@@ -889,7 +840,8 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
 /// </summary>
 public enum SlotType
 {
-    Inventory,  // 인벤토리 슬롯
-    Equipment,  // 장비 슬롯
-    Cooking     // 요리 재료 슬롯
+    Inventory,
+    Equipment,
+    Cooking,
+    Potion
 }
