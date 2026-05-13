@@ -7,8 +7,8 @@ public class TileController : MonoBehaviour
     void Start()
     {
         GameManager.instance.tileData = tileData;
-        PlayerController.instance.ChangePos(GameManager.instance.playerPosX);
-        CameraController.instance.ChangePos(GameManager.instance.cameraPosX);
+        PlayerController.instance.ChangePosX(GameManager.instance.playerPosX);
+        CameraController.instance.ChangePosX(GameManager.instance.cameraPosX);
     }
 
 }

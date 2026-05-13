@@ -8,18 +8,20 @@ public static class Values
     public static float camera_speed = 8f;
     public static float camera_maxDis = 3.5f;
     public static float camera_width = 8f;  // 대충 이정도 됨
-    public static float camera_posZ = -10f;
+
+    // switch..
 
     // player
     public static float player_speed = 7f;
-    public static float player_posY = -2.3f;
 
     public static float player_MON_radius = 0f;
     public static float player_CNV_radius = 0f;
     public static float player_DLG_radius = 0f;
     public static float player_STC_radius = 0f;
+    public static float player_DOR_radius = 0f;
 
     public static string manual_DLG = "f키를 눌러 대화하기";
+    public static string manual_DOR = "f키를 눌러 건물 들어가기";
     public static string manual_STC = "f키를 눌러 건물 들어가기";
     public static string manual_noLoad = "길이 막혔습니다";
 

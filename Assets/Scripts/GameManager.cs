@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 
     // 정보
     public TileData tileData;
+    public DoorData doorData;
+    public int tier;
 
     // DialogScene
     public DialogData DialogData;
@@ -26,5 +28,26 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void SwitchIn(int tier)  // tier는 5의 배수
+    {
+        this.tier = tier;
+
+        float cameraPosZ = CameraController.instance.z;
+
+        while (cameraPosZ < tier)
+        {
+            cameraPosZ += 0.1f;
+            CameraController.instance.ChangePosZ(cameraPosZ);
+            PlayerController.instance.ChangePosZ(cameraPosZ + 1);
+        }
+        CameraController.instance.ChangePosZ(tier);
+        PlayerController.instance.ChangePosZ(tier + 1);
+    }
+    
+    public void SwitchOut()
+    {
+
     }
 }

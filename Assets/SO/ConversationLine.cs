@@ -1,9 +1,11 @@
-ï»¿using System;
+using System;
+using UnityEngine;
+
 
 [Serializable]
 public class ConversationLine
 {
-    public int speaker;  // 1ì´ ì™¼ìª½, 2ê°€ ì˜¤ë¥¸ìª½ npc
+    public int speaker;  // 1ÀÌ ¿ŞÂÊ, 2°¡ ¿À¸¥ÂÊ npc
 
     public string line;
     public float time;

@@ -12,5 +12,3 @@ public class ConversationData : ScriptableObject
     public List<ConversationLine> lines;
 
 }
-
-

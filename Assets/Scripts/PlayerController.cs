@@ -8,19 +8,11 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
 
     // 이동
+    Rigidbody2D rb;
     float x;
     float speed = Values.player_speed;
-
-    // layer
-    public LayerMask NPCLayer;
-    public LayerMask CNVLayer;
-    public LayerMask STCLayer;
-
-    // collider
-    Collider[] MONColliders;
-    Collider[] CNVColliders;
-    Collider[] DLGColliders;
-    Collider[] STCColliders;
+    public float y;
+    public float z;
 
     // canvas
     public Canvas canvas;
@@ -42,21 +34,25 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+
+        rb = GetComponent<Rigidbody2D>();
+
     }
 
 
     void Update()
     {
-        // 이동
-        x = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        transform.Translate(new Vector2(x, 0));
-
         isManual = false;
         MoveTile();
-        Interaction();
         if (!isManual)
             canvas.gameObject.SetActive(false);
+    }
 
+    private void FixedUpdate()
+    {
+        // 이동
+        x = Input.GetAxis("Horizontal") * speed;
+        rb.linearVelocity = new Vector2(x, 0);
     }
 
     void MoveTile()
@@ -66,13 +62,13 @@ public class PlayerController : MonoBehaviour
         // tile 이동
         if (transform.position.x > GameManager.instance.tileData.MaxRight)
         {
-            ChangePos(GameManager.instance.tileData.MaxRight);
+            ChangePosX(GameManager.instance.tileData.MaxRight);
             targetTileData = GameManager.instance.tileData.rightTile;
             direction = "right";
         }
         else if (transform.position.x < GameManager.instance.tileData.MaxLeft)
         {
-            ChangePos(GameManager.instance.tileData.MaxLeft);
+            ChangePosX(GameManager.instance.tileData.MaxLeft);
             targetTileData = GameManager.instance.tileData.leftTile;
             direction = "left";
         }
@@ -121,79 +117,95 @@ public class PlayerController : MonoBehaviour
             GameManager.instance.cameraPosX = targetTileData.MaxRight - Values.camera_width;
         }
     }
-
-
-    void Interaction()
+    
+        
+    private void OnTriggerEnter2D(Collider2D collision)  // MON, CNV 표시
     {
-
-        // MON, CNV 표시
-        MONColliders = Physics.OverlapSphere(transform.position, Values.player_MON_radius, NPCLayer);
-        for (int i = 0; i < MONColliders.Length; i++)
-            StartCoroutine(MONColliders[i].GetComponent<NPCController>().ShowMON());
-        CNVColliders = Physics.OverlapSphere(transform.position, Values.player_CNV_radius, CNVLayer);
-        for (int i = 0; i < CNVColliders.Length; i++)
-            StartCoroutine(CNVColliders[i].GetComponent<ConversationController>().showCNV());
-
-
-        // DLG, STC -> manual로 표시
-        if (!isManual)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("npc"))
         {
-            DLGColliders = Physics.OverlapSphere(transform.position, Values.player_DLG_radius, NPCLayer);
-            if (DLGColliders.Length > 0)
-            {
-                obj = DLGColliders[0].GetComponent<NPCController>();
+            StartCoroutine(collision.gameObject.GetComponent<NPCController>().ShowMON());
 
-                if (obj.npcData.DialogData != null && obj.npcData.DialogState == obj.npcData.state)
-                {
-                    isManual = true;
-                    textUI.text = Values.manual_DLG;
-                    canvas.gameObject.SetActive(true);
-
-                    // f키 누르면
-                    if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        Debug.Log("show Dialog");
-                        GameManager.instance.DialogData = obj.npcData.DialogData;
-                        GameManager.instance.playerPosX = transform.position.x;
-                        GameManager.instance.cameraPosX = CameraController.instance.transform.position.x;
-                        SceneManager.LoadScene("DialogScene");
-                    }
-                }
-            }
         }
-        if(!isManual)
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("conversation"))
         {
-            STCColliders = Physics.OverlapSphere(transform.position, Values.player_STC_radius, STCLayer);
-            if (STCColliders.Length > 0)
-            {
-                isManual = true;
-                textUI.text = Values.manual_STC;
-                canvas.gameObject.SetActive(true);
+            StartCoroutine(collision.gameObject.GetComponent<ConversationController>().showCNV());
+        }
+    }
 
-                StructureController obj = STCColliders[0].GetComponent<StructureController>();
+
+
+    private void OnCollisionEnter2D(Collision2D collision)  // DLG, DOR, STC -> manual로 표시
+{
+        if (collision.gameObject.layer == LayerMask.NameToLayer("npc"))
+        {
+            isManual = true;
+            obj = collision.gameObject.GetComponent<NPCController>();
+
+            if (obj.npcData.DialogData != null)
+            {
+                textUI.text = Values.manual_DLG;
+                canvas.gameObject.SetActive(true);
 
                 // f키 누르면
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    // 건물 들어가기
-                    targetTileData = obj.tileData;
-                    GameManager.instance.tileStacks.Push(new insideTileData(GameManager.instance.tileData, transform.position.x, CameraController.instance.transform.position.x));
-                    GameManager.instance.tileData = targetTileData;
-                    CalandSetPos(obj.direction);
-                    SceneManager.LoadScene(targetTileData.SceneName);
+                    Debug.Log("show Dialog");
+                    GameManager.instance.DialogData = obj.npcData.DialogData;
+                    GameManager.instance.playerPosX = transform.position.x;
+                    GameManager.instance.cameraPosX = CameraController.instance.transform.position.x;
+                    SceneManager.LoadScene("DialogScene");
                 }
             }
-            else
-            {
-                canvas.gameObject.SetActive(false);
-            }
-
         }
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("door"))
+        {
+            textUI.text = Values.manual_DOR;
+            canvas.gameObject.SetActive(true);
+
+            // f키 누르면
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                GameManager.instance.doorData = collision.gameObject.GetComponent<DoorController>().doorData;
+                GameManager.instance.SwitchIn(GameManager.instance.tier + 5);
+            }
+        }
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("structure"))
+        {
+            textUI.text = Values.manual_STC;
+            canvas.gameObject.SetActive(true);
+
+            StructureController obj = collision.gameObject.GetComponent<StructureController>();
+
+            // f키 누르면
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                // 건물 들어가기
+                targetTileData = obj.tileData;
+                GameManager.instance.tileStacks.Push(new insideTileData(GameManager.instance.tileData, transform.position.x, CameraController.instance.transform.position.x));
+                GameManager.instance.tileData = targetTileData;
+                CalandSetPos(obj.direction);
+                SceneManager.LoadScene(targetTileData.SceneName);
+            }
+        }
+        else
+        {
+            isManual = false;
+            canvas.gameObject.SetActive(false);
+        }
+
     }
 
-    public void ChangePos(float x)
+
+
+    public void ChangePosX(float x)
     {
-        transform.position = new Vector3(x, Values.player_posY, 0);
+        this.x = x;
+        transform.position = new Vector3(x, y, z);
     }
 
+    public void ChangePosZ(float z)
+    {
+        this.z = z;
+        transform.position = new Vector3(x, y, z);
+    }
 }

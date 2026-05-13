@@ -36,8 +36,6 @@ public class DialogController : MonoBehaviour
 
 
 
-    // TODO : maybe gonna have functions for adjust states of player or something
-
     void Awake()  // ΩÃ±€≈Ê
     {
         if (instance == null)
